@@ -1,0 +1,54 @@
+<ion-view view-title="Questions">
+
+  <ion-header-bar class="bar-energized">
+    <h1 class="title">Question {{question[count].id}}</h1>
+  </ion-header-bar>
+
+  <ion-content>
+
+    <div class="row responsive-sm row-center">
+
+      <div class="col text-center">
+        <h3>{{question[count].intitule}}</h3>
+        <img class ="question_img" ng-src="{{question[count].path}}">
+        <!-- <img class ="question_img" ng-src="http://placehold.it/600x300"> -->
+
+        <div class = "row responsive-md" style="flex-wrap: wrap">
+          <div class="col col-50" ng-repeat='r in question[count].reponse'>
+            <button id ="bouton{{+$index}}" class="button button-block button-dark" ng-disabled="isActive" ng-click="getAnswer(r,question[count],$index)">
+              {{r}}
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </ion-content>
+
+    <div class="bar bar-footer bar-light">
+      <div class="title">Bonnes réponses : {{score}} </div>
+    </div>
+
+    <!-- Template pour la modal popup -> explications et bonne réponse qui s'affiche -->
+    <script id="explications.html" type="text/ng-template">
+      <ion-modal-view>
+        <ion-content>
+          <div class="row row-center">
+            <div class="col text-center">
+              <h1 class="text-center win" ng-show="rightAnswer">Bonne réponse !</h1>
+              <h1 class="text-center loose" ng-show="!rightAnswer">Mauvaise réponse ...</h1>
+                <div class="col col-80 col-offset-10">
+                  <p>{{question[count].explication}}</p>
+                </div>
+                <div class="col">
+                  <button class ='button button-dark button-next' ng-disabled="!isActive" ng-click="getNextQuestion() ">next</button>
+                </div>
+              </div>
+            </div>
+        </ion-content>
+      </ion-modal-view>
+    </script>
+
+</ion-view>

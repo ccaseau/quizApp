@@ -1,0 +1,40 @@
+<ion-view view-title="Form">
+  <ion-header-bar class="bar-energized">
+    <h1 class="title">Formulaire</h1>
+  </ion-header-bar>
+  <ion-content>
+    <div class="row row-center row-responsive-lg ">
+      <div class="col text-center">
+          <h3>Votre score est de {{score}} !<br>Inscrivez vous pour obtenir des informations</h3>
+          <!-- <div class="col-80 col-offset-10"> -->
+          <form name ="form" class="list list-stacked" ng-submit="saveUser()">
+            <label class="item item-input">
+              <span class="input-label">Prénom</span>
+              <input type="text" ng-model ="users.prenom" required>
+            </label>
+            <label class="item item-input">
+              <span class="input-label">Nom</span>
+              <input type="text" ng-model="users.nom" required>
+            </label>
+            <label class="item item-input">
+              <span class="input-label">Adresse mail</span>
+              <input type="email" ng-model="users.addr" required>
+            </label>
+             <ion-checkbox ng-model="users.info" >Je veux recevoir des infos</ion-checkbox>
+             <p id ="errorSpan">{{message}}</p>
+               <button type="submit" ng-disabled="form.$invalid" class="button button-energized button-block">Envoyer </button>
+            </form>
+            <div class="col col-50 col-offset-50">
+              <a href ='#/wheel'>je ne suis pas interessé </a>
+            </div>
+
+            <h5>Les utilisateurs :</h5>
+            <div ng-repeat="u in users">
+              <button class="button button-small" ng-click="suprUser(u.id)">x</button>
+              <b>{{u.prenom}} {{u.nom}}</b> {{u.addr}} - Informations : {{u.info}} - Score : {{u.score}}
+            </div>
+      </div>
+    </div>
+
+  </ion-content>
+</ion-view>
