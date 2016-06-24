@@ -52,6 +52,6 @@ app.run(function($ionicPlatform, $ionicAnalytics) {
     })
 
 
-    //Route par defaut -> à l'ouverture de index.html
+    //Route par defaut -> à l'ouverture de index.html ou si le chemin est invalide 
   	$urlRouterProvider.otherwise('/home');
 })

@@ -95,7 +95,7 @@ app.factory('ManageScore', function(){
 
       //Retourne les utilisateurs avec une certaine adresse
       getSameAddr: function(addr){
-        return $cordovaSQLite.execute(db, 'SELECT * FROM T_USER where addr = ?', [addr])
+        return $cordovaSQLite.execute(db, 'SELECT * FROM T_USER where addr = ?',[addr])
       },
 
       //Retourne les utilisateurs avec un certain id
