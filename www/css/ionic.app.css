@@ -9901,6 +9901,17 @@ h1 {
   padding: 5px;
   color: #D91E18; }
 
+.flexcontainer {
+  list-style: none;
+  margin: 0;
+  padding: 10;
+  display: -webkit-flex;
+  /* NEW */
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  /* NEW */
+  flex-wrap: wrap; }
+
 @media screen and (max-width: 800px) {
   .scalingWheel {
     transform: scale(0.9); } }

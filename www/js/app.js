@@ -1,11 +1,11 @@
+var app = angular.module('quizApp', ['ionic','ionic.service.core','quizApp.controllers','quizApp.services','LocalStorageModule'])
 
-var app = angular.module('quizApp', ['ionic','ionic.service.core','quizApp.controllers','quizApp.services','ionic.service.analytics'])
+app.run(function($ionicPlatform) {
 
-app.run(function($ionicPlatform, $ionicAnalytics) {
   $ionicPlatform.ready(function() {
 
-    //Activer ionic analytics
-    $ionicAnalytics.register();
+    // //Activer ionic analytics
+    // $ionicAnalytics.register();
 
     if(window.cordova && window.cordova.plugins.Keyboard) {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -22,6 +22,11 @@ app.run(function($ionicPlatform, $ionicAnalytics) {
     }
   })
 })
+
+app.config(function (localStorageServiceProvider) {
+  localStorageServiceProvider
+    .setPrefix('quizApp');
+});
 
   app.config(function($stateProvider, $urlRouterProvider){
   	$stateProvider
@@ -52,6 +57,6 @@ app.run(function($ionicPlatform, $ionicAnalytics) {
     })
 
 
-    //Route par defaut -> à l'ouverture de index.html ou si le chemin est invalide 
+    //Route par defaut -> à l'ouverture de index.html ou si le chemin est invalide
   	$urlRouterProvider.otherwise('/home');
 })

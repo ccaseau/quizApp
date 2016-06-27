@@ -13,7 +13,7 @@
         <img class ="question_img" ng-src="{{question[count].path}}">
         <!-- <img class ="question_img" ng-src="http://placehold.it/600x300"> -->
 
-        <div class = "row responsive-md" style="flex-wrap: wrap">
+        <div class = "row responsive-md flexcontainer" style="flex-wrap: wrap">
           <div class="col col-50" ng-repeat='r in question[count].reponse'>
             <button id ="bouton{{+$index}}" class="button button-block button-dark" ng-disabled="isActive" ng-click="getAnswer(r,question[count],$index)">
               {{r}}
