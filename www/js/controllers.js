@@ -254,31 +254,38 @@ var app = angular.module('quizApp.controllers', []);
 
 
     // Controller de la page form
-    app.controller('FormCtrl', function ($scope, $ionicModal,$stateParams, $location,$state, ManageScore, UsersDataService) {
-
+    app.controller('FormCtrl', function ($scope, $ionicModal,$stateParams,$ionicPlatform, $location, $state, ManageScore, localStorageService) {
+    var userData;
     $scope.score = ManageScore.init();
-    $scope.message ='';
+    //initialiser les utilisateurs avec un tableau vide
+    $scope.users = [];
+    //initialiser un utilisateur avec un objet vide
+    $scope.user = {};
 
-      $scope.$on('$ionicView.enter', function(e) {
-          UsersDataService.getAll(function(data){
-            $scope.users = data
-            $scope.users.info = false;
-            $scope.users.score = $scope.score;
-          })
-      })
-
-    $scope.saveUser = function(){
-      if(!$scope.users.id){
-        console.log($scope.users.addr);
-        UsersDataService.createUser($scope.users).then( $state.reload())
+    //FONCTIONS CRD : create, read, delete
+    $scope.getUsers = function () {
+    //fetches user from local storage
+    console.log ('On charge les utilisateurs');
+    if (localStorageService.get(userData)) {
+      $scope.users = localStorageService.get(userData);
       } else {
-        UsersDataService.updateUser($scope.users).then($state.reload())
-        $scope.message ="Cette adresse mail à déja été entrée";
+        $scope.users = [];
       }
     }
 
-    $scope.suprUser = function(userID){
-      UsersDataService.deleteUser(userID).then( $state.reload())
+     //store the entities name in a variable var taskData = 'tas
+    $scope.createUser = function () {
+    //creates a new user
+    $scope.users.push($scope.user);
+      localStorageService.set(userData, $scope.users);
+      $scope.user.score = $scope.score;
+      $scope.user = {};
+    }
+
+    $scope.removeUser = function (index) {
+    //removes a user
+      $scope.users.splice(index, 1);
+      localStorageService.set(userData, $scope.users);
     }
 
     });

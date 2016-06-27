@@ -1,4 +1,4 @@
-<ion-view view-title="Form">
+<ion-view view-title="Form"  ng-init="getUsers()">
   <ion-header-bar class="bar-energized">
     <h1 class="title">Formulaire</h1>
   </ion-header-bar>
@@ -7,20 +7,20 @@
       <div class="col text-center">
           <h3>Votre score est de {{score}} !<br>Inscrivez vous pour obtenir des informations</h3>
           <!-- <div class="col-80 col-offset-10"> -->
-          <form name ="form" class="list list-stacked" ng-submit="saveUser()">
+          <form name ="form" class="list list-stacked" ng-submit="createUser()()">
             <label class="item item-input">
               <span class="input-label">Prénom</span>
-              <input type="text" ng-model ="users.prenom" required>
+              <input type="text" ng-model ="user.prenom" required>
             </label>
             <label class="item item-input">
               <span class="input-label">Nom</span>
-              <input type="text" ng-model="users.nom" required>
+              <input type="text" ng-model="user.nom" required>
             </label>
             <label class="item item-input">
               <span class="input-label">Adresse mail</span>
-              <input type="email" ng-model="users.addr" required>
+              <input type="email" ng-model="user.addr" required>
             </label>
-             <ion-checkbox ng-model="users.info" >Je veux recevoir des infos</ion-checkbox>
+             <ion-checkbox ng-model="user.info" >Je veux recevoir des infos</ion-checkbox>
              <p id ="errorSpan">{{message}}</p>
                <button type="submit" ng-disabled="form.$invalid" class="button button-energized button-block">Envoyer </button>
             </form>
@@ -30,7 +30,7 @@
 
             <h5>Les utilisateurs :</h5>
             <div ng-repeat="u in users">
-              <button class="button button-small" ng-click="suprUser(u.id)">x</button>
+              <button class="button button-small" ng-click="removeUser(u.id)">x</button>
               <b>{{u.prenom}} {{u.nom}}</b> {{u.addr}} - Informations : {{u.info}} - Score : {{u.score}}
             </div>
       </div>
