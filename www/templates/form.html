@@ -1,40 +1,48 @@
-<ion-view view-title="Form"  ng-init="getUsers()">
-  <ion-header-bar class="bar-energized">
-    <h1 class="title">Formulaire</h1>
-  </ion-header-bar>
+<ion-view view-title="Form">
   <ion-content>
     <div class="row row-center row-responsive-lg ">
       <div class="col text-center">
-          <h3>Votre score est de {{score}} !<br>Inscrivez vous pour obtenir des informations</h3>
+          <h2>Merci d'avoir répondu à notre questionnaire</h2>
+          <h4>Tu souhaites en savoir plus sur le programme ERASMUS ? Complète ce formulaire et tente de gagner un des lots mis en jeu</h4>
           <!-- <div class="col-80 col-offset-10"> -->
-          <form name ="form" class="list list-stacked" ng-submit="createUser()()">
+        <div class="col ">
+          <form ng-submit="save()" name ="form" class="list list-stacked">
             <label class="item item-input">
-              <span class="input-label">Prénom</span>
-              <input type="text" ng-model ="user.prenom" required>
+              <span class="input-label">Mail</span>
+              <input type="text" ng-model="users.mail" >
             </label>
             <label class="item item-input">
-              <span class="input-label">Nom</span>
-              <input type="text" ng-model="user.nom" required>
+              <span class="input-label">Age</span>
+              <input type="text" ng-model="users.age" >
             </label>
             <label class="item item-input">
-              <span class="input-label">Adresse mail</span>
-              <input type="email" ng-model="user.addr" required>
+              <span class="input-label">Formation</span>
+              <input type="text" ng-model="users.formation" >
             </label>
-             <ion-checkbox ng-model="user.info" >Je veux recevoir des infos</ion-checkbox>
-             <p id ="errorSpan">{{message}}</p>
-               <button type="submit" ng-disabled="form.$invalid" class="button button-energized button-block">Envoyer </button>
-            </form>
-            <div class="col col-50 col-offset-50">
-              <a href ='#/wheel'>je ne suis pas interessé </a>
+            <label class="item item-input">
+              <span class="input-label">Code postal</span>
+              <input type="text" ng-model="users.code" >
+            </label>
+            <label class="item item-input">
+              <span class="input-label">Telephone</span>
+              <input type="text" ng-model="users.tel">
+            </label>
+            <div ng-init="users.sexe='Homme'" class="row">
+              <span class="input-label">Je suis :</span>
+              <ion-radio ng-model="users.sexe" ng-value="'Femme'">Femme</ion-radio>
+              <ion-radio ng-model="users.sexe" ng-value="'Homme'">Homme</ion-radio>
             </div>
+             <ion-checkbox ng-init="users.info = false" ng-model="users.info">Je souhaite recevoir de l’information sur le programme Erasmus+</ion-checkbox>
+               <button type="submit" class="button button-energized button-form">Valider </button>
 
-            <h5>Les utilisateurs :</h5>
+            </form>
+            <h5> Utilisateurs enregistrés </h5>
             <div ng-repeat="u in users">
-              <button class="button button-small" ng-click="removeUser(u.id)">x</button>
-              <b>{{u.prenom}} {{u.nom}}</b> {{u.addr}} - Informations : {{u.info}} - Score : {{u.score}}
+             {{u.mail}} / {{u.age}} / {{u.formation}} / {{u.code}} / {{u.tel}} / {{u.sexe}} / {{u.info}}
             </div>
       </div>
     </div>
+  </div>
 
   </ion-content>
 </ion-view>

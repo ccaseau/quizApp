@@ -17,11 +17,3 @@ app.factory('ManageScore', function(){
     },
   }
 })
-
-//On met toute la partie gestion des données dans un service UsersDataService -> Opérations "CRUD" sur la base de données
-//Dans l'idéal il faudrait deplacer ce service dans un propre fichier .js
-
-app.factory('UserService', function(){
- var user = {};
- return user
-});

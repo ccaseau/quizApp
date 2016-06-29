@@ -1,41 +1,26 @@
 <ion-view view-title="Form">
+  <ion-modal-view>
       <ion-header-bar class="bar-stable">
         <h1 class="title">Users</h1>
-        <div class="buttons">
-          <button ng-click="vm.showAddUserModal()" class="button button-icon icon ion-plus"></button>
-        </div>
       </ion-header-bar>
-      <ion-content>
-        <ion-list>
-          <ion-item ng-repeat="b in vm.users" ng-click="vm.showEditUserModal(b)">
-            <div style="float: left">{{ b.Prenom }}</div>
-            <div style="float: right">{{ b.Nom}}</div>
-          </ion-item>
-        </ion-list>
+      <ion-content padding="true">
+      <div class="list">
+          <label class="item item-input">
+              <span class="input-label">Prénom: </span>
+              <input type="text" ng-model="newPrenom">
+          </label>
+      </div>
+      <div>
+          <button class="button button-block" ng-click="save(newPrenom)">
+              Save
+          </button>
+          <button class="button button-block" ng-click="load()">
+              Load
+          </button>
+          <p>{{ statusUser }}</p>
+          <p> {{newPrenom}} </p>
+      </div>
       </ion-content>
-    </ion-pane>
-
-    <script id="add-or-edit-user.html" type="text/ng-template">
-      <ion-modal-view>
-        <ion-header-bar>
-          <h1 class="title">{{ action }} User</h1>
-          <div class="buttons">
-          <button ng-hide="isAdd" ng-click="deleteUser()" class="button button-icon icon ion-trash-a"></button>
-          </div>
-        </ion-header-bar>
-        <ion-content>
-          <div class="list list-inset">
-            <label class="item item-input">
-            <input type="text" placeholder="Name" ng-model="user.Name">
-            </label>
-            <label class="item item-input">
-            <input type="date" placeholder="User" ng-model="user.Date">
-            </label>
-          </div>
-          <div class="padding">
-            <button ng-click="saveUser()" class="button button-block button-positive activated">Save</button>
-          </div>
-        </ion-content>
       </ion-modal-view>
     </script>
   </body>
