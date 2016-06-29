@@ -252,40 +252,34 @@ var app = angular.module('quizApp.controllers', []);
 
     });
 
-
     // Controller de la page form
-    app.controller('FormCtrl', function ($scope, $ionicModal,$stateParams,$ionicPlatform, $location, $state, ManageScore, localStorageService) {
-    var userData;
+    app.controller('FormCtrl', function ($scope, $ionicModal,$stateParams, $location, $state, ManageScore, $cordovaSQLite, $ionicPlatform) {
+
     $scope.score = ManageScore.init();
-    //initialiser les utilisateurs avec un tableau vide
     $scope.users = [];
-    //initialiser un utilisateur avec un objet vide
-    $scope.user = {};
 
-    //FONCTIONS CRD : create, read, delete
-    $scope.getUsers = function () {
-    //fetches user from local storage
-    console.log ('On charge les utilisateurs');
-    if (localStorageService.get(userData)) {
-      $scope.users = localStorageService.get(userData);
-      } else {
-        $scope.users = [];
+    $scope.$on('$ionicView.enter', function(e) {
+      $scope.load();
+    })
+
+    $scope.save = function() {
+      $cordovaSQLite.execute(db, 'INSERT INTO Users (mail,age,formation,code,tel,sexe,info) VALUES (?,?,?,?,?,?,?)', [$scope.users.mail, $scope.users.age, $scope.users.formation,$scope.users.code,$scope.users.tel,$scope.users.sexe,$scope.users.info])
+        .then(function(result) {
+          console.log ("l'utilisateur "+ $scope.users.mail +" "+ $scope.users.age +" "+$scope.users.formation+" "+ $scope.users.code +" "+$scope.users.tel+" "+ $scope.users.sexe +" "+$scope.users.info+" a bien été sauvegardé");
+        }, function(error) {
+          console.log ("La sauvegarde de l'utilisateur n'a pas fonctionné !");
+        })
+        $state.reload();
       }
-    }
 
-     //store the entities name in a variable var taskData = 'tas
-    $scope.createUser = function () {
-    //creates a new user
-    $scope.users.push($scope.user);
-      localStorageService.set(userData, $scope.users);
-      $scope.user.score = $scope.score;
-      $scope.user = {};
-    }
+      $scope.load = function() {
+        $ionicPlatform.ready(function () {
+           $cordovaSQLite.execute(db, 'SELECT * FROM Users').then(function (results) {
+             for (i = 0, max = results.rows.length; i < max; i++) {
+               $scope.users.push(results.rows.item(i))
+             }
+           })
+         })
+       }
 
-    $scope.removeUser = function (index) {
-    //removes a user
-      $scope.users.splice(index, 1);
-      localStorageService.set(userData, $scope.users);
-    }
-
-    });
+  })

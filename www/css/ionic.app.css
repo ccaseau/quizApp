@@ -9963,3 +9963,39 @@ h1 {
 @media screen and (max-width: 320px) {
   .scalingWheel {
     margin-left: -105px !important; } }
+
+form {
+  margin-top: 20px;
+  padding-right: 10px;
+  padding-left: 10px; }
+
+.button-form {
+  margin-top: 10px !important;
+  width: 120px !important;
+  min-height: 20px !important;
+  height: 40px;
+  font-size: 20px; }
+
+.item {
+  height: 35px; }
+
+.item-checkbox {
+  padding-top: 5px;
+  margin-top: -10px; }
+
+.item-radio {
+  padding-top: -5px;
+  margin-top: -8px; }
+
+.input-label {
+  font-size: 14px; }
+
+form span {
+  font-size: 14px !important; }
+
+.radio-icon {
+  font-size: 14px !important;
+  margin-top: -5px; }
+
+.radio-content {
+  margin-top: -9px; }
