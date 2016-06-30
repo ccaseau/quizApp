@@ -5,7 +5,7 @@ var app = angular.module('quizApp', ['ionic','ionic.service.core','quizApp.contr
 var db;
 
 
-app.run(function($ionicPlatform, $cordovaSQLite) {
+app.run(function($ionicPlatform, $cordovaSQLite, $rootScope) {
 
   $ionicPlatform.ready(function() {
     // //Activer ionic analytics
@@ -18,11 +18,55 @@ app.run(function($ionicPlatform, $cordovaSQLite) {
       StatusBar.styleDefault();
     }
 
-    db = $cordovaSQLite.openDB({name:"debug_test3.db", location:'default'});
-       $cordovaSQLite.execute(db, 'CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY AUTOINCREMENT, mail TEXT, age INTEGER, formation TEXT, code INTEGER, tel TEXT, sexe TEXT, info BOOLEAN )');
+    //Utilisation d'une base de donnée pré remplie
+    //On copie le contenu de notre base de donnée dans une base "locale" à l'application
+    function dbcopy()
+    {
+      //Les parametres correspondent dans l'ordre au nom de la base, sa localisation et les fonctions à appeler en cas de succés et d'erreur
+      window.plugins.sqlDB.copy("demo.db",0,copysuccess,copyerror);
+    }
 
-     });
+    //si la base n'existe pas encore
+    function copysuccess()
+    {
+
+      db = window.sqlitePlugin.openDatabase({name: "demo.db", iosDatabaseLocation: 'default'});
+      console.log('Base copiée')
+    }
+
+    //si la base existe déja
+    function copyerror(e)
+    {
+
+      console.log("La base existe déja");
+      db = window.sqlitePlugin.openDatabase({name: "demo.db", iosDatabaseLocation: 'default'});
+    }
+
+    //Fonction pour permettre la supression rapide de la base de donnée
+    function dbremove()
+    {
+      window.plugins.sqlDB.remove("demo.db",0,removesuccess,removeerror);
+    }
+
+    //On verifie que la suppression a bien marchée
+    function removesuccess()
+    {
+      console.log('la base a été supprimée')
+    }
+
+    function removeerror(e)
+    {
+      console.log("La base n'a pas pu être supprimée");
+    }
+
+    dbcopy();
+    //Décommenter la ligne si l'on veut supprimer la base
+    // dbremove();
+
+  })
+
 })
+
 
   app.config(function($stateProvider, $urlRouterProvider){
   	$stateProvider
@@ -54,5 +98,5 @@ app.run(function($ionicPlatform, $cordovaSQLite) {
 
 
     //Route par defaut -> à l'ouverture de index.html ou si le chemin est invalide
-  	$urlRouterProvider.otherwise('/form');
+  	$urlRouterProvider.otherwise('/home');
 })
