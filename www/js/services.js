@@ -49,9 +49,24 @@ app.factory('UsersDataService', function ($cordovaSQLite, $ionicPlatform) {
      },
 
      //Retourne un utilisateur avec une certaine adresse
-     getByMail: function(mail){
-        return $cordovaSQLite.execute(db, 'SELECT COUNT(*) FROM Users where mail = ?', [mail])
 
-       }
+       getSameMail: function(mail,callback){
+         var data = {} ;
+         $cordovaSQLite.execute(db, 'SELECT COUNT(*) AS cnt FROM Users where mail = ?', [mail]).then(function (results) {
+          if (results.rows.item(0).cnt != 0)
+          {
+            console.log("L'utilisateur avec l'adresse "+mail+" existe déja !");
+            data = true;
+          }
+
+          else {
+            console.log("L'utilisateur n'existe pas encore !");
+            data = false;
+          }
+
+          callback(data);
+
+         })
+     }
   }
 })
