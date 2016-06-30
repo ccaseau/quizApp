@@ -20,6 +20,45 @@ app.factory('ManageScore', function(){
 
 //********************************************GESTION DE LA BASE DE DONNEE***************************************************//
 
+//Table Questions
+app.factory('QuestionsDataService', function ($cordovaSQLite, $ionicPlatform) {
+
+  return {
+
+    //Retourner les utilisateurs déja présent dans la base de donnée
+    getAll: function(callback){
+         $ionicPlatform.ready(function () {
+           $cordovaSQLite.execute(db, 'SELECT * FROM Questions').then(function (results) {
+             var data = []
+             for (i = 0, max = results.rows.length; i < max; i++) {
+               data.push(results.rows.item(i))
+             }
+             callback(data)
+           })
+        })
+      },
+  }
+})
+
+app.factory('ReponsesDataService', function ($cordovaSQLite, $ionicPlatform) {
+
+  return {
+
+    //Retourner les utilisateurs déja présent dans la base de donnée
+    getAll: function(callback){
+         $ionicPlatform.ready(function () {
+           $cordovaSQLite.execute(db, 'SELECT * FROM Reponses').then(function (results) {
+             var data = []
+             for (i = 0, max = results.rows.length; i < max; i++) {
+               data.push(results.rows.item(i))
+             }
+             callback(data)
+           })
+        })
+      },
+  }
+})
+
 //Table Users
 app.factory('UsersDataService', function ($cordovaSQLite, $ionicPlatform) {
 

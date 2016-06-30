@@ -7,50 +7,36 @@ var app = angular.module('quizApp.controllers', []);
     });
 
     // Controller de la page question
-    app.controller('QstCtrl', function ($scope, $ionicModal,$location,$state,ManageScore, $state, $ionicPopover) {
-      $scope.question = [
-        {
-          id: 1,
-          path:'img/norvege.png',
-          intitule: 'Quel pays n’a pas adhéré à l’Union Européenne ?',
-          bonneRep: "Norvege",
-          reponse: nom = [
-                  "Suede",
-                  "Angleterre",
-                  "France",
-                  "Norvege"
-            ],
-              explication :"Par deux fois, en 1972 et 1994 et par voie référendaire, le peuple norvégien a refusé l'adhésion du pays à l'Union européenne. La première fois, elle aurait pu adhérer à l'Union en même temps que le Danemark, l'Irlande et le Royaume-Uni, la deuxième fois en même temps que l'Autriche, la Finlande et la Suède. La Norvège est avec l'Islande le seul pays scandinave à ne pas faire partie de l’Union européenne."
-        },
+    app.controller('QstCtrl', function ($scope, $ionicModal,$location,$state,ManageScore, $state, $ionicPopover,QuestionsDataService,ReponsesDataService) {
 
-        {
-          id: 2,
-          intitule: "Combien de pays compte l'Union Européenne ?",
-          path:'img/europe.png',
-          bonneRep: "28 pays",
-          reponse: nom = [
-                "18 pays",
-                "20 pays",
-                "28 pays",
-                "21 pays"
-          ],
-          explication :"L'Union européenne compte 28 pays (Etats membres) : l'Allemagne, l'Autriche, la Belgique, la Bulgarie, Chypre, la Croatie, le Danemark, l'Espagne, l'Estonie, la Finlande, la France, la Grèce, la Hongrie, l'Irlande, l'Italie, la Lituanie, la Lettonie, le Luxembourg, Malte, les Pays-Bas, la Pologne, le Portugal, la République tchèque, la Roumanie, le Royaume-Uni, la Slovaquie, la Slovénie et la Suède."
-        },
-        {
-          id: 3,
-          intitule: "Quel est le point culminant de l'Europe ?",
-          path:'img/elbrouz.png',
-          bonneRep: "Elbrouz",
-          reponse: nom = [
-                "Le Mont Kenya",
-                "Elbrouz",
-                "Le Mont-Blanc",
-                "Les Pyrénées"
-          ],
-          explication: "L’Elbrouz, ou Elbrous, situé dans le nord du Caucase, en Russie, est le point culminant de cette chaîne de montagnes ; avec ses 5 642 mètres, plus élevé que le mont Blanc, il est donc le plus haut sommet en Europe. Il s'agit d'un volcan ayant connu des éruptions jusqu'au début de notre ère"
-        }
+      $scope.question = [];
+      $scope.question.reponse = [];
+      $scope.$on('$ionicView.enter', function(e) {
+        QuestionsDataService.getAll(function(data){
+          $scope.question = data;
+        })
 
-      ]
+        ReponsesDataService.getAll(function(data){
+          $scope.question.reponse = data;
+        })
+      })
+
+      // $scope.question = [
+      //   {
+      //     id: 1,
+      //     path:'img/norvege.png',
+      //     intitule: 'Quel pays n’a pas adhéré à l’Union Européenne ?',
+      //     bonneRep: "Norvege",
+      //     reponse: nom = [
+      //             "Suede",
+      //             "Angleterre",
+      //             "France",
+      //             "Norvege"
+      //       ],
+      //         explication :"Par deux fois, en 1972 et 1994 et par voie référendaire, le peuple norvégien a refusé l'adhésion du pays à l'Union européenne. La première fois, elle aurait pu adhérer à l'Union en même temps que le Danemark, l'Irlande et le Royaume-Uni, la deuxième fois en même temps que l'Autriche, la Finlande et la Suède. La Norvège est avec l'Islande le seul pays scandinave à ne pas faire partie de l’Union européenne."
+      //   }
+
+      //]
 
       $scope.count = 0; //Variable pour incrémenter l'id de la question qui doit s'afficher
       $scope.score = ManageScore.init(); //On utilise le service ManageScore pour que le score de l'utilisateur soit accessible de toute les pages
@@ -136,6 +122,12 @@ var app = angular.module('quizApp.controllers', []);
           $scope.openModal();
 
         },300);
+
+        setTimeout(function()
+        {
+          boutonSelect.removeClass('button-energized');
+          boutonSelect.addClass('button-dark');
+        },500);
 
       };
 
