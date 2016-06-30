@@ -259,10 +259,11 @@ var app = angular.module('quizApp.controllers', []);
     $scope.datas = [];
     $scope.users = [];
 
-    $scope.$on('$ionicView.enter', function(e) {
-         UsersDataService.getAll(function(data){
-           $scope.datas = data
-         })
+
+      $scope.$on('$ionicView.enter', function(e) {
+        UsersDataService.getAll(function(data){
+          $scope.datas = data
+        })
       })
 
     $scope.save = function(form_user) {
