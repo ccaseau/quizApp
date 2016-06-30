@@ -253,33 +253,35 @@ var app = angular.module('quizApp.controllers', []);
     });
 
     // Controller de la page form
-    app.controller('FormCtrl', function ($scope, $ionicModal,$stateParams, $location, $state, ManageScore, $cordovaSQLite, $ionicPlatform) {
+    app.controller('FormCtrl', function ($scope, $ionicModal,$stateParams, $location, $state, ManageScore, $cordovaSQLite, $ionicPlatform,UsersDataService) {
 
     $scope.score = ManageScore.init();
+    $scope.datas = [];
     $scope.users = [];
 
     $scope.$on('$ionicView.enter', function(e) {
-      $scope.load();
-    })
-
-    $scope.save = function() {
-      $cordovaSQLite.execute(db, 'INSERT INTO Users (mail,age,formation,code,tel,sexe,info) VALUES (?,?,?,?,?,?,?)', [$scope.users.mail, $scope.users.age, $scope.users.formation,$scope.users.code,$scope.users.tel,$scope.users.sexe,$scope.users.info])
-        .then(function(result) {
-          console.log ("l'utilisateur "+ $scope.users.mail +" "+ $scope.users.age +" "+$scope.users.formation+" "+ $scope.users.code +" "+$scope.users.tel+" "+ $scope.users.sexe +" "+$scope.users.info+" a bien été sauvegardé");
-        }, function(error) {
-          console.log ("La sauvegarde de l'utilisateur n'a pas fonctionné !");
-        })
-        $state.reload();
-      }
-
-      $scope.load = function() {
-        $ionicPlatform.ready(function () {
-           $cordovaSQLite.execute(db, 'SELECT * FROM Users').then(function (results) {
-             for (i = 0, max = results.rows.length; i < max; i++) {
-               $scope.users.push(results.rows.item(i))
-             }
-           })
+         UsersDataService.getAll(function(data){
+           $scope.datas = data
          })
-       }
+      })
 
+    $scope.save = function(form_user) {
+
+      console.log(UsersDataService.getByMail($scope.users.mail));
+
+        if (form_user.$valid) {
+          //on fait appel au service UsersData
+          UsersDataService.createUser($scope.users);
+          //On recharge la page
+          $state.reload();
+        }
+
+    }
+
+      $scope.delete = function(id) {
+        //on fait appel au service UsersData
+        UsersDataService.deleteUser(id);
+        //On recharge la page
+        $state.reload();
+        }
   })

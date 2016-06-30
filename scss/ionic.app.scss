@@ -258,6 +258,7 @@ h1
   .item
   {
     height: 35px;
+    margin:none;
 
   }
 
@@ -292,3 +293,41 @@ h1
   {
     margin-top:-9px;
   }
+
+
+  /*
+    VALIDATION/ERREURS FORMULAIRE
+*/
+
+/** Styling for the username field **/
+label.item.has-error {
+  border-bottom: 2px solid red;
+}
+
+/** Styling for the password field when an error exists**/
+
+.error {
+  padding: 1px 1px;
+  font-family: "Arial Black", Gadget, sans-serif;
+  font-size: 9px;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.error i {
+  font-size: 15px;
+  color: #B83E2C;
+  vertical-align: middle;
+}
+
+.last-error-container > .error {
+  padding: 10px 16px 0;
+}
+
+.has-errors {
+  border-bottom: 2px solid #B83E2C;
+}
+
+.no-errors {
+  border-bottom: 2px solid green;
+}
