@@ -23,14 +23,14 @@ app.run(function($ionicPlatform, $cordovaSQLite, $rootScope) {
     function dbcopy()
     {
       //Les parametres correspondent dans l'ordre au nom de la base, sa localisation et les fonctions à appeler en cas de succés et d'erreur
-      window.plugins.sqlDB.copy("demo.db",0,copysuccess,copyerror);
+      window.plugins.sqlDB.copy("data3.db",0,copysuccess,copyerror);
     }
 
     //si la base n'existe pas encore
     function copysuccess()
     {
 
-      db = window.sqlitePlugin.openDatabase({name: "demo.db", iosDatabaseLocation: 'default'});
+      db = window.sqlitePlugin.openDatabase({name: "data3.db", iosDatabaseLocation: 'default'});
       console.log('Base copiée')
     }
 
@@ -39,13 +39,13 @@ app.run(function($ionicPlatform, $cordovaSQLite, $rootScope) {
     {
 
       console.log("La base existe déja");
-      db = window.sqlitePlugin.openDatabase({name: "demo.db", iosDatabaseLocation: 'default'});
+      db = window.sqlitePlugin.openDatabase({name: "data3.db", iosDatabaseLocation: 'default'});
     }
 
     //Fonction pour permettre la supression rapide de la base de donnée
     function dbremove()
     {
-      window.plugins.sqlDB.remove("demo.db",0,removesuccess,removeerror);
+      window.plugins.sqlDB.remove("data3.db",0,removesuccess,removeerror);
     }
 
     //On verifie que la suppression a bien marchée
