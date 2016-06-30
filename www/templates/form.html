@@ -98,6 +98,11 @@
               <ion-radio ng-model="users.sexe" ng-value="'Homme'">Homme</ion-radio>
             </div>
              <ion-checkbox ng-init="users.info = false" ng-model="users.info">Je souhaite recevoir de l’information sur le programme Erasmus+</ion-checkbox>
+             <div class="error-container">
+               <div class="error">
+                 {{error}}
+               </div>
+
                <button type="submit" class="button button-energized button-form">Valider </button>
             </form>
             <h5> Utilisateurs enregistrés </h5>

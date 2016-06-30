@@ -267,14 +267,42 @@ var app = angular.module('quizApp.controllers', []);
 
     $scope.save = function(form_user) {
 
-      console.log(UsersDataService.getByMail($scope.users.mail));
+      UsersDataService.getSameMail($scope.users.mail, function(item){
+       $scope.user_exist = item;
+       console.log($scope.user_exist);
 
-        if (form_user.$valid) {
+       if (form_user.$valid)
+       {
+         if (!$scope.user_exist) {
           //on fait appel au service UsersData
           UsersDataService.createUser($scope.users);
           //On recharge la page
           $state.reload();
+          $scope.error = '';
         }
+
+        else
+        {
+          $scope.error = "L'adresse mail que vous avez entrée est déja utilisée!";
+        }
+
+       }
+
+
+
+     });
+
+        // console.log($scope.user_exist);
+        // if($scope.user_exist == 1)
+        // {
+        //   console.log ("cet utilisateur existe déja")
+        // }
+        //
+        // else {
+        //   console.log ("cet utilisateur n'existe pas")
+        // }
+        //
+
 
     }
 
