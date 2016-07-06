@@ -1,8 +1,9 @@
 // App instance
-var app = angular.module('quizApp', ['ionic','ionic.service.core','quizApp.controllers','quizApp.services','ngCordova','ngMessages'])
+var app = angular.module('quizApp', ['ionic','ionic.service.core','quizApp.controllers','quizApp.services','ngCordova','ngMessages','ngProgress','ngAnimate'])
 
 // Database instance.
 var db;
+
 
 
 app.run(function($ionicPlatform, $cordovaSQLite, $rootScope) {
@@ -94,6 +95,24 @@ app.run(function($ionicPlatform, $cordovaSQLite, $rootScope) {
       url: "/wheel",
       templateUrl: "templates/wheel.html",
       controller: "WheelCtrl"
+    })
+
+    .state('wheelWin', {
+      url: "/wheel_win",
+      templateUrl: "templates/wheel_win.html",
+      controller: "WheelCtrl"
+    })
+
+    .state('wheelLoose', {
+      url: "/wheel_loose",
+      templateUrl: "templates/wheel_loose.html",
+      controller: "WheelCtrl"
+    })
+
+    .state('fin', {
+      url: "/fin",
+      templateUrl: "templates/fin.html",
+      controller: "FinCtrl"
     })
 
 

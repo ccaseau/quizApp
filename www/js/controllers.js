@@ -1,48 +1,128 @@
+// COMMENTER ET NETTOYER LE CODE INUTILE + RENDRE PLUS PROPRE SI POSSIBLE
+
 var app = angular.module('quizApp.controllers', []);
 
     // Controller de la page home
     app.controller('HomeCtrl', function ($scope, $ionicModal) {
-
     console.log("vous êtes sur la page home");
     });
 
     // Controller de la page question
-    app.controller('QstCtrl', function ($scope, $ionicModal,$location,$state,ManageScore, $state, $ionicPopover,QuestionsDataService,ReponsesDataService) {
+    app.controller('QstCtrl', function ($scope,$interval,$filter, $ionicModal,$location,$state,ManageScore, $state, $ionicPopover,QuestionsDataService,ReponsesDataService,ngProgressFactory) {
 
-      $scope.question = [];
-      $scope.question.reponse = [];
-      $scope.$on('$ionicView.enter', function(e) {
-        QuestionsDataService.getAll(function(data){
-          $scope.question = data;
-        })
-
-        ReponsesDataService.getAll(function(data){
-          $scope.question.reponse = data;
-        })
-      })
-
-      // $scope.question = [
-      //   {
-      //     id: 1,
-      //     path:'img/norvege.png',
-      //     intitule: 'Quel pays n’a pas adhéré à l’Union Européenne ?',
-      //     bonneRep: "Norvege",
-      //     reponse: nom = [
-      //             "Suede",
-      //             "Angleterre",
-      //             "France",
-      //             "Norvege"
-      //       ],
-      //         explication :"Par deux fois, en 1972 et 1994 et par voie référendaire, le peuple norvégien a refusé l'adhésion du pays à l'Union européenne. La première fois, elle aurait pu adhérer à l'Union en même temps que le Danemark, l'Irlande et le Royaume-Uni, la deuxième fois en même temps que l'Autriche, la Finlande et la Suède. La Norvège est avec l'Islande le seul pays scandinave à ne pas faire partie de l’Union européenne."
-      //   }
-
-      //]
-
+      //Variables
       $scope.count = 0; //Variable pour incrémenter l'id de la question qui doit s'afficher
       $scope.score = ManageScore.init(); //On utilise le service ManageScore pour que le score de l'utilisateur soit accessible de toute les pages
       $scope.isActive = false;
       $scope.rightAnswer = false; //variable pour savoir si l'utilisateur à répondu juste ou faux
+      $scope.timeout = false;
+      $scope.viewReponse = false;
 
+      //****Timer**** Plugin progressbar.js
+      $scope.timeQst = 5;
+      $scope.time = 20;
+
+
+      var barQuestion = new ProgressBar.Line('#barQuestion', {
+      from: { color: '#97CE68'},
+      to: { color: '#97CE68'},
+      duration: $scope.timeQst * 1000,
+      strokeWidth: 2.5,
+      trailColor: '#818C8E',
+      trailWidth: 2.5,
+      step: function(state,barQuestion, attachment) {
+      barQuestion.path.setAttribute('stroke', state.color);
+      },
+    });
+
+      var barReponse = new ProgressBar.Line('#barReponse', {
+      from: { color: '#97CE68'},
+      to: { color: '#E3000E'},
+      duration: $scope.time*1000,
+      strokeWidth: 2.5,
+      trailColor: '#818C8E',
+      trailWidth: 2.5,
+      step: function(state,barReponse, attachment) {
+          barReponse.path.setAttribute('stroke', state.color);
+      },
+    });
+
+      //Timer temps de réponse ****
+        $scope.StopTimer = function () {
+          //Cancel the Timer.
+            if (angular.isDefined($scope.Timer)) {
+              $interval.cancel($scope.Timer);
+            }
+        };
+
+        $scope.StartTimer = function () {
+        //Le timer tourne toute les secondes (1000 ms)
+          $scope.Timer = $interval(function () {
+              $scope.time = $scope.time - 1;
+                   if ($scope.time == 0)
+                   {
+                     $scope.StopTimer();
+                     $scope.openModal();
+                     $scope.timeout = true;
+                   }
+
+               }, 1000);
+           };
+      //***********
+
+      //Timer temps de question ****
+        $scope.StopTimerQst = function () {
+          //Cancel the Timer.
+            if (angular.isDefined($scope.TimerQst)) {
+              $interval.cancel($scope.TimerQst);
+            }
+        };
+
+        $scope.StartTimerQst = function () {
+        //Initialize the Timer to run every 1000 milliseconds i.e. one second.
+          $scope.TimerQst = $interval(function () {
+              $scope.timeQst = $scope.timeQst - 1;
+                   if ($scope.timeQst == 0)
+                   {
+                     $scope.StopTimerQst();
+                   }
+
+               }, 1000);
+           };
+      //T***********
+
+      $scope.question = [];
+      $scope.question.reponse = [];
+
+      $scope.$on('$ionicView.enter', function(e) {
+
+          $scope.StartTimerQst();
+
+          barQuestion.animate(1);
+          setTimeout(function()
+          {
+            $scope.StartTimer();
+            barReponse.animate(1);  // Number from 0.0 to 1.0
+            $scope.viewReponse = true;
+          },5000);
+
+          QuestionsDataService.getAll(function(data){
+          //On rempli nos $scope avec les questions de la base de donnée
+          $scope.question = data;
+          //On gére le pourcentage de la barre en fonction du nombre de questions (100% divisé par le nombre de question dans notre bdd)
+          var size = data.length;
+          console.log(size)
+          $scope.pourcentage = 100 / (size);
+          $scope.progression = $scope.pourcentage;
+          $scope.progressbar = ngProgressFactory.createInstance();
+          $scope.progressbar.set($scope.progression);
+        })
+        ReponsesDataService.getAll(function(data){
+        //On rempli nos $scope avec les reponses de la base de donnée
+        $scope.question.reponse = data;
+
+      })
+    })
 
       // Fonction qui charge la question suivante en incrémentant un compteur
       $scope.getNextQuestion = function() {
@@ -53,7 +133,9 @@ var app = angular.module('quizApp.controllers', []);
         }
 
         else {
+
             $location.path("form");
+
         }
 
           $scope.closeModal();
@@ -72,12 +154,56 @@ var app = angular.module('quizApp.controllers', []);
 
         //Ouvrir les explications
         $scope.openModal = function() {
-          $scope.modal.show();
+
+          $scope.modal.show().then(function() {
+            $scope.viewReponse = false;
+          })
+          //On gere la couleur de fond des explications : rouge si c'est faux ou trop tard, vert ci c'est juste
+          var ModalSelect = angular.element(document.getElementById('explication-modal'));
+          if ($scope.rightAnswer)
+          {
+            ModalSelect.addClass('ModalTrue');
+            ModalSelect.removeClass('ModalFalse');
+          }
+          else
+          {
+            ModalSelect.addClass('ModalFalse');
+            ModalSelect.removeClass('ModalTrue');
+          }
+
+            $scope.StopTimer();
+            barReponse.set(0);
+            barQuestion.set(0);
+            $scope.timeQst = 5;
         };
 
         //Fermer les explications
         $scope.closeModal = function() {
-          $scope.modal.hide();
+          barQuestion.animate(1);
+          $scope.StartTimerQst();
+          setTimeout(function()
+          {
+            $scope.viewReponse = true;
+            $scope.StartTimer();
+            $scope.time = 20;
+            barReponse.animate(1);
+
+          },5000);
+
+          $scope.modal.hide().then(function() {
+            //On augmente le pourcentage de la barre de progression
+            $scope.progression = $scope.progression +$scope.pourcentage;
+            $scope.progressbar.set($scope.progression);
+
+            //Si la progression est à 100% on doit faire disparaitre la barre.
+            if ($scope.progression > 100)
+            {
+                $scope.progressbar.complete();
+            }
+            //On remet nos booléen à 0 pour tester la prochaine question
+            $scope.timeout = false;
+            $scope.rightAnswer = false;
+          });
         };
 
       // Fonction pour le changement de couleur des boutons
@@ -113,21 +239,39 @@ var app = angular.module('quizApp.controllers', []);
             $scope.rightAnswer = false;
         }
 
-        //Dans tous les cas on doit changer la couleur des boutons
+        //Dans tous les cas on doit changer la couleur des boutons en orange
         $scope.toggleActive();
 
+        //Puis changer en vert ou rouge
+        setTimeout(function()
+        {
+          boutonSelect.removeClass('button-energized');
+
+          if ($scope.rightAnswer)
+          {
+            boutonSelect.addClass('button-balanced');
+          }
+
+          else
+          {
+            boutonSelect.addClass('button-assertive');
+          }
+
+
+        },600);
         //Puis afficher les explications
         setTimeout(function()
         {
           $scope.openModal();
 
-        },300);
+        },1100);
 
         setTimeout(function()
         {
-          boutonSelect.removeClass('button-energized');
+          boutonSelect.removeClass('button-balanced');
+          boutonSelect.removeClass('button-assertive');
           boutonSelect.addClass('button-dark');
-        },500);
+        },2000);
 
       };
 
@@ -202,10 +346,13 @@ var app = angular.module('quizApp.controllers', []);
         if (winningSegment.text == 0)
         {
           $scope.wheelLoose = true;
+          $state.go('wheelLoose');
+
         }
 
         else {
           $scope.wheelWin = true;
+          $state.go('wheelWin');
         }
 
        // On transforme la couleur des quartiers non gagnant en gris
@@ -231,13 +378,14 @@ var app = angular.module('quizApp.controllers', []);
         {
             $scope.spinWheel.startAnimation()
             $scope.canSpin = false;
+
             //Une fois l'animation terminée on appelle notre fonction alertPrize()
             setTimeout(function()
             {
               alertPrize();
-              $state.reload();//On recharge la page avec le nouvel affichage
 
-            },$scope.time); //$scope.time contient la durée de l'animation
+
+            },$scope.time+1500); //$scope.time contient la durée de l'animation
 
         }
       }
@@ -269,8 +417,8 @@ var app = angular.module('quizApp.controllers', []);
          if (!$scope.user_exist) {
           //on fait appel au service UsersData
           UsersDataService.createUser($scope.users);
-          //On recharge la page
-          $state.reload();
+          //On charge la page suivante
+          $location.path('wheel');
           $scope.error = '';
         }
 
@@ -278,25 +426,9 @@ var app = angular.module('quizApp.controllers', []);
         {
           $scope.error = "L'adresse mail que vous avez entrée est déja utilisée!";
         }
-
        }
 
-
-
      });
-
-        // console.log($scope.user_exist);
-        // if($scope.user_exist == 1)
-        // {
-        //   console.log ("cet utilisateur existe déja")
-        // }
-        //
-        // else {
-        //   console.log ("cet utilisateur n'existe pas")
-        // }
-        //
-
-
     }
 
       $scope.delete = function(id) {
@@ -306,3 +438,17 @@ var app = angular.module('quizApp.controllers', []);
         $state.reload();
         }
   })
+
+  //Controller pour la page Fin
+  app.controller('FinCtrl', function ($scope, $ionicModal,$location,$state)
+  {
+    $scope.$on('$ionicView.enter', function(e) {
+      setTimeout(function()
+      {
+        $state.go('home');
+        console.log("retour à la page home !")
+
+      },5000);
+
+    })
+  });
