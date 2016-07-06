@@ -23,6 +23,26 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 
 
 // CSS personnalisé
+ion-view
+{
+  background-image: url("../img/background.png")!important;
+  background-repeat: no-repeat;
+  background-size : 100% auto;
+}
+
+.button-big
+{
+  margin-top:30px;
+  height:70px;
+  width:200px;
+  font-size: 200%;
+  font-weight:bold;
+}
+
+#main-title
+{
+  margin-bottom:40px;
+}
 
 //Variables
 $background_color:#EEEEEE;
@@ -75,6 +95,19 @@ h3
 
 }
 
+h2
+{
+
+  @media screen and (orientation:portrait){
+    font-size: 1.9vh;
+  }
+
+  @media screen and (orientation:landscape){
+    font-size: 2.5vw;
+  }
+
+}
+
 .col-50
 {
   margin-bottom: -20px!important;
@@ -98,6 +131,18 @@ ion-modal-view {
   height: 100%;
   top: 0 !important;
   left: 0 !important;
+  background-repeat: no-repeat;
+  background-size : 100% auto;
+}
+
+.ModalTrue
+{
+  background-image: url("../img/background-true.png")!important;
+}
+
+.ModalFalse
+{
+  background-image: url("../img/background-false.png")!important;
 }
 
 span
@@ -134,15 +179,11 @@ span
     z-index: 999;
 }
 
-.win
+.white
 {
-  color:#26A65B
+  color:white
 }
 
-.loose
-{
-  color:#D91E18
-}
 
 h1
 {
@@ -156,16 +197,13 @@ h1
   color:#D91E18
 }
 
-.flexcontainer
+.wrap
 {
-  list-style: none;
-   margin: 0;
-   padding: 10;
-   display: -webkit-flex; /* NEW */
-   display: flex;
-   -webkit-flex-wrap: wrap; /* NEW */
-   flex-wrap: wrap;
+     flex-wrap: wrap;
+     -webkit-flex-wrap: wrap;
 }
+
+
 
   //Pour rendre la roue la plus responsive que possible -> à ameliorer
   .scalingWheel{
@@ -246,15 +284,6 @@ h1
     padding-left:10px;
   }
 
-  .button-form
-  {
-    margin-top: 10px!important;
-    width:120px!important;
-    min-height:20px!important;
-    height:40px;
-    font-size:20px;
-  }
-
   .item
   {
     height: 35px;
@@ -272,6 +301,8 @@ h1
   {
     padding-top:-5px;
     margin-top:-8px;
+    width: 200px;
+    font-size:0px!important;
   }
 
   .input-label
@@ -283,6 +314,14 @@ h1
   {
     font-size:14px!important;
   }
+
+  form
+  {
+    margin-top:0px;
+    padding-left : 1.5vw!important;
+    padding-right: 1.5vw!important;
+  }
+
 
   .radio-icon {
     font-size:14px!important;
@@ -330,4 +369,92 @@ label.item.has-error {
 
 .no-errors {
   border-bottom: 2px solid green;
+}
+
+
+#pourcentage
+{
+  position:fixed;
+  bottom:0!important;
+  left:0!important;
+}
+
+#pourcentage h3
+{
+  color:#3498db!important;
+}
+
+.ion-sad
+{
+  color:white!important;
+  font-size:180px!important;
+}
+
+.ion-happy
+{
+  color:white!important;
+  font-size:180px!important;
+}
+
+.ion-clock
+{
+  color:white!important;
+  font-size:180px!important;
+}
+
+#barReponse{
+    padding:15px 10%;
+    margin-bottom : 5px;
+    height:40px;
+}
+
+#barReponse> svg {
+    width: 100%;
+    display: block;
+
+}
+
+#barQuestion{
+    padding:15px 10%;
+    margin-bottom : 5px;
+    height:40px;
+}
+
+#barQuestion> svg {
+    width: 100%;
+    display: block;
+}
+
+.progressbar_label
+{
+  font-size:25px;
+  font-weight: bold;
+  text-align:right;
+  color:#818C8E;
+
+}
+
+//Animations
+.fade.ng-hide {
+  opacity: 0;
+}
+
+.fade.ng-hide-remove,
+.fade.ng-hide-add {
+  display: block !important;
+}
+
+.fade.ng-hide-remove {
+  transition: all linear 0.3s;
+}
+
+.base-class {
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.3s;
+  margin-top:30px!important;
+}
+
+.base-class.my-class {
+  color: black;
+  font-size:3.2em;
+  font-weight:bolder;
 }

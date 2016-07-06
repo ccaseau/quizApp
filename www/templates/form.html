@@ -2,10 +2,11 @@
   <ion-content>
     <div class="row row-center row-responsive-lg ">
       <div class="col text-center">
-          <h2>Merci d'avoir répondu à notre questionnaire</h2>
-          <h4>Tu souhaites en savoir plus sur le programme ERASMUS ? Complète ce formulaire et tente de gagner un des lots mis en jeu</h4>
+          <h4>Tu souhaites en savoir plus sur le programme ERASMUS ?
+          <br>Complète ce formulaire et tente de gagner un des lots mis en jeu !</h4>
           <!-- <div class="col-80 col-offset-10"> -->
         <div class="col ">
+          <div class="col ">
           <form name ="form_user" ng-submit="save(form_user)" class="list list-stacked" novalidate="">
             <label class="item item-input"
               ng-class="{ 'has-errors' : form_user.email.$invalid && form_user.$submitted, 'no-errors' : form_user.email.$valid && form_user.$submitted}">
@@ -103,13 +104,17 @@
                  {{error}}
                </div>
 
-               <button type="submit" class="button button-energized button-form">Valider </button>
+            <button type="submit" class="button button-energized button-big">Valider </button>
+
             </form>
-            <h5> Utilisateurs enregistrés </h5>
+
+          </div>
+
+            <!-- <h5> Utilisateurs enregistrés </h5>
             <div ng-repeat="d in datas">
              {{d.mail}} / {{d.age}} / {{d.formation}} / {{d.code}} / {{d.tel}} / {{d.sexe}} / {{d.info}}
              <button ng-click = "delete(d.id)">x</button>
-            </div>
+            </div> -->
       </div>
     </div>
   </div>
