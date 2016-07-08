@@ -40,6 +40,7 @@ app.factory('QuestionsDataService', function ($cordovaSQLite, $ionicPlatform) {
   }
 })
 
+//Table Reponses
 app.factory('ReponsesDataService', function ($cordovaSQLite, $ionicPlatform) {
 
   return {
@@ -107,5 +108,25 @@ app.factory('UsersDataService', function ($cordovaSQLite, $ionicPlatform) {
 
          })
      }
+  }
+})
+
+//Table Themes
+app.factory('ThemesDataService', function ($cordovaSQLite, $ionicPlatform, $http) {
+
+  return {
+
+    //Retourner les utilisateurs déja présent dans la base de donnée
+    getAll: function(callback){
+         $ionicPlatform.ready(function () {
+           $cordovaSQLite.execute(db, 'SELECT * FROM Themes').then(function (results) {
+             var data = []
+             for (i = 0, max = results.rows.length; i < max; i++) {
+               data.push(results.rows.item(i))
+             }
+             callback(data)
+           })
+        })
+      },
   }
 })

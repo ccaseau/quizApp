@@ -21,11 +21,10 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
 
-
 // CSS personnalisé
 ion-view
 {
-  background-image: url("../img/background.png")!important;
+  background-image: url($background_img)!important;
   background-repeat: no-repeat;
   background-size : 100% auto;
 }
@@ -42,6 +41,7 @@ ion-view
 #main-title
 {
   margin-bottom:40px;
+  color : $text-color;
 }
 
 //Variables
@@ -55,6 +55,11 @@ ion-view
 a
 {
   text-decoration: none;
+}
+
+p
+{
+  color:$text-color!important;
 }
 
 .row-center, .scroll {
@@ -71,17 +76,18 @@ a
 {
   margin-bottom:-20px;
   @media screen and (orientation:portrait){
-      width:50vh;
+      width:42vh;
   }
 
   @media screen and (orientation:landscape){
-      width:50vw;
+      width:42vw;
   }
 
 }
 
 h3
 {
+  color :$text-color;
   padding: 0 15px 15px 15px;
 
 
@@ -95,9 +101,15 @@ h3
 
 }
 
+h4
+{
+  color:$text-color;
+}
+
 h2
 {
 
+  color :$text-color;
   @media screen and (orientation:portrait){
     font-size: 1.9vh;
   }
@@ -163,6 +175,7 @@ span
     width : 500px;
     margin-left: auto;
     margin-right:auto;
+    margin-top:80px;
 
 }
 
@@ -187,6 +200,7 @@ span
 
 h1
 {
+  color :$text-color;
   font-size:2em;
 }
 
@@ -202,8 +216,6 @@ h1
      flex-wrap: wrap;
      -webkit-flex-wrap: wrap;
 }
-
-
 
   //Pour rendre la roue la plus responsive que possible -> à ameliorer
   .scalingWheel{
@@ -278,7 +290,7 @@ h1
 
   }
 
-  form{
+  form {
     margin-top: 20px;
     padding-right:10px;
     padding-left:10px;
@@ -350,7 +362,7 @@ label.item.has-error {
   font-family: "Arial Black", Gadget, sans-serif;
   font-size: 9px;
   text-transform: uppercase;
-  color: #555;
+  color: $text-color;
 }
 
 .error i {
@@ -381,7 +393,7 @@ label.item.has-error {
 
 #pourcentage h3
 {
-  color:#3498db!important;
+  color:$color_bar!important;
 }
 
 .ion-sad
@@ -405,7 +417,7 @@ label.item.has-error {
 #barReponse{
     padding:15px 10%;
     margin-bottom : 5px;
-    height:40px;
+    height:60px;
 }
 
 #barReponse> svg {
@@ -414,10 +426,39 @@ label.item.has-error {
 
 }
 
+/* Styling for the ngProgress itself */
+#ngProgress {
+    margin: 0;
+    padding: 0;
+    z-index: 99998;
+    background-color: $color_bar !important;
+    color : $color_bar;
+    box-shadow: 0 0 10px 0; /* Inherits the font color */
+    height: 18px!important;
+    opacity: 0;
+    /* Add CSS3 styles for transition smoothing */
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+}
+
+/* Styling for the ngProgress-container */
+#ngProgress-container {
+    position: fixed;
+    margin: 0;
+    padding: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 99999;
+}
+
+
 #barQuestion{
     padding:15px 10%;
     margin-bottom : 5px;
-    height:40px;
+    height:60px;
 }
 
 #barQuestion> svg {
@@ -431,7 +472,6 @@ label.item.has-error {
   font-weight: bold;
   text-align:right;
   color:#818C8E;
-
 }
 
 //Animations
@@ -454,7 +494,12 @@ label.item.has-error {
 }
 
 .base-class.my-class {
-  color: black;
+  color: $text-color;
   font-size:3.2em;
   font-weight:bolder;
+}
+
+#score
+{
+  color:$energized;
 }

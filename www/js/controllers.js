@@ -2,10 +2,26 @@
 
 var app = angular.module('quizApp.controllers', []);
 
-    // Controller de la page home
-    app.controller('HomeCtrl', function ($scope, $ionicModal) {
-    console.log("vous êtes sur la page home");
+    app.controller('MainCtrl', function ($scope, $ionicModal,$state) {
+      console.log("Chargement de la bdd");
+      setTimeout(function()
+      {
+          $state.go('home');
+      },150);
+
     });
+
+    // Controller de la page home
+    app.controller('HomeCtrl', function ($scope, $ionicModal,ThemesDataService,$http) {
+      console.log("vous êtes sur la page home");
+      $scope.$on('$ionicView.enter', function(e) {
+          ThemesDataService.getAll(function(data){
+            //On rempli nos $scope avec les questions de la base de donnée
+            $scope.themes = data;
+            console.log(data);
+          });
+        });
+      });
 
     // Controller de la page question
     app.controller('QstCtrl', function ($scope,$interval,$filter, $ionicModal,$location,$state,ManageScore, $state, $ionicPopover,QuestionsDataService,ReponsesDataService,ngProgressFactory) {
@@ -21,7 +37,6 @@ var app = angular.module('quizApp.controllers', []);
       //****Timer**** Plugin progressbar.js
       $scope.timeQst = 5;
       $scope.time = 20;
-
 
       var barQuestion = new ProgressBar.Line('#barQuestion', {
       from: { color: '#97CE68'},
@@ -89,7 +104,7 @@ var app = angular.module('quizApp.controllers', []);
 
                }, 1000);
            };
-      //T***********
+      //************
 
       $scope.question = [];
       $scope.question.reponse = [];
@@ -97,8 +112,8 @@ var app = angular.module('quizApp.controllers', []);
       $scope.$on('$ionicView.enter', function(e) {
 
           $scope.StartTimerQst();
-
           barQuestion.animate(1);
+
           setTimeout(function()
           {
             $scope.StartTimer();
@@ -117,10 +132,10 @@ var app = angular.module('quizApp.controllers', []);
           $scope.progressbar = ngProgressFactory.createInstance();
           $scope.progressbar.set($scope.progression);
         })
+
         ReponsesDataService.getAll(function(data){
         //On rempli nos $scope avec les reponses de la base de donnée
         $scope.question.reponse = data;
-
       })
     })
 
@@ -128,14 +143,14 @@ var app = angular.module('quizApp.controllers', []);
       $scope.getNextQuestion = function() {
         $scope.toggleInactive();
 
-        if ($scope.count < $scope.question.length - 1){
+        if ($scope.count < $scope.question.length - 1)
+        {
             $scope.count = $scope.count + 1;
         }
 
-        else {
-
+        else
+        {
             $location.path("form");
-
         }
 
           $scope.closeModal();
@@ -155,9 +170,10 @@ var app = angular.module('quizApp.controllers', []);
         //Ouvrir les explications
         $scope.openModal = function() {
 
-          $scope.modal.show().then(function() {
-            $scope.viewReponse = false;
+            $scope.modal.show().then(function() {
+              $scope.viewReponse = false; //une fois la modal ouverte on fait disparaitre les reponses
           })
+
           //On gere la couleur de fond des explications : rouge si c'est faux ou trop tard, vert ci c'est juste
           var ModalSelect = angular.element(document.getElementById('explication-modal'));
           if ($scope.rightAnswer)
@@ -165,12 +181,14 @@ var app = angular.module('quizApp.controllers', []);
             ModalSelect.addClass('ModalTrue');
             ModalSelect.removeClass('ModalFalse');
           }
+
           else
           {
             ModalSelect.addClass('ModalFalse');
             ModalSelect.removeClass('ModalTrue');
           }
 
+            //On remet les timers à 0
             $scope.StopTimer();
             barReponse.set(0);
             barQuestion.set(0);
@@ -179,7 +197,7 @@ var app = angular.module('quizApp.controllers', []);
 
         //Fermer les explications
         $scope.closeModal = function() {
-          barQuestion.animate(1);
+          barQuestion.animate(1);//On lance le premier timer
           $scope.StartTimerQst();
           setTimeout(function()
           {
@@ -188,21 +206,22 @@ var app = angular.module('quizApp.controllers', []);
             $scope.time = 20;
             barReponse.animate(1);
 
-          },5000);
+          },5000); // On lance le 2eme timer 5s aprés la fermeture de la question
 
-          $scope.modal.hide().then(function() {
-            //On augmente le pourcentage de la barre de progression
-            $scope.progression = $scope.progression +$scope.pourcentage;
-            $scope.progressbar.set($scope.progression);
+            $scope.modal.hide().then(function() {
+              //On augmente le pourcentage de la barre de progression
+              $scope.progression = $scope.progression +$scope.pourcentage;
+              $scope.progressbar.set($scope.progression);
 
-            //Si la progression est à 100% on doit faire disparaitre la barre.
-            if ($scope.progression > 100)
-            {
-                $scope.progressbar.complete();
-            }
-            //On remet nos booléen à 0 pour tester la prochaine question
-            $scope.timeout = false;
-            $scope.rightAnswer = false;
+              //Si la progression est à 100% on doit faire disparaitre la barre.
+              if (parseInt($scope.progression) > 100 )
+              {
+                  $scope.progressbar.complete();
+              }
+
+              //On remet nos booléen à 0 pour tester la prochaine réponse de l'utilisateur
+              $scope.timeout = false;
+              $scope.rightAnswer = false;
           });
         };
 
@@ -215,7 +234,7 @@ var app = angular.module('quizApp.controllers', []);
         $scope.isActive = false;
       };
 
-      // Fonction qui test si la réponse donnée est juste et incrémente le score de l'utilisateur en fonction
+      // Fonction qui teste si la réponse donnée est juste et incrémente le score de l'utilisateur en fonction
       $scope.getAnswer = function(chosenAnswer,currentQuest,index) {
 
         //On recupere le bouton sur lequel on a cliqué et on le change de couleur
@@ -256,16 +275,16 @@ var app = angular.module('quizApp.controllers', []);
           {
             boutonSelect.addClass('button-assertive');
           }
-
-
         },600);
-        //Puis afficher les explications
+
+        //Puis afficher les explications quelques ms plus tard
         setTimeout(function()
         {
           $scope.openModal();
 
         },1100);
 
+        //Et enfin enlever la couleur du bouton pour qu'ils soient gris lorsque la prochaine question sera posée
         setTimeout(function()
         {
           boutonSelect.removeClass('button-balanced');
@@ -338,22 +357,23 @@ var app = angular.module('quizApp.controllers', []);
       function alertPrize()
       {
 
+        // On gere l'affichage rendu à l'utilisateur
+        setTimeout(function()
+        {
+          if (winningSegment.text == 0)
+          {
+            $scope.wheelLoose = true;
+            $state.go('wheelLoose');
+          }
+          else {
+            $scope.wheelWin = true;
+            $state.go('wheelWin');
+          }
+        },500);
+
         var winningSegment = $scope.spinWheel.getIndicatedSegment();
         var winningSegmentNb = $scope.spinWheel.getIndicatedSegmentNumber();
         var color = $scope.spinWheel.segments[winningSegmentNb].fillStyle;
-
-        // On gere l'affichage rendu à l'utilisateur (graçe à ng-show) => 'Perdu' si il tombe sur 0, 'Gagné' sinon
-        if (winningSegment.text == 0)
-        {
-          $scope.wheelLoose = true;
-          $state.go('wheelLoose');
-
-        }
-
-        else {
-          $scope.wheelWin = true;
-          $state.go('wheelWin');
-        }
 
        // On transforme la couleur des quartiers non gagnant en gris
        for (var x = 1; x < $scope.spinWheel.segments.length; x ++)
@@ -384,8 +404,7 @@ var app = angular.module('quizApp.controllers', []);
             {
               alertPrize();
 
-
-            },$scope.time+1500); //$scope.time contient la durée de l'animation
+            },$scope.time); //$scope.time contient la durée de l'animation. On veut que le prix soit indiqué une fois la roue arretée !
 
         }
       }
@@ -401,6 +420,7 @@ var app = angular.module('quizApp.controllers', []);
 
 
       $scope.$on('$ionicView.enter', function(e) {
+        //On récuperer les utilisateurs déja en base de donnée
         UsersDataService.getAll(function(data){
           $scope.datas = data
         })
