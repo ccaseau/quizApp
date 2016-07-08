@@ -4,9 +4,7 @@ var app = angular.module('quizApp', ['ionic','ionic.service.core','quizApp.contr
 // Database instance.
 var db;
 
-
-
-app.run(function($ionicPlatform, $cordovaSQLite, $rootScope) {
+app.run(function($ionicPlatform, $cordovaSQLite, $rootScope,ThemesDataService) {
 
   $ionicPlatform.ready(function() {
     // //Activer ionic analytics
@@ -59,18 +57,22 @@ app.run(function($ionicPlatform, $cordovaSQLite, $rootScope) {
     {
       console.log("La base n'a pas pu être supprimée");
     }
-
-    dbcopy();
-    //Décommenter la ligne si l'on veut supprimer la base
+    //Décommenter ou commenter la ligne de dessous en fonction de si l'on souhaite recopier la base ou garder la précédente.
     // dbremove();
+    dbcopy();
 
   })
 
 })
 
-
   app.config(function($stateProvider, $urlRouterProvider){
   	$stateProvider
+
+    .state('index', {
+  		url: "/index",
+  		templateUrl: "index.html",
+  		controller: "MainCtrl"
+  	})
 
   	.state('home', {
   		url: "/home",
@@ -117,5 +119,5 @@ app.run(function($ionicPlatform, $cordovaSQLite, $rootScope) {
 
 
     //Route par defaut -> à l'ouverture de index.html ou si le chemin est invalide
-  	$urlRouterProvider.otherwise('/home');
+  	$urlRouterProvider.otherwise('/index');
 })

@@ -1,22 +1,16 @@
 <ion-view view-title="Wheel">
-  <ion-header-bar class="bar-energized">
-    <h1 class="title">Instant gagnant</h1>
-  </ion-header-bar>
+
   <ion-content>
 
-    <div class="row row-center responsive-sm">
-      <div class="col " id="title">
-          <h2 class="text-center">Lancez la roue ...</h>
-          <h1 class="text-center win" ng-show="wheelWin">Vous avez gagné {{prize}}  </h1>
-          <h1 class="text-center loose" ng-show="wheelLoose">Vous avez perdu ... </h1>
-        </div>
-      <div class = "col text-center">
-        <div  class = "scalingWheel" id="canvasContainer" ng-click="spin()">
-          <canvas id="canvas" width="400" height="400"></canvas>
-          <img id="prizePointer" src="img/triangle-64.png" alt="V" />
-          </div>
+    <div class="row row-center">
+      <div class="col text-center">
+      <h2 class="text-center">Lancez la roue ...</h>
+      <div  class = "scalingWheel" id="canvasContainer" ng-click="spin()">
+        <canvas id="canvas" width="400" height="400"></canvas>
+        <img id="prizePointer" src="img/triangle-64.png" alt="V" />
       </div>
 
     </div>
+  </div>
   </ion-content>
 </ion-view>

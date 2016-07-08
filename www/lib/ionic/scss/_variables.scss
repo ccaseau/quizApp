@@ -1,3 +1,42 @@
+//Font import
+@font-face {
+  font-family: "Candal";
+  src: url('../fonts/Candal.ttf');
+}
+
+@font-face {
+  font-family: "Russo One";
+  src: url('../fonts/Russo+One.ttf');
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url('../fonts/Poppins.ttf');
+}
+
+@font-face {
+  font-family: "Lato";
+  src: url('../fonts/Lato.ttf');
+}
+
+@font-face {
+    font-family: "Lato";
+    src: url("../fonts/Lato-Bold.ttf");
+    font-weight: bold;
+}
+
+@import 'theme';
+
+//Les variables personalisées
+$background_img :                 map-get($theme,background)        ;
+$text-color :                     map-get($theme,color_text)        ;
+$energized:                       map-get($theme,color_btn)         ;
+$balanced:                        map-get($theme,color_right)       ;//Right color : vert !default
+$assertive:                       map-get($theme,color_false)       ;//Wrong color : rouge !default
+$color_bar:                       map-get($theme,color_bar)          ;
+$font-family-sans-serif:          '-apple-system', "Helvetica Neue", "Roboto", "Segoe UI", sans-serif !default; //pour le default
+$font-family-base:                map-get($theme,font)   ;//$font-family-sans-serif !default
+$dark:                            map-get($theme,color_btn_normal)   ;//#444 !default; couleur des boutons 'basique' => gris foncé
 
 // Colors
 // -------------------------------
@@ -6,21 +45,20 @@ $light:                           #fff !default;
 $stable:                          #f8f8f8 !default;
 $positive:                        #387ef5 !default;
 $calm:                            #11c1f3 !default;
-$balanced:                        #8cbf61 ;
-$energized:                       #E67E22 ;
-$assertive:                       #d6000d ;
+// $balanced:                        #8cbf61 ;
+// $energized:                       #E67E22 ;
+// $assertive:                       #d6000d ;
 $royal:                           #886aea !default;
-$dark:                            #444 !default;
 // Base
 // -------------------------------
 
-$font-family-sans-serif:           '-apple-system', "Helvetica Neue", "Roboto", "Segoe UI", sans-serif !default;
+// $font-family-sans-serif:           '-apple-system', "Helvetica Neue", "Roboto", "Segoe UI", sans-serif !default;
 
 $font-family-light-sans-serif:    '-apple-system', "HelveticaNeue-Light", "Roboto-Light", "Segoe UI-Light", sans-serif-light !default;
 $font-family-serif:               serif !default;
 $font-family-monospace:           monospace !default;
 
-$font-family-base:                $font-family-sans-serif !default;
+// $font-family-base:                $font-family-sans-serif !default;
 $font-size-base:                  14px !default;
 $font-size-large:                 18px !default;
 $font-size-small:                 11px !default;

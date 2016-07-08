@@ -2,6 +2,7 @@
   <ion-content>
     <div class="row row-center row-responsive-lg ">
       <div class="col text-center">
+        <h3 id="score">Bravo ! Ton score est de {{score}}/8 </h3>
           <h4>Tu souhaites en savoir plus sur le programme ERASMUS ?
           <br>Complète ce formulaire et tente de gagner un des lots mis en jeu !</h4>
           <!-- <div class="col-80 col-offset-10"> -->
@@ -98,7 +99,7 @@
               <ion-radio ng-model="users.sexe" ng-value="'Femme'">Femme</ion-radio>
               <ion-radio ng-model="users.sexe" ng-value="'Homme'">Homme</ion-radio>
             </div>
-             <ion-checkbox ng-init="users.info = false" ng-model="users.info">Je souhaite recevoir de l’information sur le programme Erasmus+</ion-checkbox>
+             <ion-checkbox ng-init="users.info = false" ng-model="users.info"><p>Je souhaite recevoir de l’information sur le programme Erasmus+</p></ion-checkbox>
              <div class="error-container">
                <div class="error">
                  {{error}}

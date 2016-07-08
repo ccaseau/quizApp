@@ -16,6 +16,7 @@
   "devDependencies": {
     "bower": "^1.3.3",
     "gulp-util": "^2.2.14",
+    "sassport": "^0.8.0",
     "shelljs": "^0.3.0"
   },
   "cordovaPlugins": [
