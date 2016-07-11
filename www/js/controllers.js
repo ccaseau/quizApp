@@ -1,8 +1,9 @@
-// COMMENTER ET NETTOYER LE CODE INUTILE + RENDRE PLUS PROPRE SI POSSIBLE
+// COMMENTER ET NETTOYER LE CODE INUTILE
 
 var app = angular.module('quizApp.controllers', []);
 
     app.controller('MainCtrl', function ($scope, $ionicModal,$state) {
+      //Avant de charger la page home on laisse quelques ms à l'application pour ouvrir la base de donnée
       console.log("Chargement de la bdd");
       setTimeout(function()
       {
@@ -10,13 +11,13 @@ var app = angular.module('quizApp.controllers', []);
       },150);
 
     });
-
     // Controller de la page home
     app.controller('HomeCtrl', function ($scope, $ionicModal,ThemesDataService,$http) {
       console.log("vous êtes sur la page home");
+
       $scope.$on('$ionicView.enter', function(e) {
           ThemesDataService.getAll(function(data){
-            //On rempli nos $scope avec les questions de la base de donnée
+            //On charge le theme de la base de donnée
             $scope.themes = data;
             console.log(data);
           });
@@ -31,13 +32,15 @@ var app = angular.module('quizApp.controllers', []);
       $scope.score = ManageScore.init(); //On utilise le service ManageScore pour que le score de l'utilisateur soit accessible de toute les pages
       $scope.isActive = false;
       $scope.rightAnswer = false; //variable pour savoir si l'utilisateur à répondu juste ou faux
-      $scope.timeout = false;
-      $scope.viewReponse = false;
+      $scope.timeout = false; //variable pour savoir si l'utilisateur n'a pas répondu a temps
+      $scope.viewReponse = false; //variable pour n'afficher les 4 propositions qu'aprés 5 secondes de timer
 
       //****Timer**** Plugin progressbar.js
-      $scope.timeQst = 5;
-      $scope.time = 20;
+      $scope.timeQst = 5; //On set à 5 secondes le timer pour lire la question
+      $scope.time = 20; //On set à 20 secondes pour répondre
 
+
+      //Timer pour lire la question
       var barQuestion = new ProgressBar.Line('#barQuestion', {
       from: { color: '#97CE68'},
       to: { color: '#97CE68'},
@@ -50,6 +53,7 @@ var app = angular.module('quizApp.controllers', []);
       },
     });
 
+      //Timer pour répondre à la question
       var barReponse = new ProgressBar.Line('#barReponse', {
       from: { color: '#97CE68'},
       to: { color: '#E3000E'},
@@ -87,14 +91,12 @@ var app = angular.module('quizApp.controllers', []);
 
       //Timer temps de question ****
         $scope.StopTimerQst = function () {
-          //Cancel the Timer.
             if (angular.isDefined($scope.TimerQst)) {
               $interval.cancel($scope.TimerQst);
             }
         };
 
         $scope.StartTimerQst = function () {
-        //Initialize the Timer to run every 1000 milliseconds i.e. one second.
           $scope.TimerQst = $interval(function () {
               $scope.timeQst = $scope.timeQst - 1;
                    if ($scope.timeQst == 0)
@@ -117,16 +119,16 @@ var app = angular.module('quizApp.controllers', []);
           setTimeout(function()
           {
             $scope.StartTimer();
-            barReponse.animate(1);  // Number from 0.0 to 1.0
+            barReponse.animate(1);
             $scope.viewReponse = true;
           },5000);
 
           QuestionsDataService.getAll(function(data){
           //On rempli nos $scope avec les questions de la base de donnée
           $scope.question = data;
-          //On gére le pourcentage de la barre en fonction du nombre de questions (100% divisé par le nombre de question dans notre bdd)
           var size = data.length;
-          console.log(size)
+          ManageScore.setTotal(size);
+          //On gére le pourcentage de la barre en fonction du nombre de questions (100% divisé par le nombre de question dans notre bdd)
           $scope.pourcentage = 100 / (size);
           $scope.progression = $scope.pourcentage;
           $scope.progressbar = ngProgressFactory.createInstance();
@@ -154,26 +156,23 @@ var app = angular.module('quizApp.controllers', []);
         }
 
           $scope.closeModal();
-
       };
 
-      //Fonction pour les explications
+      //**************Fonction pour les explications******************//
 
       //On genere notre modal à partir du template explications.html
       $ionicModal.fromTemplateUrl('explications.html', {
         scope: $scope,
-        animation: 'slide-in-up'
+        animation: 'slide-left-right'
         }).then(function(modal) {
           $scope.modal = modal;
         });
 
         //Ouvrir les explications
         $scope.openModal = function() {
-
-            $scope.modal.show().then(function() {
-              $scope.viewReponse = false; //une fois la modal ouverte on fait disparaitre les reponses
+          $scope.modal.show().then(function() {
+            $scope.viewReponse = false; //une fois la modal ouverte on fait disparaitre les reponses
           })
-
           //On gere la couleur de fond des explications : rouge si c'est faux ou trop tard, vert ci c'est juste
           var ModalSelect = angular.element(document.getElementById('explication-modal'));
           if ($scope.rightAnswer)
@@ -187,12 +186,11 @@ var app = angular.module('quizApp.controllers', []);
             ModalSelect.addClass('ModalFalse');
             ModalSelect.removeClass('ModalTrue');
           }
-
-            //On remet les timers à 0
-            $scope.StopTimer();
-            barReponse.set(0);
-            barQuestion.set(0);
-            $scope.timeQst = 5;
+          //On remet les timers à 0
+          $scope.StopTimer();
+          barReponse.set(0);
+          barQuestion.set(0);
+          $scope.timeQst = 5;
         };
 
         //Fermer les explications
@@ -218,7 +216,6 @@ var app = angular.module('quizApp.controllers', []);
               {
                   $scope.progressbar.complete();
               }
-
               //On remet nos booléen à 0 pour tester la prochaine réponse de l'utilisateur
               $scope.timeout = false;
               $scope.rightAnswer = false;
@@ -284,16 +281,14 @@ var app = angular.module('quizApp.controllers', []);
 
         },1100);
 
-        //Et enfin enlever la couleur du bouton pour qu'ils soient gris lorsque la prochaine question sera posée
+        //Et enfin enlever la couleur du bouton pour qu'il soit gris lorsque la prochaine question sera posée
         setTimeout(function()
         {
           boutonSelect.removeClass('button-balanced');
           boutonSelect.removeClass('button-assertive');
           boutonSelect.addClass('button-dark');
         },2000);
-
       };
-
     });
 
     //Controller de la page wheel
@@ -301,8 +296,8 @@ var app = angular.module('quizApp.controllers', []);
 
         //On utilise Winwheel.js (plugin javascript) pour parametrer une roue
         $scope.spinWheel = new Winwheel({
-            'numSegments'    : 21, //Nombre de quartiers => permet de parametrer le nombre de prix
-            'lineWidth'   : 0.000001,
+            'numSegments'    : 8, //Nombre de quartiers => permet de parametrer le nombre de prix
+            'lineWidth'   : 1,
             'textFillStyle' : 'white',
             'textFontSize' : 35,
             'innerRadius'     : 20,
@@ -317,20 +312,6 @@ var app = angular.module('quizApp.controllers', []);
                 {'fillStyle' : '#B7D06B', 'text' : '100'},
                 {'fillStyle' : '#2E2E2E', 'text' : '0'},
                 {'fillStyle' : '#B7D06B', 'text' : '100'},
-                {'fillStyle' : '#FFCC01', 'text' : '500'},
-                {'fillStyle' : '#2E2E2E', 'text' : '0'},
-                {'fillStyle' : '#EB7008', 'text' : '300'},
-                {'fillStyle' : '#BF1E2E', 'text' : '30'},
-                {'fillStyle' : '#2E2E2E', 'text' : '0'},
-                {'fillStyle' : '#903288', 'text' : '20'},
-                {'fillStyle' : '#675CA1', 'text' : '200'},
-                {'fillStyle' : '#2E2E2E', 'text' : '0'},
-                {'fillStyle' : '#B7D06B', 'text' : '100'},
-                {'fillStyle' : '#FFCC01', 'text' : '500'},
-                {'fillStyle' : '#2E2E2E', 'text' : '0'},
-                {'fillStyle' : '#EB7008', 'text' : '300'},
-                {'fillStyle' : '#BF1E2E', 'text' : '30'},
-
             ],
             'animation' :
             {
@@ -356,7 +337,6 @@ var app = angular.module('quizApp.controllers', []);
       //Fonction pour indiquer à l'utilisateur le quartier sur lequel la roue s'est arretée
       function alertPrize()
       {
-
         // On gere l'affichage rendu à l'utilisateur
         setTimeout(function()
         {
@@ -415,9 +395,9 @@ var app = angular.module('quizApp.controllers', []);
     app.controller('FormCtrl', function ($scope, $ionicModal,$stateParams, $location, $state, ManageScore, $cordovaSQLite, $ionicPlatform,UsersDataService) {
 
     $scope.score = ManageScore.init();
+    $scope.total = ManageScore.getTotal();
     $scope.datas = [];
     $scope.users = [];
-
 
       $scope.$on('$ionicView.enter', function(e) {
         //On récuperer les utilisateurs déja en base de donnée
@@ -426,31 +406,32 @@ var app = angular.module('quizApp.controllers', []);
         })
       })
 
+    //Fonction pour sauver en base de donnée les informations entrées dans le formulaire
     $scope.save = function(form_user) {
 
+      //On doit verifier que quelqu'un avec la même adresse mail n'est pas deja inscrit
       UsersDataService.getSameMail($scope.users.mail, function(item){
-       $scope.user_exist = item;
-       console.log($scope.user_exist);
+        $scope.user_exist = item;
 
        if (form_user.$valid)
        {
          if (!$scope.user_exist) {
-          //on fait appel au service UsersData
+         //Si le formulaire et valide et que c'est un nouveau mail : on fait appel au service UsersData pour rajouter une entrée dans la bdd
           UsersDataService.createUser($scope.users);
           //On charge la page suivante
           $location.path('wheel');
           $scope.error = '';
         }
-
         else
         {
+          //Gestion de l'affichage dans le cas ou le mail existe déja
           $scope.error = "L'adresse mail que vous avez entrée est déja utilisée!";
         }
        }
 
      });
     }
-
+      //Fonction utilie pour les test permettant de supprimer un utilisateur de la bdd
       $scope.delete = function(id) {
         //on fait appel au service UsersData
         UsersDataService.deleteUser(id);
@@ -462,6 +443,7 @@ var app = angular.module('quizApp.controllers', []);
   //Controller pour la page Fin
   app.controller('FinCtrl', function ($scope, $ionicModal,$location,$state)
   {
+    //Apés 5 secondes on retourne à la page home
     $scope.$on('$ionicView.enter', function(e) {
       setTimeout(function()
       {

@@ -2,9 +2,9 @@
   <ion-content>
     <div class="row row-center row-responsive-lg ">
       <div class="col text-center">
-        <h3 id="score">Bravo ! Ton score est de {{score}}/8 </h3>
+        <h1 id="score">Bravo ! Ton score est de {{score}}/{{total}}! </h1>
           <h4>Tu souhaites en savoir plus sur le programme ERASMUS ?
-          <br>Complète ce formulaire et tente de gagner un des lots mis en jeu !</h4>
+          Complète ce formulaire et tente de gagner un des lots mis en jeu !</h4>
           <!-- <div class="col-80 col-offset-10"> -->
         <div class="col ">
           <div class="col ">
@@ -104,18 +104,15 @@
                <div class="error">
                  {{error}}
                </div>
-
             <button type="submit" class="button button-energized button-big">Valider </button>
 
             </form>
-
           </div>
-
-            <!-- <h5> Utilisateurs enregistrés </h5>
+          <h5> Utilisateurs enregistrés </h5>
             <div ng-repeat="d in datas">
              {{d.mail}} / {{d.age}} / {{d.formation}} / {{d.code}} / {{d.tel}} / {{d.sexe}} / {{d.info}}
              <button ng-click = "delete(d.id)">x</button>
-            </div> -->
+            </div>
       </div>
     </div>
   </div>

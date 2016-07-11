@@ -1,11 +1,23 @@
 var app = angular.module('quizApp.services', ['ngCordova']);
 
-//Service permettant le partage du score entre la page question et la page de formulaire
+//Service permettant le partage du score et du nb de question entre toutes les pages
 app.factory('ManageScore', function(){
 
   var myScore = 0;
+  var total = 0;
 
-  return{
+  return {
+
+    setTotal: function(size)
+    {
+      total = size;
+    },
+
+    getTotal: function()
+    {
+      return total;
+    },
+
     init: function()
     {
       return myScore;
@@ -13,7 +25,7 @@ app.factory('ManageScore', function(){
     add: function()
     {
       myScore = myScore + 1;
-      return myScore
+      return myScore;
     },
   }
 })
@@ -25,7 +37,7 @@ app.factory('QuestionsDataService', function ($cordovaSQLite, $ionicPlatform) {
 
   return {
 
-    //Retourner les utilisateurs déja présent dans la base de donnée
+    //Retourner les questions de la base de donnée
     getAll: function(callback){
          $ionicPlatform.ready(function () {
            $cordovaSQLite.execute(db, 'SELECT * FROM Questions').then(function (results) {
@@ -45,7 +57,7 @@ app.factory('ReponsesDataService', function ($cordovaSQLite, $ionicPlatform) {
 
   return {
 
-    //Retourner les utilisateurs déja présent dans la base de donnée
+    //Retourner les réponses de la base de donnée
     getAll: function(callback){
          $ionicPlatform.ready(function () {
            $cordovaSQLite.execute(db, 'SELECT * FROM Reponses').then(function (results) {
@@ -116,7 +128,7 @@ app.factory('ThemesDataService', function ($cordovaSQLite, $ionicPlatform, $http
 
   return {
 
-    //Retourner les utilisateurs déja présent dans la base de donnée
+    //Retourner le théme dans la bdd
     getAll: function(callback){
          $ionicPlatform.ready(function () {
            $cordovaSQLite.execute(db, 'SELECT * FROM Themes').then(function (results) {

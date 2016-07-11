@@ -7,17 +7,36 @@ var minifyCss = require('gulp-minify-css');
 var rename = require('gulp-rename');
 var sh = require('shelljs');
 var paths = {
-  sass: ['./scss/**/*.scss']
+  sass: ['./scss/**/*.scss'],
+  db :['./www/*.db'],
+  json : ['theme.json'],
+  varsass : ['./www/lib/ionic/scss/theme.scss']
 };
+
 var jsonSass = require('json-sass');
 var source = require('vinyl-source-stream');
 var fs = require('fs');
+var SqliteToJson = require('sqlite-to-json');
+var sqlite3 = require('sqlite3');
+var exporter = new SqliteToJson({
+  client: new sqlite3.Database('./www/data3.db')
+});
 
-json-sass.convertJs(jsValue)
+gulp.task('default', ['sass','load_theme','export_theme']);
 
-gulp.task('default', ['sass','theme']);
+gulp.task('load_theme', function() {
+  return exporter.save('Themes', 'theme.json', function (err) {
+    if (err) {
+      console.log(err.message);
+    }
+    else {
+      console.log("La table themes a été enregistrée dans le fichier theme.json");
+    }
+  });
+});
 
-gulp.task('theme', function() {
+gulp.task('export_theme',['load_theme'], function() {
+  console.log("Le fichier theme.json a été exporté en scss");
   return fs.createReadStream('theme.json')
     .pipe(jsonSass({
       prefix: '$theme: ',
@@ -42,7 +61,10 @@ gulp.task('sass', function(done) {
 });
 
 gulp.task('watch', function() {
+  gulp.watch(paths.db, ['load_theme']);
+  gulp.watch(paths.json, ['export_theme']);
   gulp.watch(paths.sass, ['sass']);
+  gulp.watch(paths.varsass, ['sass']);
 });
 
 gulp.task('install', ['git-check'], function() {

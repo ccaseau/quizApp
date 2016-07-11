@@ -1,10 +1,1 @@
-{
-    "background": "'../img/backgroundlight.png'",
-    "font": "'Candal'",
-    "color_btn": "#9365B8",
-    "color_right": "#8cbf61",
-    "color_false": "#d6000d",
-    "color_btn_normal":"#28324E",
-    "color_text": "#28324E",
-    "color_bar": "#F62459"
-}
+[{"background":"'../img/backgroundlight.png'","font":"'Poppins'","color_btn":"#E67E22","color_right":"#8ec161","color_false":"#d3000d","color_btn_normal":"#28324E","color_text":"black","color_bar":"#E67E22","background_true":"'../img/background-true.png'","background_false":"'../img/background-false.png'"}]
