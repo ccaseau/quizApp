@@ -111,7 +111,7 @@ h2
 
   color :$text-color;
   @media screen and (orientation:portrait){
-    font-size: 1.9vh;
+    font-size: 2.4vh;
   }
 
   @media screen and (orientation:landscape){
@@ -149,12 +149,12 @@ ion-modal-view {
 
 .ModalTrue
 {
-  background-image: url("../img/background-true.png")!important;
+  background-image: url($background-true)!important;
 }
 
 .ModalFalse
 {
-  background-image: url("../img/background-false.png")!important;
+  background-image: url($background-false)!important;
 }
 
 span
@@ -432,8 +432,8 @@ label.item.has-error {
     padding: 0;
     z-index: 99998;
     background-color: $color_bar !important;
-    color : $color_bar;
-    box-shadow: 0 0 10px 0; /* Inherits the font color */
+    color : lighten($color_bar, 20%)!important;
+    box-shadow: 0px 0px 10px 2px!important; /* Inherits the font color */
     height: 18px!important;
     opacity: 0;
     /* Add CSS3 styles for transition smoothing */

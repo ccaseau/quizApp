@@ -15,6 +15,11 @@
 }
 
 @font-face {
+  font-family: "Acme";
+  src: url('../fonts/Acme.ttf');
+}
+
+@font-face {
   font-family: "Lato";
   src: url('../fonts/Lato.ttf');
 }
@@ -37,7 +42,8 @@ $color_bar:                       map-get($theme,color_bar)          ;
 $font-family-sans-serif:          '-apple-system', "Helvetica Neue", "Roboto", "Segoe UI", sans-serif !default; //pour le default
 $font-family-base:                map-get($theme,font)   ;//$font-family-sans-serif !default
 $dark:                            map-get($theme,color_btn_normal)   ;//#444 !default; couleur des boutons 'basique' => gris foncé
-
+$background-true:                 map-get($theme,background_true)    ;
+$background-false:                map-get($theme,background_false)   ;
 // Colors
 // -------------------------------
 
