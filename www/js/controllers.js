@@ -322,7 +322,7 @@ var app = angular.module('quizApp.controllers', []);
             $scope.background_explication = $scope.true;
           }
 
-          else (!$scope.rightAnswer)
+          else 
           {
               $scope.color_btn_normal[index]= $scope.false;
               $scope.background_explication = $scope.false;
