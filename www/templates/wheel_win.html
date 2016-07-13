@@ -1,14 +1,14 @@
-<ion-view view-title="WheelWin">
+<ion-view ng-style = "background_img" view-title="WheelWin">
 
   <ion-content>
 
     <div class="row row-center text-center responsive-sm">
       <div class="col ">
-        <h1 class="text-center win"> Bravo ! <br> Vous avez gagné {{prize}} </h1>
+        <h1 ng-style = "margeStyleObj([text_font,text_color])" class="text-center win"> Bravo ! <br> Vous avez gagné {{prize}} </h1>
         <img class ="question_img" ng-src="./img/gift.png">
-        <h3>Merci de vous adresser à un responsable du stand pour obtenir votre lot</h3>
+        <h3 ng-style = "margeStyleObj([text_font,text_color])">Merci de vous adresser à un responsable du stand pour obtenir votre lot</h3>
         <a href ='#/fin'>
-          <button class="button button-dark button-big"> Continuer </button>
+          <button ng-style = "margeStyleObj([text_font,color_btn_normal])" class="button button-dark button-big"> Continuer </button>
         </a>
         </div>
       </div>

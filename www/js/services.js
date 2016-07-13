@@ -125,7 +125,7 @@ app.factory('UsersDataService', function ($cordovaSQLite, $ionicPlatform) {
 
 //Table Themes
 app.factory('ThemesDataService', function ($cordovaSQLite, $ionicPlatform, $http) {
-
+  var theme = 0;
   return {
 
     //Retourner le théme dans la bdd
@@ -140,5 +140,17 @@ app.factory('ThemesDataService', function ($cordovaSQLite, $ionicPlatform, $http
            })
         })
       },
+
+      //Changer et retourner le n° du theme selectionné par l'utilisateur
+      setTheme: function(number)
+      {
+        theme = number;
+      },
+
+      getTheme: function()
+      {
+        return theme;
+      },
+
   }
 })

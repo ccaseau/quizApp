@@ -1,14 +1,32 @@
-<ion-view view-title="Home">
+<ion-view ng-style = "background_img" view-title="Home">
 
   <ion-content>
 
+    <!-- Liste déroulante pour choisir le thème de la base de donnée que l'on souhaite
+     Permet de tester la customisation dynamique -->
+   <div class="col col-50">
+   <div class="list">
+     <label class="item item-input item-select">
+       <div class="input-label">
+         Choisir son theme :
+       </div>
+       <select ng-model="themeSelect" ng-change="showSelectValue(themeSelect)">
+         <option selected>Light</option>
+         <option>Dark</option>
+         <option>Colorfull</option>
+       </select>
+     </label>
+   </div>
+   </div>
+
     <div class="row row-center">
       <div class = "col text-center">
-        <h1 id="main-title">Programme Erasmus, le jeu</h1>
-          <h2>Erasme te met au défi ! Seras-tu capable de le relever ?
+
+        <h1 ng-style = "margeStyleObj([text_font,text_color])" id="main-title">Programme Erasmus, le jeu</h1>
+          <h2  ng-style = "margeStyleObj([text_font,text_color])" >Erasme te met au défi ! Seras-tu capable de le relever ?
           <br>Joue et tente de gagner un des cadeaux mis en jeu</h2>
           <a href ='#/question'>
-            <button class="button button-energized button-big bounceInLeft">Participer</button>
+            <button class="button button-energized button-big bounceInLeft" ng-style = "margeStyleObj([color_btn,text_font,])">Participer</button>
           </a>
         </div>
       </div>

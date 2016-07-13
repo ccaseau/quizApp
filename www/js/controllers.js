@@ -12,20 +12,79 @@ var app = angular.module('quizApp.controllers', []);
 
     });
     // Controller de la page home
-    app.controller('HomeCtrl', function ($scope, $ionicModal,ThemesDataService,$http) {
+    app.controller('HomeCtrl', function ($scope, $ionicModal,ThemesDataService) {
       console.log("vous êtes sur la page home");
 
-      $scope.$on('$ionicView.enter', function(e) {
-          ThemesDataService.getAll(function(data){
-            //On charge le theme de la base de donnée
-            $scope.themes = data;
-            console.log(data);
+      //Recuperation du theme
+        $scope.$on('$ionicView.enter', function(e) {
+        ThemesDataService.getAll(function(data){
+        //***********************************Customisation dynamique************************************* //
+            $scope.background_img = {"background-image": "url("+data[ThemesDataService.getTheme()].background+")"};
+            $scope.text_color = {"color": data[ThemesDataService.getTheme()].color_text};
+            $scope.text_font = {"font-family" :data[ThemesDataService.getTheme()].font};
+            $scope.color_btn = {"background-color": data[ThemesDataService.getTheme()].color_btn}
           });
         });
-      });
+      $scope.margeStyleObj = function(objectList) {
+        var obj = {};
+          objectList.forEach(function(x) {
+            angular.extend(obj,x);
+          });
+        return obj;
+      }
+      //********************************Fin Customisation dynamique************************************* //
+
+      //Permettre le changement de thème par l'utilisateur
+      $scope.themeSelect = 'Light';
+      $scope.showSelectValue = function (themeSelect)
+      {
+        if (themeSelect == 'Light')
+        {
+          ThemesDataService.setTheme(0);
+        }
+
+        else if (themeSelect == 'Dark')
+        {
+          ThemesDataService.setTheme(1);
+        }
+
+        else
+        {
+          ThemesDataService.setTheme(2);
+        }
+        console.log(ThemesDataService.getTheme());
+      }
+
+    });
 
     // Controller de la page question
-    app.controller('QstCtrl', function ($scope,$interval,$filter, $ionicModal,$location,$state,ManageScore, $state, $ionicPopover,QuestionsDataService,ReponsesDataService,ngProgressFactory) {
+    app.controller('QstCtrl', function ($scope,$interval,$filter, $ionicModal,$location,$state,ManageScore, $state, $ionicPopover,QuestionsDataService,ReponsesDataService,ThemesDataService,ngProgressFactory) {
+
+      $scope.$on('$ionicView.enter', function(e) {
+        ThemesDataService.getAll(function(data){
+        //***********************************Customisation dynamique************************************* //
+            $scope.background_img = {"background-image": "url("+data[0].background+")"};
+            $scope.text_color = {"color": data[0].color_text};
+            $scope.text_font = {"font-family" :data[0].font};
+            $scope.color_btn = {"background-color": data[0].color_btn};
+            $scope.background_explication = {"background-color": data[0].color_false};
+            $scope.true = {"background-color": data[0].color_right};
+            $scope.false = {"background-color": data[0].color_false};
+
+            $scope.color_btn_normal = [{"background-color": data[0].color_btn_normal},{"background-color": data[0].color_btn_normal},{"background-color": data[0].color_btn_normal}];
+
+            $scope.color_bar = {"color": data[0].color_bar};
+          });
+        });
+
+      $scope.margeStyleObj = function(objectList) {
+        var obj = {};
+          objectList.forEach(function(x) {
+            angular.extend(obj,x);
+          });
+        return obj;
+      }
+      //*******************************Fin Customisation dynamique************************************* //
 
       //Variables
       $scope.count = 0; //Variable pour incrémenter l'id de la question qui doit s'afficher
@@ -113,6 +172,8 @@ var app = angular.module('quizApp.controllers', []);
 
       $scope.$on('$ionicView.enter', function(e) {
 
+          console.log('Theme selectionné: '+ThemesDataService.getTheme());
+
           $scope.StartTimerQst();
           barQuestion.animate(1);
 
@@ -132,6 +193,7 @@ var app = angular.module('quizApp.controllers', []);
           $scope.pourcentage = 100 / (size);
           $scope.progression = $scope.pourcentage;
           $scope.progressbar = ngProgressFactory.createInstance();
+          $scope.progressbar.setColor($scope.color_bar.color);
           $scope.progressbar.set($scope.progression);
         })
 
@@ -144,18 +206,22 @@ var app = angular.module('quizApp.controllers', []);
       // Fonction qui charge la question suivante en incrémentant un compteur
       $scope.getNextQuestion = function() {
         $scope.toggleInactive();
+        $scope.closeModal();
 
-        if ($scope.count < $scope.question.length - 1)
+        setTimeout(function()
         {
-            $scope.count = $scope.count + 1;
-        }
+          if ($scope.count < $scope.question.length - 1)
+          {
+              $scope.count = $scope.count + 1;
+          }
 
-        else
-        {
-            $location.path("form");
-        }
+          else
+          {
+              $location.path("form");
+          }
 
-          $scope.closeModal();
+        },100);
+
       };
 
       //**************Fonction pour les explications******************//
@@ -173,19 +239,8 @@ var app = angular.module('quizApp.controllers', []);
           $scope.modal.show().then(function() {
             $scope.viewReponse = false; //une fois la modal ouverte on fait disparaitre les reponses
           })
-          //On gere la couleur de fond des explications : rouge si c'est faux ou trop tard, vert ci c'est juste
-          var ModalSelect = angular.element(document.getElementById('explication-modal'));
-          if ($scope.rightAnswer)
-          {
-            ModalSelect.addClass('ModalTrue');
-            ModalSelect.removeClass('ModalFalse');
-          }
 
-          else
-          {
-            ModalSelect.addClass('ModalFalse');
-            ModalSelect.removeClass('ModalTrue');
-          }
+          var ModalSelect = angular.element(document.getElementById('explication-modal'));
           //On remet les timers à 0
           $scope.StopTimer();
           barReponse.set(0);
@@ -235,9 +290,8 @@ var app = angular.module('quizApp.controllers', []);
       $scope.getAnswer = function(chosenAnswer,currentQuest,index) {
 
         //On recupere le bouton sur lequel on a cliqué et on le change de couleur
-        var boutonSelect = angular.element( document.querySelector( '#bouton'+index ) );
-        boutonSelect.removeClass('button-dark');
-        boutonSelect.addClass('button-energized');
+
+        $scope.color_btn_normal= $scope.color_btn;
         // si la réponse est juste
         if(chosenAnswer == currentQuest.bonneRep)
         {
@@ -261,18 +315,19 @@ var app = angular.module('quizApp.controllers', []);
         //Puis changer en vert ou rouge
         setTimeout(function()
         {
-          boutonSelect.removeClass('button-energized');
-
+          // boutonSelect.removeClass('button-energized');
           if ($scope.rightAnswer)
           {
-            boutonSelect.addClass('button-balanced');
+              $scope.color_btn_normal= $scope.true;
+              $scope.background_explication = $scope.true;
           }
 
           else
           {
-            boutonSelect.addClass('button-assertive');
+              $scope.color_btn_normal= $scope.false;
+              $scope.background_explication = $scope.false;
           }
-        },600);
+        },300);
 
         //Puis afficher les explications quelques ms plus tard
         setTimeout(function()
@@ -284,15 +339,36 @@ var app = angular.module('quizApp.controllers', []);
         //Et enfin enlever la couleur du bouton pour qu'il soit gris lorsque la prochaine question sera posée
         setTimeout(function()
         {
-          boutonSelect.removeClass('button-balanced');
-          boutonSelect.removeClass('button-assertive');
-          boutonSelect.addClass('button-dark');
+              ThemesDataService.getAll(function(data) {
+                $scope.color_btn_normal = {"bakcground-color": data[0].color_btn_normal};
+              });
+
         },2000);
       };
     });
 
     //Controller de la page wheel
-    app.controller('WheelCtrl', function ($scope, $ionicModal,$location,$state) {
+    app.controller('WheelCtrl', function ($scope, $ionicModal,$location,$state,ThemesDataService) {
+
+      $scope.$on('$ionicView.enter', function(e) {
+        ThemesDataService.getAll(function(data){
+        //***********************************Customisation dynamique************************************* //
+            $scope.background_img = {"background-image": "url("+data[0].background+")"};
+            $scope.text_color = {"color": data[0].color_text};
+            $scope.text_font = {"font-family" :data[0].font};
+            $scope.color_btn_normal = {"background-color": data[0].color_btn_normal};
+
+          });
+        });
+
+      $scope.margeStyleObj = function(objectList) {
+        var obj = {};
+          objectList.forEach(function(x) {
+            angular.extend(obj,x);
+          });
+        return obj;
+      }
+      //*******************************Fin Customisation dynamique************************************* //
 
         //On utilise Winwheel.js (plugin javascript) pour parametrer une roue
         $scope.spinWheel = new Winwheel({
@@ -392,7 +468,27 @@ var app = angular.module('quizApp.controllers', []);
     });
 
     // Controller de la page form
-    app.controller('FormCtrl', function ($scope, $ionicModal,$stateParams, $location, $state, ManageScore, $cordovaSQLite, $ionicPlatform,UsersDataService) {
+    app.controller('FormCtrl', function ($scope, $ionicModal,$stateParams, $location, $state, ManageScore, $cordovaSQLite, $ionicPlatform,UsersDataService,ThemesDataService) {
+
+      $scope.$on('$ionicView.enter', function(e) {
+        ThemesDataService.getAll(function(data){
+        //***********************************Customisation dynamique************************************* //
+            $scope.background_img = {"background-image": "url("+data[0].background+")"};
+            $scope.text_color = {"color": data[0].color_text};
+            $scope.text_font = {"font-family" :data[0].font};
+            $scope.color_btn = {"background-color": data[0].color_btn};
+            $scope.input_color = {"color": data[0].color_btn};
+          });
+        });
+
+        $scope.margeStyleObj = function(objectList) {
+          var obj = {};
+            objectList.forEach(function(x) {
+              angular.extend(obj,x);
+            });
+          return obj;
+        }
+      //*******************************Fin Customisation dynamique************************************* //
 
     $scope.score = ManageScore.init();
     $scope.total = ManageScore.getTotal();
@@ -441,9 +537,38 @@ var app = angular.module('quizApp.controllers', []);
   })
 
   //Controller pour la page Fin
-  app.controller('FinCtrl', function ($scope, $ionicModal,$location,$state)
+  app.controller('FinCtrl', function ($scope, $ionicModal,$location,$state,ThemesDataService)
   {
-    //Apés 5 secondes on retourne à la page home
+
+    $scope.$on('$ionicView.enter', function(e) {
+      ThemesDataService.getAll(function(data){
+      //***********************************Customisation dynamique************************************* //
+          $scope.background_img = {"background-image": "url("+data[0].background+")"};
+          $scope.text_color = {"color": data[0].color_text};
+          $scope.text_font = {"font-family" :data[0].font};
+        });
+      });
+
+    $scope.margeStyleObj = function(objectList) {
+      var obj = {};
+        objectList.forEach(function(x) {
+          angular.extend(obj,x);
+        });
+      return obj;
+    }
+    //*******************************Fin Customisation dynamique************************************* //
+
+    $scope.links =[
+    {
+      addr:'www.univ-tlse3.fr'
+    },
+    {
+      addr:'www.univ-paul-sabbatier.fr'
+    },
+    {
+      addr:'www.rectorat-tls'
+    }]
+      //Aprés 5 secondes on retourne à la page home
     $scope.$on('$ionicView.enter', function(e) {
       setTimeout(function()
       {

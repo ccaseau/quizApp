@@ -1,10 +1,10 @@
-<ion-view view-title="Wheel">
+<ion-view ng-style = "background_img" view-title="Wheel">
 
   <ion-content>
 
     <div class="row row-center">
       <div class="col text-center">
-      <h2 class="text-center">Lancez la roue ...</h>
+      <h2 ng-style = "margeStyleObj([text_font,text_color])">Lancez la roue ...</h>
       <div  class = "scalingWheel" id="canvasContainer" ng-click="spin()">
         <canvas id="canvas" width="400" height="400"></canvas>
         <img id="prizePointer" src="img/triangle-64.png" alt="V" />

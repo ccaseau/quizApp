@@ -33,18 +33,29 @@
 @import 'theme';
 
 //Les variables personalisées
-$background_img :                 map-get($theme,background)        ;
-$text-color :                     map-get($theme,color_text)        ;
-$energized:                       map-get($theme,color_btn)         ;
-$balanced:                        map-get($theme,color_right)       ;//Right color : vert !default
-$assertive:                       map-get($theme,color_false)       ;//Wrong color : rouge !default
-$color_bar:                       map-get($theme,color_bar)          ;
+// $background_img :                 map-get($theme,background)        ;
+// $text-color :                     map-get($theme,color_text)        ;
+// $energized:                       map-get($theme,color_btn)         ;
+// $balanced:                        map-get($theme,color_right)       ;//Right color : vert !default
+// $assertive:                       map-get($theme,color_false)       ;//Wrong color : rouge !default
+// $color_bar:                       map-get($theme,color_bar)          ;
+// $font-family-sans-serif:          '-apple-system', "Helvetica Neue", "Roboto", "Segoe UI", sans-serif !default; //pour le default
+// $font-family-base:                map-get($theme,font)   ;//$font-family-sans-serif !default
+// $dark:                            map-get($theme,color_btn_normal)   ;//#444 !default; couleur des boutons 'basique' => gris foncé
+// $background-true:                 map-get($theme,background_true)    ;
+// $background-false:                map-get($theme,background_false)   ;
+
+$background_img :                 ''                                ;
+$text-color :                     black                             ;
+$energized:                       #F67936                           ;
+$balanced:                        #8ec161                           ;//Right color : vert !default
+$assertive:                       #d3000d                           ;//Wrong color : rouge !default
+$color_bar:                       #F67936                           ;
 $font-family-sans-serif:          '-apple-system', "Helvetica Neue", "Roboto", "Segoe UI", sans-serif !default; //pour le default
-$font-family-base:                map-get($theme,font)   ;//$font-family-sans-serif !default
-$dark:                            map-get($theme,color_btn_normal)   ;//#444 !default; couleur des boutons 'basique' => gris foncé
-$background-true:                 map-get($theme,background_true)    ;
-$background-false:                map-get($theme,background_false)   ;
-// Colors
+$font-family-base:                $font-family-sans-serif !default  ;
+$dark:                            #444 !default                     ;// couleur des boutons 'basique' => gris foncé
+$background-true:                 '../img/background-true.png'      ;
+$background-false:                '../img/background-false.png'     ;
 // -------------------------------
 
 $light:                           #fff !default;

@@ -1,15 +1,12 @@
-<ion-view view-title="Fin">
+<ion-view ng-style="background_img" view-title="Fin">
 
   <ion-content>
 
     <div class="row row-center text-center responsive-sm">
       <div class="col ">
-        <h1 class="text-center">Merci de votre participation !
+        <h1 ng-style = "margeStyleObj([text_font,text_color])" class="text-center">Merci de votre participation !
         <br>Retrouvez nous sur : </h1>
-        <h4> www.univ-tlse3.fr </h4>
-        <h4> www.univ-tlse2.fr </h4>
-        <h4> iut.ups-tlse.fr </h4>
-        <h4> ... </h4>
+        <h4 ng-repeat ="l in links" ng-style = "margeStyleObj([text_font,text_color])"> {{l.addr}} </h4>
         </div>
       </div>
 

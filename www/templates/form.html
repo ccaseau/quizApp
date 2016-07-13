@@ -1,18 +1,18 @@
-<ion-view view-title="Form">
+<ion-view ng-style = "background_img" view-title="Form">
   <ion-content>
     <div class="row row-center row-responsive-lg ">
       <div class="col text-center">
-        <h1 id="score">Bravo ! Ton score est de {{score}}/{{total}}! </h1>
-          <h4>Tu souhaites en savoir plus sur le programme ERASMUS ?
+        <h1 ng-style = "margeStyleObj([text_font,text_color])" id="score">Bravo ! Ton score est de {{score}}/{{total}}! </h1>
+          <h4 ng-style = "margeStyleObj([text_font,text_color])" >Tu souhaites en savoir plus sur le programme ERASMUS ?
           Complète ce formulaire et tente de gagner un des lots mis en jeu !</h4>
           <!-- <div class="col-80 col-offset-10"> -->
         <div class="col ">
           <div class="col ">
-          <form name ="form_user" ng-submit="save(form_user)" class="list list-stacked" novalidate="">
+          <form ng-style = "text_font" name ="form_user" ng-submit="save(form_user)" class="list list-stacked" novalidate="">
             <label class="item item-input"
               ng-class="{ 'has-errors' : form_user.email.$invalid && form_user.$submitted, 'no-errors' : form_user.email.$valid && form_user.$submitted}">
-              <span class="input-label">Mail *</span>
-              <input type="email" name="email"  ng-model="users.mail" required>
+              <span  class="input-label">Mail *</span>
+              <input ng-style =  "margeStyleObj([text_font,input_color])" type="email" name="email"  ng-model="users.mail" required>
             </label>
 
             <div class="error-container" ng-show="form_user.email.$error && form_user.$submitted" ng-messages="form_user.email.$error">
@@ -29,7 +29,7 @@
             <label class="item item-input"
               ng-class="{ 'has-errors' : form_user.age.$invalid && form_user.$submitted, 'no-errors' : form_user.age.$valid && form_user.$submitted}">
               <span class="input-label">Age *</span>
-              <input name="age" type="number" ng-model="users.age" ng-maxlength="3" required>
+              <input ng-style =  "margeStyleObj([text_font,input_color])" name="age" type="number" ng-model="users.age" ng-maxlength="3" required>
             </label>
 
             <div class="error-container" ng-show="form_user.age.$error && form_user.$submitted" ng-messages="form_user.age.$error">
@@ -46,7 +46,7 @@
             <label class="item item-input"
             ng-class="{ 'has-errors' : form_user.formation.$invalid && form_user.$submitted, 'no-errors' : form_user.formation.$valid && form_user.$submitted}">
               <span class="input-label">Formation *</span>
-              <input type="text" name="formation" ng-model="users.formation" required>
+              <input ng-style =  "margeStyleObj([text_font,input_color])" type="text" name="formation" ng-model="users.formation" required>
             </label>
 
             <div class="error-container" ng-show="form_user.formation.$error && form_user.$submitted" ng-messages="form_user.formation.$error">
@@ -59,7 +59,7 @@
             <label class="item item-input"
               ng-class="{ 'has-errors' : form_user.code.$invalid && form_user.$submitted, 'no-errors' : form_user.code.$valid && form_user.$submitted}">
               <span class="input-label">Code postal *</span>
-              <input type="number" name='code' ng-model="users.code"  ng-maxlength="5"  ng-minlength="5" required>
+              <input ng-style =  "margeStyleObj([text_font,input_color])" type="number" name='code' ng-model="users.code"  ng-maxlength="5"  ng-minlength="5" required>
             </label>
 
             <div class="error-container" ng-show="form_user.code.$error && form_user.$submitted" ng-messages="form_user.code.$error">
@@ -80,7 +80,7 @@
             <label class="item item-input"
               ng-class="{ 'has-errors' : form_user.tel.$invalid && form_user.$submitted, 'no-errors' : form_user.tel.$valid && form_user.$submitted}">
               <span class="input-label">Telephone</span>
-              <input type="tel" name="tel" ng-model="users.tel" ng-maxlength="10"  ng-minlength="10">
+              <input ng-style =  "margeStyleObj([text_font,input_color])" type="tel" name="tel" ng-model="users.tel" ng-maxlength="10"  ng-minlength="10">
             </label>
 
             <div class="error-container" ng-show="form_user.tel.$error && form_user.$submitted" ng-messages="form_user.tel.$error">
@@ -104,15 +104,10 @@
                <div class="error">
                  {{error}}
                </div>
-            <button type="submit" class="button button-energized button-big">Valider </button>
+            <button type="submit" ng-style = "margeStyleObj([color_btn,text_font])" class="button button-energized button-big">Valider </button>
 
             </form>
           </div>
-          <h5> Utilisateurs enregistrés </h5>
-            <div ng-repeat="d in datas">
-             {{d.mail}} / {{d.age}} / {{d.formation}} / {{d.code}} / {{d.tel}} / {{d.sexe}} / {{d.info}}
-             <button ng-click = "delete(d.id)">x</button>
-            </div>
       </div>
     </div>
   </div>

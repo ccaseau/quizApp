@@ -1,4 +1,4 @@
-<ion-view view-title="Questions">
+<ion-view ng-style = "background_img" view-title="Questions">
 
   <tek-progress-bar class="progress-sm progress-loading progress-loading-fixed" manager="main.bar"></tek-progress-bar>
   <ion-content>
@@ -6,22 +6,22 @@
     <div class="row responsive-sm row-center">
 
       <div class="col text-center">
-        <div ng-show ="!viewReponse" id="barQuestion"><p class ="progressbar_label">{{timeQst}} s</p></div>
-        <div ng-show ="viewReponse" class="fade" id="barReponse"><p class ="progressbar_label">{{time}} s</p></div>
-        <h3 class = "base-class" ng-class = "!viewReponse ? 'my-class' : ' '">{{question[count].intitule}}</h3>
+        <div ng-show ="!viewReponse" id="barQuestion"><p ng-style = "margeStyleObj([text_font,text_color])" class ="progressbar_label">{{timeQst}} s</p></div>
+        <div ng-show ="viewReponse" class="fade" id="barReponse"><p ng-style = "margeStyleObj([text_font,text_color])" class ="progressbar_label">{{time}} s</p></div>
+        <h3 ng-style = "margeStyleObj([text_font,text_color])" class = "base-class" ng-class = "!viewReponse ? 'my-class' : ' '">{{question[count].intitule}}</h3>
         <div ng-show="viewReponse" class ="fade">
           <img class ="question_img" ng-src="{{question[count].path}}">
           <!-- <img class ="question_img" ng-src="http://placehold.it/600x300"> -->
           <div class = "row responsive-lg wrap">
             <div class="col col-50" ng-repeat='r in question.reponse[count]'>
-              <button id ="bouton{{+$index}}" class="button button-block button-dark" ng-disabled="isActive" ng-click="getAnswer(r,question[count],$index)">
+              <button ng-style = "margeStyleObj([color_btn_normal[$index*0],text_font])" id ="bouton{{+$index}}" class="button button-block button-dark" ng-disabled="isActive" ng-click="getAnswer(r,question[count],$index)">
                 {{r}}
               </button>
             </div>
           </div>
         <div>
           <div id="pourcentage">
-            <h3 >{{progression  | number:0}}%</h3>
+            <h3 ng-style = "margeStyleObj([color_bar,text_font])" >{{progression  | number:0}}%</h3>
           </div>
       </div>
     </div>
@@ -32,18 +32,18 @@
 
     <!-- Template pour la modal popup -> explications et bonne réponse qui s'affiche -->
     <script id="explications.html" type="text/ng-template">
-      <ion-modal-view id ="explication-modal" class="ModalFalse">
+      <ion-modal-view ng-style = "background_explication" id ="explication-modal">
         <ion-content ng-click="getNextQuestion()">
           <div class="row row-center">
             <div class="col text-center">
-              <h1 class="ion-sad" ng-show="!rightAnswer && !timeout"></h1>
-              <h1 class="ion-clock" ng-show="timeout"></h1>
-              <h1 class="ion-happy" ng-show="rightAnswer  && !timeout"></h1>
-              <h1 class="text-center white" ng-show="rightAnswer  && !timeout">Bonne réponse !</h1>
-              <h1 class="text-center white" ng-show="!rightAnswer  && !timeout">Mauvaise réponse !</h1>
-                <h1 class="text-center white" ng-show="timeout">Trop tard !</h1>
+              <h1 ng-style = "margeStyleObj([text_font,text_color])" class="ion-sad " ng-show="!rightAnswer && !timeout"></h1>
+              <h1 ng-style = "margeStyleObj([text_font,text_color])" class="ion-clock" ng-show="timeout"></h1>
+              <h1 ng-style = "margeStyleObj([text_font,text_color])" class="ion-happy" ng-show="rightAnswer  && !timeout"></h1>
+              <h1 ng-style = "margeStyleObj([text_font,text_color])" class="text-center" ng-show="rightAnswer  && !timeout">Bonne réponse !</h1>
+              <h1 ng-style = "margeStyleObj([text_font,text_color])" class="text-center" ng-show="!rightAnswer  && !timeout">Mauvaise réponse !</h1>
+                <h1 ng-style = "margeStyleObj([text_font,text_color])" class="text-center" ng-show="timeout">Trop tard !</h1>
                 <div class="col col-80 col-offset-10">
-                  <h4 class="white" >{{question[count].explication}}</h4>
+                  <h4 ng-style = "margeStyleObj([text_font,text_color])">{{question[count].explication}}</h4>
                 </div>
                 <div class="col">
                   <!-- <button class ='button button-dark button-next' ng-disabled="!isActive" ng-click="getNextQuestion() ">next</button> -->

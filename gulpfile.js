@@ -7,10 +7,10 @@ var minifyCss = require('gulp-minify-css');
 var rename = require('gulp-rename');
 var sh = require('shelljs');
 var paths = {
-  sass: ['./scss/**/*.scss'],
-  db :['./www/*.db'],
-  json : ['theme.json'],
-  varsass : ['./www/lib/ionic/scss/theme.scss']
+  sass: ['./scss/**/*.scss']
+  // db :['./www/*.db'],
+  // json : ['theme.json'],
+  // varsass : ['./www/lib/ionic/scss/theme.scss']
 };
 
 var jsonSass = require('json-sass');
@@ -22,29 +22,29 @@ var exporter = new SqliteToJson({
   client: new sqlite3.Database('./www/data3.db')
 });
 
-gulp.task('default', ['sass','load_theme','export_theme']);
+gulp.task('default', ['sass']);
 
-gulp.task('load_theme', function() {
-  return exporter.save('Themes', 'theme.json', function (err) {
-    if (err) {
-      console.log(err.message);
-    }
-    else {
-      console.log("La table themes a été enregistrée dans le fichier theme.json");
-    }
-  });
-});
-
-gulp.task('export_theme',['load_theme'], function() {
-  console.log("Le fichier theme.json a été exporté en scss");
-  return fs.createReadStream('theme.json')
-    .pipe(jsonSass({
-      prefix: '$theme: ',
-    }))
-    .pipe(source('theme.json'))
-    .pipe(rename('theme.scss'))
-    .pipe(gulp.dest('./www/lib/ionic/scss'));
-});
+// gulp.task('load_theme', function() {
+//   return exporter.save('Themes', 'theme.json', function (err) {
+//     if (err) {
+//       console.log(err.message);
+//     }
+//     else {
+//       console.log("La table themes a été enregistrée dans le fichier theme.json");
+//     }
+//   });
+// });
+//
+// gulp.task('export_theme',['load_theme'], function() {
+//   console.log("Le fichier theme.json a été exporté en scss");
+//   return fs.createReadStream('theme.json')
+//     .pipe(jsonSass({
+//       prefix: '$theme: ',
+//     }))
+//     .pipe(source('theme.json'))
+//     .pipe(rename('theme.scss'))
+//     .pipe(gulp.dest('./www/lib/ionic/scss'));
+// });
 
 
 gulp.task('sass', function(done) {
@@ -61,10 +61,10 @@ gulp.task('sass', function(done) {
 });
 
 gulp.task('watch', function() {
-  gulp.watch(paths.db, ['load_theme']);
-  gulp.watch(paths.json, ['export_theme']);
+  // gulp.watch(paths.db, ['load_theme']);
+  // gulp.watch(paths.json, ['export_theme']);
   gulp.watch(paths.sass, ['sass']);
-  gulp.watch(paths.varsass, ['sass']);
+  // gulp.watch(paths.varsass, ['sass']);
 });
 
 gulp.task('install', ['git-check'], function() {
