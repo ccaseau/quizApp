@@ -77,7 +77,7 @@ var app = angular.module('quizApp.controllers', []);
             $scope.background_explication = {"background-color": data[ThemesDataService.getTheme()].color_false};
             $scope.true = {"background-color": data[ThemesDataService.getTheme()].color_right};
             $scope.false = {"background-color": data[ThemesDataService.getTheme()].color_false};
-            $scope.color_btn_normal = {"background-color": data[ThemesDataService.getTheme()].color_btn_normal};
+            $scope.color_btn_normal = [{"background-color": data[ThemesDataService.getTheme()].color_btn_normal},{"background-color": data[ThemesDataService.getTheme()].color_btn_normal},{"background-color": data[ThemesDataService.getTheme()].color_btn_normal},{"background-color": data[ThemesDataService.getTheme()].color_btn_normal}];
             $scope.color_bar = {"color": data[ThemesDataService.getTheme()].color_bar};
           });
         });
@@ -176,21 +176,15 @@ var app = angular.module('quizApp.controllers', []);
 
       $scope.$on('$ionicView.enter', function(e) {
 
-          console.log('Theme selectionné: '+ThemesDataService.getTheme());
-
           $scope.score = ManageScore.reset();
-          console.log('Le score est de '+$scope.score)
-
           $scope.StartTimerQst();
           barQuestion.animate(1);
-
           setTimeout(function()
           {
             $scope.StartTimer();
             barReponse.animate(1);
             $scope.viewReponse = true;
           },5000);
-
           QuestionsDataService.getAll(function(data){
           //On rempli nos $scope avec les questions de la base de donnée
           $scope.question = data;
@@ -203,7 +197,6 @@ var app = angular.module('quizApp.controllers', []);
           $scope.progressbar.setColor($scope.color_bar.color);
           $scope.progressbar.set($scope.progression);
         })
-
         ReponsesDataService.getAll(function(data){
         //On rempli nos $scope avec les reponses de la base de donnée
         $scope.question.reponse = data;
@@ -298,7 +291,7 @@ var app = angular.module('quizApp.controllers', []);
       // Fonction qui teste si la réponse donnée est juste et incrémente le score de l'utilisateur en fonction
       $scope.getAnswer = function(chosenAnswer,currentQuest,index) {
         //On recupere le bouton sur lequel on a cliqué et on le change de couleur
-        $scope.color_btn_normal= $scope.color_btn;
+        $scope.color_btn_normal[index]= $scope.color_btn;
         // si la réponse est juste
         if(chosenAnswer == currentQuest.bonneRep)
         {
@@ -323,18 +316,19 @@ var app = angular.module('quizApp.controllers', []);
         setTimeout(function()
         {
           // boutonSelect.removeClass('button-energized');
-          if ($scope.rightAnswer)
+          if($scope.rightAnswer)
           {
-              $scope.color_btn_normal= $scope.true;
-              $scope.background_explication = $scope.true;
+            $scope.color_btn_normal[index]= $scope.true;
+            $scope.background_explication = $scope.true;
           }
 
-          else
+          else (!$scope.rightAnswer)
           {
-              $scope.color_btn_normal= $scope.false;
+              $scope.color_btn_normal[index]= $scope.false;
               $scope.background_explication = $scope.false;
           }
-        },300);
+
+        },200);
 
         //Puis afficher les explications quelques ms plus tard
         setTimeout(function()
