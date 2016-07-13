@@ -14,7 +14,7 @@
           <!-- <img class ="question_img" ng-src="http://placehold.it/600x300"> -->
           <div class = "row responsive-lg wrap">
             <div class="col col-50" ng-repeat='r in question.reponse[count]'>
-              <button ng-style = "margeStyleObj([color_btn_normal[$index*0],text_font])" id ="bouton{{+$index}}" class="button button-block button-dark" ng-disabled="isActive" ng-click="getAnswer(r,question[count],$index)">
+              <button ng-style = "margeStyleObj([color_btn_normal[$index],text_font])" id ="bouton{{+$index}}" class="button button-block button-dark" ng-disabled="isActive" ng-click="getAnswer(r,question[count],$index)">
                 {{r}}
               </button>
             </div>
