@@ -22,6 +22,12 @@ app.factory('ManageScore', function(){
     {
       return myScore;
     },
+
+    reset: function()
+    {
+      myScore = 0;
+      return myScore;
+    },
     add: function()
     {
       myScore = myScore + 1;

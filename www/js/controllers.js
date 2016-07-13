@@ -8,23 +8,30 @@ var app = angular.module('quizApp.controllers', []);
       setTimeout(function()
       {
           $state.go('home');
-      },150);
+      },500);
 
     });
     // Controller de la page home
     app.controller('HomeCtrl', function ($scope, $ionicModal,ThemesDataService) {
       console.log("vous êtes sur la page home");
 
+
+      //***********************************Customisation dynamique************************************* //
       //Recuperation du theme
-        $scope.$on('$ionicView.enter', function(e) {
+        $scope.getThemeFromDb = function()
+        {
         ThemesDataService.getAll(function(data){
-        //***********************************Customisation dynamique************************************* //
             $scope.background_img = {"background-image": "url("+data[ThemesDataService.getTheme()].background+")"};
             $scope.text_color = {"color": data[ThemesDataService.getTheme()].color_text};
             $scope.text_font = {"font-family" :data[ThemesDataService.getTheme()].font};
             $scope.color_btn = {"background-color": data[ThemesDataService.getTheme()].color_btn}
           });
+        }
+
+        $scope.$on('$ionicView.enter', function(e) {
+          $scope.getThemeFromDb();
         });
+
       $scope.margeStyleObj = function(objectList) {
         var obj = {};
           objectList.forEach(function(x) {
@@ -52,7 +59,7 @@ var app = angular.module('quizApp.controllers', []);
         {
           ThemesDataService.setTheme(2);
         }
-        console.log(ThemesDataService.getTheme());
+          $scope.getThemeFromDb();
       }
 
     });
@@ -63,17 +70,15 @@ var app = angular.module('quizApp.controllers', []);
       $scope.$on('$ionicView.enter', function(e) {
         ThemesDataService.getAll(function(data){
         //***********************************Customisation dynamique************************************* //
-            $scope.background_img = {"background-image": "url("+data[0].background+")"};
-            $scope.text_color = {"color": data[0].color_text};
-            $scope.text_font = {"font-family" :data[0].font};
-            $scope.color_btn = {"background-color": data[0].color_btn};
-            $scope.background_explication = {"background-color": data[0].color_false};
-            $scope.true = {"background-color": data[0].color_right};
-            $scope.false = {"background-color": data[0].color_false};
-
-            $scope.color_btn_normal = [{"background-color": data[0].color_btn_normal},{"background-color": data[0].color_btn_normal},{"background-color": data[0].color_btn_normal}];
-
-            $scope.color_bar = {"color": data[0].color_bar};
+            $scope.background_img = {"background-image": "url("+data[ThemesDataService.getTheme()].background+")"};
+            $scope.text_color = {"color": data[ThemesDataService.getTheme()].color_text};
+            $scope.text_font = {"font-family" :data[ThemesDataService.getTheme()].font};
+            $scope.color_btn = {"background-color": data[ThemesDataService.getTheme()].color_btn};
+            $scope.background_explication = {"background-color": data[ThemesDataService.getTheme()].color_false};
+            $scope.true = {"background-color": data[ThemesDataService.getTheme()].color_right};
+            $scope.false = {"background-color": data[ThemesDataService.getTheme()].color_false};
+            $scope.color_btn_normal = {"background-color": data[ThemesDataService.getTheme()].color_btn_normal};
+            $scope.color_bar = {"color": data[ThemesDataService.getTheme()].color_bar};
           });
         });
 
@@ -88,7 +93,6 @@ var app = angular.module('quizApp.controllers', []);
 
       //Variables
       $scope.count = 0; //Variable pour incrémenter l'id de la question qui doit s'afficher
-      $scope.score = ManageScore.init(); //On utilise le service ManageScore pour que le score de l'utilisateur soit accessible de toute les pages
       $scope.isActive = false;
       $scope.rightAnswer = false; //variable pour savoir si l'utilisateur à répondu juste ou faux
       $scope.timeout = false; //variable pour savoir si l'utilisateur n'a pas répondu a temps
@@ -174,6 +178,9 @@ var app = angular.module('quizApp.controllers', []);
 
           console.log('Theme selectionné: '+ThemesDataService.getTheme());
 
+          $scope.score = ManageScore.reset();
+          console.log('Le score est de '+$scope.score)
+
           $scope.StartTimerQst();
           barQuestion.animate(1);
 
@@ -220,7 +227,7 @@ var app = angular.module('quizApp.controllers', []);
               $location.path("form");
           }
 
-        },100);
+        },250);
 
       };
 
@@ -250,6 +257,7 @@ var app = angular.module('quizApp.controllers', []);
 
         //Fermer les explications
         $scope.closeModal = function() {
+
           barQuestion.animate(1);//On lance le premier timer
           $scope.StartTimerQst();
           setTimeout(function()
@@ -258,6 +266,10 @@ var app = angular.module('quizApp.controllers', []);
             $scope.StartTimer();
             $scope.time = 20;
             barReponse.animate(1);
+
+            //On remet nos booléen à false pour tester la prochaine réponse de l'utilisateur
+            $scope.timeout = false;
+            $scope.rightAnswer = false;
 
           },5000); // On lance le 2eme timer 5s aprés la fermeture de la question
 
@@ -271,9 +283,6 @@ var app = angular.module('quizApp.controllers', []);
               {
                   $scope.progressbar.complete();
               }
-              //On remet nos booléen à 0 pour tester la prochaine réponse de l'utilisateur
-              $scope.timeout = false;
-              $scope.rightAnswer = false;
           });
         };
 
@@ -288,9 +297,7 @@ var app = angular.module('quizApp.controllers', []);
 
       // Fonction qui teste si la réponse donnée est juste et incrémente le score de l'utilisateur en fonction
       $scope.getAnswer = function(chosenAnswer,currentQuest,index) {
-
         //On recupere le bouton sur lequel on a cliqué et on le change de couleur
-
         $scope.color_btn_normal= $scope.color_btn;
         // si la réponse est juste
         if(chosenAnswer == currentQuest.bonneRep)
@@ -340,7 +347,7 @@ var app = angular.module('quizApp.controllers', []);
         setTimeout(function()
         {
               ThemesDataService.getAll(function(data) {
-                $scope.color_btn_normal = {"bakcground-color": data[0].color_btn_normal};
+                $scope.color_btn_normal = {"bakcground-color": data[ThemesDataService.getTheme()].color_btn_normal};
               });
 
         },2000);
@@ -353,10 +360,10 @@ var app = angular.module('quizApp.controllers', []);
       $scope.$on('$ionicView.enter', function(e) {
         ThemesDataService.getAll(function(data){
         //***********************************Customisation dynamique************************************* //
-            $scope.background_img = {"background-image": "url("+data[0].background+")"};
-            $scope.text_color = {"color": data[0].color_text};
-            $scope.text_font = {"font-family" :data[0].font};
-            $scope.color_btn_normal = {"background-color": data[0].color_btn_normal};
+            $scope.background_img = {"background-image": "url("+data[ThemesDataService.getTheme()].background+")"};
+            $scope.text_color = {"color": data[ThemesDataService.getTheme()].color_text};
+            $scope.text_font = {"font-family" :data[ThemesDataService.getTheme()].font};
+            $scope.color_btn_normal = {"background-color": data[ThemesDataService.getTheme()].color_btn_normal};
 
           });
         });
@@ -392,16 +399,15 @@ var app = angular.module('quizApp.controllers', []);
             'animation' :
             {
                 'type'     : 'spinToStop',
-                'duration' : 5, // durée de l'animation => parametre la vitesse de la roue
-                'spins'    : 4, //Nombre de tours que va faire la roue
+                'duration' : 4, // durée de l'animation => parametre la vitesse de la roue
+                'spins'    : 6, //Nombre de tours que va faire la roue
+                'clearTheCanvas' : true,
+                'yoyo' : false
             }
       });
 
       //on stocke le temps que va mettre la roue à s'arreter
       $scope.time = ($scope.spinWheel.animation.duration) * 1000;
-
-      //Booléen pour savoir si l'utilisateur à déja lancée la roue
-      $scope.canSpin = true;
 
       //Variables pour savoir si l'utilisateur a gagné ou perdu
       $scope.wheelWin = false;
@@ -413,20 +419,6 @@ var app = angular.module('quizApp.controllers', []);
       //Fonction pour indiquer à l'utilisateur le quartier sur lequel la roue s'est arretée
       function alertPrize()
       {
-        // On gere l'affichage rendu à l'utilisateur
-        setTimeout(function()
-        {
-          if (winningSegment.text == 0)
-          {
-            $scope.wheelLoose = true;
-            $state.go('wheelLoose');
-          }
-          else {
-            $scope.wheelWin = true;
-            $state.go('wheelWin');
-          }
-        },500);
-
         var winningSegment = $scope.spinWheel.getIndicatedSegment();
         var winningSegmentNb = $scope.spinWheel.getIndicatedSegmentNumber();
         var color = $scope.spinWheel.segments[winningSegmentNb].fillStyle;
@@ -444,25 +436,36 @@ var app = angular.module('quizApp.controllers', []);
 
        //On redessine la roue pour que les changements de couleurs soit pris en compte
        $scope.spinWheel.draw();
+
+       //On change de page en fonction de si on a gagné ou perdu
+        setTimeout(function()
+        {
+          if (winningSegment.text == 0)
+          {
+            $state.go('wheelLoose');
+          }
+          else {
+            $state.go('wheelWin');
+          }
+
+        },1500);
       }
 
       //Fonction pour faire tourner la roue
       $scope.spin = function()
       {
-        //Si l'utilisateur n'a pas encore joué on appelle la fonction startAnimation du plugin Winwheel.js
-        if($scope.canSpin)
-        {
             $scope.spinWheel.startAnimation()
-            $scope.canSpin = false;
 
             //Une fois l'animation terminée on appelle notre fonction alertPrize()
             setTimeout(function()
             {
               alertPrize();
 
-            },$scope.time); //$scope.time contient la durée de l'animation. On veut que le prix soit indiqué une fois la roue arretée !
+              $scope.spinWheel.stopAnimation(false);  // Stop the animation, false as param so does not call callback function.
+              $scope.spinWheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
+              $scope.spinWheel.draw();
 
-        }
+            },$scope.time); //$scope.time contient la durée de l'animation. On veut que le prix soit indiqué une fois la roue arretée !
       }
 
     });
@@ -473,11 +476,11 @@ var app = angular.module('quizApp.controllers', []);
       $scope.$on('$ionicView.enter', function(e) {
         ThemesDataService.getAll(function(data){
         //***********************************Customisation dynamique************************************* //
-            $scope.background_img = {"background-image": "url("+data[0].background+")"};
-            $scope.text_color = {"color": data[0].color_text};
-            $scope.text_font = {"font-family" :data[0].font};
-            $scope.color_btn = {"background-color": data[0].color_btn};
-            $scope.input_color = {"color": data[0].color_btn};
+            $scope.background_img = {"background-image": "url("+data[ThemesDataService.getTheme()].background+")"};
+            $scope.text_color = {"color": data[ThemesDataService.getTheme()].color_text};
+            $scope.text_font = {"font-family" :data[ThemesDataService.getTheme()].font};
+            $scope.color_btn = {"background-color": data[ThemesDataService.getTheme()].color_btn};
+            $scope.input_color = {"color": data[ThemesDataService.getTheme()].color_btn};
           });
         });
 
@@ -489,13 +492,14 @@ var app = angular.module('quizApp.controllers', []);
           return obj;
         }
       //*******************************Fin Customisation dynamique************************************* //
-
-    $scope.score = ManageScore.init();
     $scope.total = ManageScore.getTotal();
     $scope.datas = [];
     $scope.users = [];
 
       $scope.$on('$ionicView.enter', function(e) {
+
+        $scope.score = ManageScore.init();
+        console.log($scope.score)
         //On récuperer les utilisateurs déja en base de donnée
         UsersDataService.getAll(function(data){
           $scope.datas = data
@@ -517,6 +521,8 @@ var app = angular.module('quizApp.controllers', []);
           //On charge la page suivante
           $location.path('wheel');
           $scope.error = '';
+          $scope.users = {};
+          form_user.$setPristine();
         }
         else
         {
@@ -543,9 +549,9 @@ var app = angular.module('quizApp.controllers', []);
     $scope.$on('$ionicView.enter', function(e) {
       ThemesDataService.getAll(function(data){
       //***********************************Customisation dynamique************************************* //
-          $scope.background_img = {"background-image": "url("+data[0].background+")"};
-          $scope.text_color = {"color": data[0].color_text};
-          $scope.text_font = {"font-family" :data[0].font};
+          $scope.background_img = {"background-image": "url("+data[ThemesDataService.getTheme()].background+")"};
+          $scope.text_color = {"color": data[ThemesDataService.getTheme()].color_text};
+          $scope.text_font = {"font-family" :data[ThemesDataService.getTheme()].font};
         });
       });
 
