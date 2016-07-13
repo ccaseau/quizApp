@@ -355,121 +355,125 @@ var app = angular.module('quizApp.controllers', []);
     });
 
     //Controller de la page wheel
-    app.controller('WheelCtrl', function ($scope, $ionicModal,$location,$state,ThemesDataService) {
+    //Controller de la page wheel
+     app.controller('WheelCtrl', function ($scope, $ionicModal,$location,$state,ThemesDataService) {
 
-      $scope.$on('$ionicView.enter', function(e) {
-        ThemesDataService.getAll(function(data){
-        //***********************************Customisation dynamique************************************* //
-            $scope.background_img = {"background-image": "url("+data[ThemesDataService.getTheme()].background+")"};
-            $scope.text_color = {"color": data[ThemesDataService.getTheme()].color_text};
-            $scope.text_font = {"font-family" :data[ThemesDataService.getTheme()].font};
-            $scope.color_btn_normal = {"background-color": data[ThemesDataService.getTheme()].color_btn_normal};
+       $scope.$on('$ionicView.enter', function(e) {
+         ThemesDataService.getAll(function(data){
+         //***********************************Customisation dynamique************************************* //
+             $scope.background_img = {"background-image": "url("+data[ThemesDataService.getTheme()].background+")"};
+             $scope.text_color = {"color": data[ThemesDataService.getTheme()].color_text};
+             $scope.text_font = {"font-family" :data[ThemesDataService.getTheme()].font};
+             $scope.color_btn_normal = {"background-color": data[ThemesDataService.getTheme()].color_btn_normal};
 
-          });
-        });
+           });
+         });
 
-      $scope.margeStyleObj = function(objectList) {
-        var obj = {};
-          objectList.forEach(function(x) {
-            angular.extend(obj,x);
-          });
-        return obj;
-      }
-      //*******************************Fin Customisation dynamique************************************* //
+       $scope.margeStyleObj = function(objectList) {
+         var obj = {};
+           objectList.forEach(function(x) {
+             angular.extend(obj,x);
+           });
+         return obj;
+       }
+       //*******************************Fin Customisation dynamique************************************* //
 
-        //On utilise Winwheel.js (plugin javascript) pour parametrer une roue
-        $scope.spinWheel = new Winwheel({
-            'numSegments'    : 8, //Nombre de quartiers => permet de parametrer le nombre de prix
-            'lineWidth'   : 1,
-            'textFillStyle' : 'white',
-            'textFontSize' : 35,
-            'innerRadius'     : 20,
-            'textAlignment' : 'center',
-            'segments'       :
-            [
-                {'fillStyle' : '#2E2E2E', 'text' : '0'}, // On indique à chaque fois la couleur du quartier et le texte qui s'affichera
-                {'fillStyle' : '#903288', 'text' : '20'},
-                {'fillStyle' : '#675CA1', 'text' : '200'},
-                {'fillStyle' : '#2E2E2E', 'text' : '0'},
-                {'fillStyle' : '#019FDC', 'text' : '1000'},
-                {'fillStyle' : '#B7D06B', 'text' : '100'},
-                {'fillStyle' : '#2E2E2E', 'text' : '0'},
-                {'fillStyle' : '#B7D06B', 'text' : '100'},
-            ],
-            'animation' :
-            {
-                'type'     : 'spinToStop',
-                'duration' : 4, // durée de l'animation => parametre la vitesse de la roue
-                'spins'    : 6, //Nombre de tours que va faire la roue
-                'clearTheCanvas' : true,
-                'yoyo' : false
-            }
-      });
+         //On utilise Winwheel.js (plugin javascript) pour parametrer une roue
+         $scope.spinWheel = new Winwheel({
+             'numSegments'    : 8, //Nombre de quartiers => permet de parametrer le nombre de prix
+             'lineWidth'   : 2,
+             'textFillStyle' : 'white',
+             'textFontSize' : 35,
+             'innerRadius'     : 20,
+             'textAlignment' : 'center',
+             'segments'       :
+             [
+                 {'fillStyle' : '#2E2E2E', 'text' : '0'}, // On indique à chaque fois la couleur du quartier et le texte qui s'affichera
+                 {'fillStyle' : '#903288', 'text' : '20'},
+                 {'fillStyle' : '#675CA1', 'text' : '200'},
+                 {'fillStyle' : '#2E2E2E', 'text' : '0'},
+                 {'fillStyle' : '#019FDC', 'text' : '1000'},
+                 {'fillStyle' : '#B7D06B', 'text' : '100'},
+                 {'fillStyle' : '#2E2E2E', 'text' : '0'},
+                 {'fillStyle' : '#B7D06B', 'text' : '100'},
+             ],
+             'animation' :
+             {
+                 'type'     : 'spinToStop',
+                 'duration' : 5, // durée de l'animation => parametre la vitesse de la roue
+                 'spins'    : 4, //Nombre de tours que va faire la roue
+             }
+       });
 
-      //on stocke le temps que va mettre la roue à s'arreter
-      $scope.time = ($scope.spinWheel.animation.duration) * 1000;
+       //on stocke le temps que va mettre la roue à s'arreter
+       $scope.time = ($scope.spinWheel.animation.duration) * 1000;
 
-      //Variables pour savoir si l'utilisateur a gagné ou perdu
-      $scope.wheelWin = false;
-      $scope.wheelLoose = false;
+       //Booléen pour savoir si l'utilisateur à déja lancée la roue
+       $scope.canSpin = true;
 
-      //Variable qui stockera le prix gagné
-      $scope.prize = "";
+       //Variables pour savoir si l'utilisateur a gagné ou perdu
+       $scope.wheelWin = false;
+       $scope.wheelLoose = false;
 
-      //Fonction pour indiquer à l'utilisateur le quartier sur lequel la roue s'est arretée
-      function alertPrize()
-      {
-        var winningSegment = $scope.spinWheel.getIndicatedSegment();
-        var winningSegmentNb = $scope.spinWheel.getIndicatedSegmentNumber();
-        var color = $scope.spinWheel.segments[winningSegmentNb].fillStyle;
+       //Variable qui stockera le prix gagné
+       $scope.prize = "";
 
-       // On transforme la couleur des quartiers non gagnant en gris
-       for (var x = 1; x < $scope.spinWheel.segments.length; x ++)
+       //Fonction pour indiquer à l'utilisateur le quartier sur lequel la roue s'est arretée
+       function alertPrize()
        {
-           $scope.spinWheel.segments[x].fillStyle = '#34495e';
+         // On gere l'affichage rendu à l'utilisateur
+         setTimeout(function()
+         {
+           if (winningSegment.text == 0)
+           {
+             $scope.wheelLoose = true;
+             $state.go('wheelLoose');
+           }
+           else {
+             $scope.wheelWin = true;
+             $state.go('wheelWin');
+           }
+         },500);
+
+         var winningSegment = $scope.spinWheel.getIndicatedSegment();
+         var winningSegmentNb = $scope.spinWheel.getIndicatedSegmentNumber();
+         var color = $scope.spinWheel.segments[winningSegmentNb].fillStyle;
+
+        // On transforme la couleur des quartiers non gagnant en gris
+        for (var x = 1; x < $scope.spinWheel.segments.length; x ++)
+        {
+            $scope.spinWheel.segments[x].fillStyle = '#34495e';
+        }
+
+        $scope.spinWheel.segments[winningSegmentNb].fillStyle = color;
+
+        //On stocke le prix gagné
+        $scope.prize =  winningSegment.text +" !";
+
+        //On redessine la roue pour que les changements de couleurs soit pris en compte
+        $scope.spinWheel.draw();
        }
 
-       $scope.spinWheel.segments[winningSegmentNb].fillStyle = color;
+       //Fonction pour faire tourner la roue
+       $scope.spin = function()
+       {
+         //Si l'utilisateur n'a pas encore joué on appelle la fonction startAnimation du plugin Winwheel.js
+         if($scope.canSpin)
+         {
+             $scope.spinWheel.startAnimation()
+             $scope.canSpin = false;
 
-       //On stocke le prix gagné
-       $scope.prize =  winningSegment.text +" !";
+             //Une fois l'animation terminée on appelle notre fonction alertPrize()
+             setTimeout(function()
+             {
+               alertPrize();
 
-       //On redessine la roue pour que les changements de couleurs soit pris en compte
-       $scope.spinWheel.draw();
+             },$scope.time); //$scope.time contient la durée de l'animation. On veut que le prix soit indiqué une fois la roue arretée !
 
-       //On change de page en fonction de si on a gagné ou perdu
-        setTimeout(function()
-        {
-          if (winningSegment.text == 0)
-          {
-            $state.go('wheelLoose');
-          }
-          else {
-            $state.go('wheelWin');
-          }
+         }
+       }
 
-        },1500);
-      }
-
-      //Fonction pour faire tourner la roue
-      $scope.spin = function()
-      {
-            $scope.spinWheel.startAnimation()
-
-            //Une fois l'animation terminée on appelle notre fonction alertPrize()
-            setTimeout(function()
-            {
-              alertPrize();
-
-              $scope.spinWheel.stopAnimation(false);  // Stop the animation, false as param so does not call callback function.
-              $scope.spinWheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
-              $scope.spinWheel.draw();
-
-            },$scope.time); //$scope.time contient la durée de l'animation. On veut que le prix soit indiqué une fois la roue arretée !
-      }
-
-    });
-
+     });
     // Controller de la page form
     app.controller('FormCtrl', function ($scope, $ionicModal,$stateParams, $location, $state, ManageScore, $cordovaSQLite, $ionicPlatform,UsersDataService,ThemesDataService) {
 
