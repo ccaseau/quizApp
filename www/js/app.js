@@ -59,7 +59,7 @@ app.run(function($ionicPlatform, $cordovaSQLite, $rootScope,ThemesDataService) {
     }
     //Décommenter ou commenter la ligne de dessous en fonction de si l'on souhaite recopier la base ou garder la précédente.
     dbremove();
-    dbcopy();
+    // dbcopy();
   })
 
 })

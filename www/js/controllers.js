@@ -338,16 +338,22 @@ var app = angular.module('quizApp.controllers', []);
         setTimeout(function()
         {
           // boutonSelect.removeClass('button-energized');
-          if($scope.rightAnswer)
+          if(!$scope.rightAnswer)
           {
-            $scope.color_btn_normal[index]= $scope.true;
-            $scope.background_explication = $scope.true;
+            $scope.color_btn_normal[index]= $scope.false;
+            $scope.background_explication = $scope.false;
+          }
+
+          else if ($scope.timeout)
+          {
+              $scope.color_btn_normal[index]= $scope.false;
+              $scope.background_explication = $scope.false;
           }
 
           else
           {
-              $scope.color_btn_normal[index]= $scope.false;
-              $scope.background_explication = $scope.false;
+              $scope.color_btn_normal[index] = $scope.true;
+              $scope.background_explication = $scope.true
           }
 
         },200);
@@ -396,7 +402,7 @@ var app = angular.module('quizApp.controllers', []);
 
          //On utilise Winwheel.js (plugin javascript) pour parametrer une roue
          $scope.spinWheel = new Winwheel({
-             'numSegments'    : 8, //Nombre de quartiers => permet de parametrer le nombre de prix
+             'numSegments'    : 4, //Nombre de quartiers => permet de parametrer le nombre de prix
              'lineWidth'   : 2,
              'textFillStyle' : 'white',
              'textFontSize' : 35,
@@ -404,14 +410,10 @@ var app = angular.module('quizApp.controllers', []);
              'textAlignment' : 'center',
              'segments'       :
              [
-                 {'fillStyle' : '#2E2E2E', 'text' : '0'}, // On indique à chaque fois la couleur du quartier et le texte qui s'affichera
-                 {'fillStyle' : '#903288', 'text' : '20'},
-                 {'fillStyle' : '#675CA1', 'text' : '200'},
-                 {'fillStyle' : '#2E2E2E', 'text' : '0'},
-                 {'fillStyle' : '#019FDC', 'text' : '1000'},
-                 {'fillStyle' : '#B7D06B', 'text' : '100'},
-                 {'fillStyle' : '#2E2E2E', 'text' : '0'},
-                 {'fillStyle' : '#B7D06B', 'text' : '100'},
+                 {'fillStyle' : '#2E2E2E', 'text' : 'Perdu'}, // On indique à chaque fois la couleur du quartier et le texte qui s'affichera
+                 {'fillStyle' : '#903288', 'text' : 'Gagné'},
+                 {'fillStyle' : '#2E2E2E', 'text' : 'Perdu'},
+                 {'fillStyle' : '#2E2E2E', 'text' : 'Gagné'},
              ],
              'animation' :
              {
@@ -440,7 +442,7 @@ var app = angular.module('quizApp.controllers', []);
          // On gere l'affichage rendu à l'utilisateur
          setTimeout(function()
          {
-           if (winningSegment.text == 0)
+           if (winningSegment.text == 'Perdu')
            {
              $scope.wheelLoose = true;
              $state.go('wheelLoose');
