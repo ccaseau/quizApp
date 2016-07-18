@@ -147,10 +147,11 @@ app.factory('ThemesDataService', function ($cordovaSQLite, $ionicPlatform, $http
         })
       },
 
-      //Retourner le théme dans la bdd
-      createTheme: function (theme) {
-        return $cordovaSQLite.execute(db, 'INSERT INTO Themes (background,font,color_btn,color_right,color_false,color_btn_normal,color_text,color_bar) VALUES (?,?,?,?,?,?,?,?)', [theme.background, theme.font, theme.color_btn,theme.color_right, theme.color_false,theme.color_btn_normal,theme.color_text,theme.color_bar])
+      //Mettre à jour le théme perso
+      updateTheme: function (theme) {
+        return $cordovaSQLite.execute(db, 'UPDATE Themes SET background = "' + theme.background + '",font = "' + theme.font + '",color_btn = "' + theme.color_btn + '",color_right = "' + theme.color_right + '",color_false = "' +  theme.color_false + '",color_btn_normal = "' + theme.color_btn_normal + '",color_text = "' + theme.color_text + '",color_bar = "' + theme.color_bar + '" WHERE id = ' + 1);
       },
+
       //Changer et retourner le n° du theme selectionné par l'utilisateur
       setTheme: function(number)
       {

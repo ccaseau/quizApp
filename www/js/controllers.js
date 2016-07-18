@@ -15,12 +15,15 @@ var app = angular.module('quizApp.controllers', []);
     app.controller('CustomCtrl', function ($scope, $ionicModal,$state,ThemesDataService) {
       console.log("Vous pouvez créer votre théme visuel avant de lancer l'application");
       $scope.theme = [];
-
       $scope.createTheme = function()
       {
-        console.log($scope.theme.background)
-        ThemesDataService.createTheme($scope.theme);
+        ThemesDataService.updateTheme($scope.theme);
         $state.go('home');
+      }
+
+      $scope.next = function()
+      {
+        $state.go('home')
       }
 
     });
@@ -34,11 +37,11 @@ var app = angular.module('quizApp.controllers', []);
       //Recuperation du theme
         $scope.getThemeFromDb = function()
         {
-        ThemesDataService.getAll(function(data){
-            $scope.background_img = {"background-image": "url("+data[ThemesDataService.getTheme()].background+")"};
-            $scope.text_color = {"color": data[ThemesDataService.getTheme()].color_text};
-            $scope.text_font = {"font-family" :data[ThemesDataService.getTheme()].font};
-            $scope.color_btn = {"background-color": data[ThemesDataService.getTheme()].color_btn}
+          ThemesDataService.getAll(function(data){
+              $scope.background_img = {"background-image": "url("+data[ThemesDataService.getTheme()].background+")"};
+              $scope.text_color = {"color": data[ThemesDataService.getTheme()].color_text};
+              $scope.text_font = {"font-family" :data[ThemesDataService.getTheme()].font};
+              $scope.color_btn = {"background-color": data[ThemesDataService.getTheme()].color_btn}
           });
         }
 
@@ -56,29 +59,28 @@ var app = angular.module('quizApp.controllers', []);
       //********************************Fin Customisation dynamique************************************* //
 
       //Permettre le changement de thème par l'utilisateur
-      $scope.themeSelect = 'Light';
+      $scope.themeSelect = 'Mon théme';
       $scope.showSelectValue = function (themeSelect)
       {
-        if (themeSelect == 'Light')
+        if (themeSelect == 'Mon théme')
         {
           ThemesDataService.setTheme(0);
         }
 
-        else if (themeSelect == 'Dark')
+        else if (themeSelect == 'Light')
         {
           ThemesDataService.setTheme(1);
         }
 
-        else if (themeSelect == 'Colorfull')
+        else if (themeSelect == 'Dark')
         {
           ThemesDataService.setTheme(2);
         }
 
-        else {
+        else if (themeSelect == 'Colorfull')
           {
             ThemesDataService.setTheme(3);
           }
-        }
           $scope.getThemeFromDb();
       }
 
