@@ -7,10 +7,24 @@ var app = angular.module('quizApp.controllers', []);
       console.log("Chargement de la bdd");
       setTimeout(function()
       {
-          $state.go('home');
-      },500);
+          $state.go('custom');
+      },800);
 
     });
+
+    app.controller('CustomCtrl', function ($scope, $ionicModal,$state,ThemesDataService) {
+      console.log("Vous pouvez créer votre théme visuel avant de lancer l'application");
+      $scope.theme = [];
+
+      $scope.createTheme = function()
+      {
+        console.log($scope.theme.background)
+        ThemesDataService.createTheme($scope.theme);
+        $state.go('home');
+      }
+
+    });
+
     // Controller de la page home
     app.controller('HomeCtrl', function ($scope, $ionicModal,ThemesDataService) {
       console.log("vous êtes sur la page home");
@@ -55,9 +69,15 @@ var app = angular.module('quizApp.controllers', []);
           ThemesDataService.setTheme(1);
         }
 
-        else
+        else if (themeSelect == 'Colorfull')
         {
           ThemesDataService.setTheme(2);
+        }
+
+        else {
+          {
+            ThemesDataService.setTheme(3);
+          }
         }
           $scope.getThemeFromDb();
       }
@@ -322,7 +342,7 @@ var app = angular.module('quizApp.controllers', []);
             $scope.background_explication = $scope.true;
           }
 
-          else 
+          else
           {
               $scope.color_btn_normal[index]= $scope.false;
               $scope.background_explication = $scope.false;

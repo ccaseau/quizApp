@@ -1,0 +1,46 @@
+<ion-view>
+  <ion-content>
+    <div class="row row-center row-responsive-lg ">
+      <div class="col text-center">
+        <form ng-submit = "createTheme()">
+          <h1> Créez votre propre théme </h1>
+          <div class="list">
+            <label class="item item-input">
+              <span class="input-label">Background image</span>
+              <input ng-model = "theme.background" type="text">
+            </label>
+            <label class="item item-input">
+              <span class="input-label">Police</span>
+              <input  ng-model = "theme.font" type="text">
+            </label>
+            <label class="item item-input">
+              <span class="input-label">Couleur bouton</span>
+              <input ng-model = "theme.color_btn" type="text">
+            </label>
+            <label class="item item-input">
+              <span class="input-label">Couleur juste</span>
+              <input ng-model = "theme.color_right" type="text" >
+            </label>
+            <label class="item item-input">
+              <span class="input-label">Couleur Faux</span>
+              <input ng-model ="theme.color_false" type="text">
+            </label>
+            <label class="item item-input">
+              <span class="input-label">Couleur normal</span>
+              <input ng-model = "theme.color_btn_normal" type="text">
+            </label>
+            <label class="item item-input">
+              <span class="input-label">Couleur texte</span>
+              <input ng-model = "theme.color_text" type="text">
+            </label>
+            <label class="item item-input">
+              <span class="input-label">Couleur bar</span>
+              <input ng-model = "theme.color_bar" type="text">
+            </label>
+          </div>
+            <button type="submit" class="button button-dark button-big ">Créer </button>
+        </form>
+    </div>
+  </div>
+  </ion-content>
+</ion-view>
