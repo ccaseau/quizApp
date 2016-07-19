@@ -9942,6 +9942,10 @@ span {
   margin-right: auto;
   margin-top: 20px !important; }
 
+#TxtPourcentage {
+  font-size: 20px;
+  font-weight: bold; }
+
 #canvas {
   z-index: 1; }
 
@@ -10088,7 +10092,7 @@ label.item.has-error {
 #pourcentage {
   position: fixed;
   bottom: 0 !important;
-  left: 0 !important; }
+  margin-bottom: -28px !important; }
 
 .ion-sad {
   font-size: 180px !important; }
@@ -10115,7 +10119,7 @@ label.item.has-error {
   z-index: 99998;
   box-shadow: 0px 0px 10px 2px !important;
   /* Inherits the font color */
-  height: 18px !important;
+  height: 24px !important;
   opacity: 0;
   /* Add CSS3 styles for transition smoothing */
   -webkit-transition: all 0.5s ease-in-out;
@@ -10131,7 +10135,8 @@ label.item.has-error {
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 99999; }
+  z-index: 99999;
+  width: 92% !important; }
 
 #barQuestion {
   padding: 15px 10%;

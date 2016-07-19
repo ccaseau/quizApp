@@ -7,8 +7,8 @@ var app = angular.module('quizApp.controllers', []);
       console.log("Chargement de la bdd");
       setTimeout(function()
       {
-          $state.go('custom');
-      },800);
+          $state.go('home');
+      },950);
 
     });
 
@@ -124,7 +124,6 @@ var app = angular.module('quizApp.controllers', []);
       $scope.timeQst = 5; //On set à 5 secondes le timer pour lire la question
       $scope.time = 20; //On set à 20 secondes pour répondre
 
-
       //Timer pour lire la question
       var barQuestion = new ProgressBar.Line('#barQuestion', {
       from: { color: '#97CE68'},
@@ -218,12 +217,18 @@ var app = angular.module('quizApp.controllers', []);
           $scope.progressbar = ngProgressFactory.createInstance();
           $scope.progressbar.setColor($scope.color_bar.color);
           $scope.progressbar.set($scope.progression);
+          $scope.spacingprogress = ($scope.progression-10)*10+"px";
+          console.log($scope.spacingprogress)
+          $scope.spacing = {"margin-left": $scope.spacingprogress, "width": '150px'};
         })
         ReponsesDataService.getAll(function(data){
         //On rempli nos $scope avec les reponses de la base de donnée
         $scope.question.reponse = data;
       })
     })
+
+
+      //Gere la marge gauche de l'affichage du pourcentage pour qu'il suive la barre de progression
 
       // Fonction qui charge la question suivante en incrémentant un compteur
       $scope.getNextQuestion = function() {
@@ -291,6 +296,8 @@ var app = angular.module('quizApp.controllers', []);
             $scope.modal.hide().then(function() {
               //On augmente le pourcentage de la barre de progression
               $scope.progression = $scope.progression +$scope.pourcentage;
+              $scope.spacingprogress = ($scope.progression-10)*10+"px";
+              $scope.spacing = {"margin-left": $scope.spacingprogress, "width": '150px'};
               $scope.progressbar.set($scope.progression);
 
               //Si la progression est à 100% on doit faire disparaitre la barre.
