@@ -4,24 +4,30 @@
   <ion-content>
 
     <div class="row responsive-sm row-center">
-
       <div class="col text-center">
         <div ng-show ="!viewReponse" id="barQuestion"><p ng-style = "margeStyleObj([text_font,text_color])" class ="progressbar_label">{{timeQst}} s</p></div>
         <div ng-show ="viewReponse" class="fade" id="barReponse"><p ng-style = "margeStyleObj([text_font,text_color])" class ="progressbar_label">{{time}} s</p></div>
         <h3 ng-style = "margeStyleObj([text_font,text_color])" class = "base-class" ng-class = "!viewReponse ? 'my-class' : ' '">{{question[count].intitule}}</h3>
         <div ng-show="viewReponse" class ="fade">
           <img class ="question_img" ng-src="{{question[count].path}}">
-          <!-- <img class ="question_img" ng-src="http://placehold.it/600x300"> -->
-          <div class = "row responsive-lg wrap">
-            <div class="col col-50" ng-repeat='r in question.reponse[count]'>
+           <div class = "row responsive-lg wrap">
+            <div class="col col-50" ng-if="$index%2==0" ng-repeat='r in question.reponse[count]'>
               <button ng-style = "margeStyleObj([color_btn_normal[$index],text_font])" id ="bouton{{+$index}}" class="button button-block button-dark" ng-disabled="isActive" ng-click="getAnswer(r,question[count],$index)">
                 {{r}}
               </button>
             </div>
           </div>
-        <div>
+          <div class = "row responsive-lg wrap">
+           <div class="col col-50" ng-if="$index%2==1" ng-repeat='r in question.reponse[count]'>
+             <button ng-style = "margeStyleObj([color_btn_normal[$index],text_font])" id ="bouton{{+$index}}" class="button button-block button-dark" ng-disabled="isActive" ng-click="getAnswer(r,question[count],$index)">
+               {{r}}
+             </button>
+           </div>
+         </div>
+         </div>
+        </div>
       </div>
-    </div>
+
     <div id="pourcentage">
       <h3 id="TxtPourcentage" ng-style = "margeStyleObj([color_bar,text_font,spacing])" >{{progression  | number:0}}%</h3>
     </div>

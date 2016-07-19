@@ -32,7 +32,6 @@ var app = angular.module('quizApp.controllers', []);
     app.controller('HomeCtrl', function ($scope, $ionicModal,ThemesDataService) {
       console.log("vous êtes sur la page home");
 
-
       //***********************************Customisation dynamique************************************* //
       //Recuperation du theme
         $scope.getThemeFromDb = function()
