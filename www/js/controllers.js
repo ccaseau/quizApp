@@ -121,7 +121,7 @@ var app = angular.module('quizApp.controllers', []);
 
       //****Timer**** Plugin progressbar.js
       $scope.timeQst = 5; //On set à 5 secondes le timer pour lire la question
-      $scope.time = 20; //On set à 20 secondes pour répondre
+      $scope.time = 400; //On set à 20 secondes pour répondre
 
       //Timer pour lire la question
       var barQuestion = new ProgressBar.Line('#barQuestion', {
@@ -216,7 +216,7 @@ var app = angular.module('quizApp.controllers', []);
           $scope.progressbar = ngProgressFactory.createInstance();
           $scope.progressbar.setColor($scope.color_bar.color);
           $scope.progressbar.set($scope.progression);
-          $scope.spacingprogress = ($scope.progression-10)*10+"px";
+          $scope.spacingprogress = ($scope.progression*6.3)+"%";
           console.log($scope.spacingprogress)
           $scope.spacing = {"margin-left": $scope.spacingprogress, "width": '150px'};
         })
@@ -283,7 +283,7 @@ var app = angular.module('quizApp.controllers', []);
           {
             $scope.viewReponse = true;
             $scope.StartTimer();
-            $scope.time = 20;
+            $scope.time = 400;
             barReponse.animate(1);
 
             //On remet nos booléen à false pour tester la prochaine réponse de l'utilisateur
@@ -295,7 +295,7 @@ var app = angular.module('quizApp.controllers', []);
             $scope.modal.hide().then(function() {
               //On augmente le pourcentage de la barre de progression
               $scope.progression = $scope.progression +$scope.pourcentage;
-              $scope.spacingprogress = ($scope.progression-10)*10+"px";
+              $scope.spacingprogress = ($scope.progression*6.3)+"%"
               $scope.spacing = {"margin-left": $scope.spacingprogress, "width": '150px'};
               $scope.progressbar.set($scope.progression);
 

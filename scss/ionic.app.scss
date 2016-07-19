@@ -386,8 +386,7 @@ label.item.has-error {
 {
   position: fixed;
   bottom:0!important;
-  margin-bottom: -28px!important;
-
+  margin-bottom: -26px!important;
 }
 
 .ion-sad
@@ -454,6 +453,11 @@ label.item.has-error {
 #barQuestion> svg {
     width: 100%;
     display: block;
+}
+
+.button-question
+{
+  margin-bottom : -5px !important
 }
 
 .progressbar_label

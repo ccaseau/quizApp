@@ -12,14 +12,14 @@
           <img class ="question_img" ng-src="{{question[count].path}}">
            <div class = "row responsive-lg wrap">
             <div class="col col-50" ng-if="$index%2==0" ng-repeat='r in question.reponse[count]'>
-              <button ng-style = "margeStyleObj([color_btn_normal[$index],text_font])" id ="bouton{{+$index}}" class="button button-block button-dark" ng-disabled="isActive" ng-click="getAnswer(r,question[count],$index)">
+              <button ng-style = "margeStyleObj([color_btn_normal[$index],text_font])" id ="bouton{{+$index}}" class="button button-block button-dark button-question" ng-disabled="isActive" ng-click="getAnswer(r,question[count],$index)">
                 {{r}}
               </button>
             </div>
           </div>
           <div class = "row responsive-lg wrap">
            <div class="col col-50" ng-if="$index%2==1" ng-repeat='r in question.reponse[count]'>
-             <button ng-style = "margeStyleObj([color_btn_normal[$index],text_font])" id ="bouton{{+$index}}" class="button button-block button-dark" ng-disabled="isActive" ng-click="getAnswer(r,question[count],$index)">
+             <button ng-style = "margeStyleObj([color_btn_normal[$index],text_font])" id ="bouton{{+$index}}" class="button button-block button-dark button-question" ng-disabled="isActive" ng-click="getAnswer(r,question[count],$index)">
                {{r}}
              </button>
            </div>
@@ -32,9 +32,7 @@
       <h3 id="TxtPourcentage" ng-style = "margeStyleObj([color_bar,text_font,spacing])" >{{progression  | number:0}}%</h3>
     </div>
   </div>
-
   </ion-content>
-
 
     <!-- Template pour la modal popup -> explications et bonne réponse qui s'affiche -->
     <script id="explications.html" type="text/ng-template">
