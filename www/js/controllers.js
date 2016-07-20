@@ -7,7 +7,7 @@ var app = angular.module('quizApp.controllers', []);
       console.log("Chargement de la bdd");
       setTimeout(function()
       {
-          $state.go('home');
+          $state.go('wheel');
       },950);
 
     });
@@ -118,7 +118,7 @@ var app = angular.module('quizApp.controllers', []);
       $scope.rightAnswer = false; //variable pour savoir si l'utilisateur à répondu juste ou faux
       $scope.timeout = false; //variable pour savoir si l'utilisateur n'a pas répondu a temps
       $scope.viewReponse = false; //variable pour n'afficher les 4 propositions qu'aprés 5 secondes de timer
-      $scope.nbQst = 3; // le nombre de question que l'on pioche (pour l'instant definie en local)
+      $scope.nbQst = 2; // le nombre de question que l'on pioche (pour l'instant definie en local)
 
       //****Timer**** Plugin progressbar.js
       $scope.timeQst = 5; //On set à 5 secondes le timer pour lire la question
@@ -388,7 +388,28 @@ var app = angular.module('quizApp.controllers', []);
 
     //Controller de la page wheel
     //Controller de la page wheel
-     app.controller('WheelCtrl', function ($scope, $ionicModal,$location,$state,ThemesDataService) {
+     app.controller('WheelCtrl', function ($scope, $ionicModal,$location,$state,ThemesDataService,CadeauxDataService) {
+
+       //Variables
+       var TabAngle = new Array();
+       TabAngle["Montre"] = 45;
+       TabAngle["Stylo"] = 135;
+       TabAngle["USB"] = 225;
+       TabAngle["Perdu"] = 315;
+       $scope.cadeau = ''; //Set le lot de maniere local !
+
+       var now = new Date();
+       var annee   = now.getFullYear();
+       var mois    = ('0'+(now.getMonth()+1)).slice(-2);
+       var jour    = ('0'+now.getDate()   ).slice(-2);
+       var heure   = ('0'+now.getHours()  ).slice(-2);
+       var minute  = ('0'+now.getMinutes()).slice(-2);
+       var seconde = ('0'+now.getSeconds()).slice(-2);
+       var date = annee+"-"+mois+"-"+jour+" "+heure+":"+minute+":"+seconde;
+       var date2 = annee+"-"+mois+"-"+jour+" 23:59:59";
+
+       console.log(date);
+
 
        $scope.$on('$ionicView.enter', function(e) {
          ThemesDataService.getAll(function(data){
@@ -399,6 +420,26 @@ var app = angular.module('quizApp.controllers', []);
              $scope.color_btn_normal = {"background-color": data[ThemesDataService.getTheme()].color_btn_normal};
 
            });
+
+           CadeauxDataService.getCadeau(date,function(data){
+             console.log(data);
+             if (data.length == 0)
+             {
+               $scope.cadeau = 'Perdu';
+               console.log('plus de cadeaux!')
+             }
+
+             else
+             {
+               $scope.cadeau = data[0].Texte;
+               CadeauxDataService.SubstrQuantite(data[0].Id);
+             }
+              console.log('mon cadeau : "'+$scope.cadeau+'"')
+           })
+
+           //Booléen pour savoir si l'utilisateur à déja lancée la roue
+           $scope.canSpin = true;
+
          });
 
        $scope.margeStyleObj = function(objectList) {
@@ -413,31 +454,30 @@ var app = angular.module('quizApp.controllers', []);
          //On utilise Winwheel.js (plugin javascript) pour parametrer une roue
          $scope.spinWheel = new Winwheel({
              'numSegments'    : 4, //Nombre de quartiers => permet de parametrer le nombre de prix
-             'lineWidth'   : 2,
+             'lineWidth'   : 3.5,
              'textFillStyle' : 'white',
              'textFontSize' : 35,
              'innerRadius'     : 20,
              'textAlignment' : 'center',
              'segments'       :
              [
-                 {'fillStyle' : '#2E2E2E', 'text' : 'Perdu'}, // On indique à chaque fois la couleur du quartier et le texte qui s'affichera
-                 {'fillStyle' : '#903288', 'text' : 'Gagné'},
+                 {'fillStyle' : '#3498db', 'text' : 'Montre'}, // On indique à chaque fois la couleur du quartier et le texte qui s'affichera
+                 {'fillStyle' : '#903288', 'text' : 'Stylo'},
+                 {'fillStyle' : '#f1c40f', 'text' : 'USB'},
                  {'fillStyle' : '#2E2E2E', 'text' : 'Perdu'},
-                 {'fillStyle' : '#903288', 'text' : 'Gagné'},
              ],
              'animation' :
              {
                  'type'     : 'spinToStop',
-                 'duration' : 5, // durée de l'animation => parametre la vitesse de la roue
+                 'duration' : 3, // durée de l'animation => parametre la vitesse de la roue
                  'spins'    : 4, //Nombre de tours que va faire la roue
              }
        });
 
+
        //on stocke le temps que va mettre la roue à s'arreter
        $scope.time = ($scope.spinWheel.animation.duration) * 1000;
 
-       //Booléen pour savoir si l'utilisateur à déja lancée la roue
-       $scope.canSpin = true;
 
        //Variables pour savoir si l'utilisateur a gagné ou perdu
        $scope.wheelWin = false;
@@ -450,44 +490,26 @@ var app = angular.module('quizApp.controllers', []);
        function alertPrize()
        {
          // On gere l'affichage rendu à l'utilisateur
+         var winningSegment = $scope.spinWheel.getIndicatedSegment();
+
          setTimeout(function()
          {
            if (winningSegment.text == 'Perdu')
            {
-             $scope.wheelLoose = true;
-             $state.go('wheelLoose');
+            $state.go('wheelLoose');
            }
            else {
-             $scope.wheelWin = true;
-             $state.go('wheelWin');
+            $state.go('wheelWin');
            }
-         },500);
-
-         var winningSegment = $scope.spinWheel.getIndicatedSegment();
-         var winningSegmentNb = $scope.spinWheel.getIndicatedSegmentNumber();
-         var color = $scope.spinWheel.segments[winningSegmentNb].fillStyle;
-
-        // On transforme la couleur des quartiers non gagnant en gris
-        for (var x = 1; x < $scope.spinWheel.segments.length; x ++)
-        {
-            $scope.spinWheel.segments[x].fillStyle = '#34495e';
-        }
-
-        $scope.spinWheel.segments[winningSegmentNb].fillStyle = color;
-
-        //On stocke le prix gagné
-        $scope.prize =  winningSegment.text +" !";
-
-        //On redessine la roue pour que les changements de couleurs soit pris en compte
-        $scope.spinWheel.draw();
+         },1000);
        }
-
        //Fonction pour faire tourner la roue
        $scope.spin = function()
        {
          //Si l'utilisateur n'a pas encore joué on appelle la fonction startAnimation du plugin Winwheel.js
          if($scope.canSpin)
          {
+             $scope.spinWheel.animation.stopAngle = TabAngle[$scope.cadeau];
              $scope.spinWheel.startAnimation()
              $scope.canSpin = false;
 
@@ -610,7 +632,7 @@ var app = angular.module('quizApp.controllers', []);
     $scope.$on('$ionicView.enter', function(e) {
       setTimeout(function()
       {
-        $state.go('home');
+        $state.go('wheel');
         console.log("retour à la page home !")
 
       },5000);

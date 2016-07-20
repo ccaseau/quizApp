@@ -130,6 +130,29 @@ app.factory('UsersDataService', function ($cordovaSQLite, $ionicPlatform) {
   }
 })
 
+//Table Cadeaux
+app.factory('CadeauxDataService', function ($cordovaSQLite, $ionicPlatform) {
+
+  return {
+    //Retourner la dotation aléatoire
+    getCadeau: function(date,callback){
+         $ionicPlatform.ready(function () {
+           $cordovaSQLite.execute(db,'SELECT Id,Texte FROM Cadeaux WHERE Quantite > 0 AND ShowTime <= "'+date+'" ORDER BY Obligatoire DESC, ShowTime DESC, Id DESC').then(function (results) {
+             var data = []
+             for (i = 0, max = results.rows.length; i < max; i++) {
+               data.push(results.rows.item(i))
+             }
+             callback(data)
+           })
+        })
+      },
+      //Supprimer un utilisateur
+      SubstrQuantite: function(Cadeauid){
+         return $cordovaSQLite.execute(db, 'UPDATE Cadeaux SET Quantite=(Quantite-1) WHERE Id = ?', [Cadeauid])
+       },
+    }
+})
+
 //Table Themes
 app.factory('ThemesDataService', function ($cordovaSQLite, $ionicPlatform, $http) {
   var theme = 0;
