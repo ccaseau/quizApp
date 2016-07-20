@@ -86,7 +86,7 @@ var app = angular.module('quizApp.controllers', []);
     });
 
     // Controller de la page question
-    app.controller('QstCtrl', function ($scope,$interval,$filter, $ionicModal,$location,$state,ManageScore, $state, $ionicPopover,QuestionsDataService,ReponsesDataService,ThemesDataService,ngProgressFactory) {
+    app.controller('QstCtrl', function ($scope,$interval,$filter,$ionicModal,$location,$state,ManageScore, $state, $ionicPopover,QuestionsDataService,ThemesDataService,ngProgressFactory) {
 
       $scope.$on('$ionicView.enter', function(e) {
         ThemesDataService.getAll(function(data){
@@ -118,10 +118,11 @@ var app = angular.module('quizApp.controllers', []);
       $scope.rightAnswer = false; //variable pour savoir si l'utilisateur à répondu juste ou faux
       $scope.timeout = false; //variable pour savoir si l'utilisateur n'a pas répondu a temps
       $scope.viewReponse = false; //variable pour n'afficher les 4 propositions qu'aprés 5 secondes de timer
+      $scope.nbQst = 3; // le nombre de question que l'on pioche (pour l'instant definie en local)
 
       //****Timer**** Plugin progressbar.js
       $scope.timeQst = 5; //On set à 5 secondes le timer pour lire la question
-      $scope.time = 400; //On set à 20 secondes pour répondre
+      $scope.time = 20; //On set à 20 secondes pour répondre
 
       //Timer pour lire la question
       var barQuestion = new ProgressBar.Line('#barQuestion', {
@@ -149,7 +150,7 @@ var app = angular.module('quizApp.controllers', []);
       },
     });
 
-      //Timer temps de réponse ****
+      //Timer temps de réponse
         $scope.StopTimer = function () {
           //Cancel the Timer.
             if (angular.isDefined($scope.Timer)) {
@@ -170,9 +171,8 @@ var app = angular.module('quizApp.controllers', []);
 
                }, 1000);
            };
-      //***********
 
-      //Timer temps de question ****
+      //Timer temps de question
         $scope.StopTimerQst = function () {
             if (angular.isDefined($scope.TimerQst)) {
               $interval.cancel($scope.TimerQst);
@@ -189,45 +189,52 @@ var app = angular.module('quizApp.controllers', []);
 
                }, 1000);
            };
-      //************
 
-      $scope.question = [];
-      $scope.question.reponse = [];
+        $scope.question = [];
+        $scope.question.reponse = [];
 
-      $scope.$on('$ionicView.enter', function(e) {
+          $scope.$on('$ionicView.enter', function(e) {
 
+          // On remet le score à 0
           $scope.score = ManageScore.reset();
+
+          // On lance le timer de la question et on anime la barre
           $scope.StartTimerQst();
           barQuestion.animate(1);
+
+          // 5s plus tard on lance le timer de la réponse
           setTimeout(function()
           {
             $scope.StartTimer();
             barReponse.animate(1);
             $scope.viewReponse = true;
           },5000);
-          QuestionsDataService.getAll(function(data){
-          //On rempli nos $scope avec les questions de la base de donnée
-          $scope.question = data;
-          var size = data.length;
+
+          //On récupere les questions de notre bdd en utilisant le service QuestionsDataService
+          QuestionsDataService.getRandomQuestion($scope.nbQst,function(dataQ,dataR){
+
+          //On rempli nos variables locales avec les questions de la base de donnée
+          $scope.question = dataQ;
+          $scope.question.reponse = dataR;
+
+          //On stocke le nombre de questions dans size et on l'envoi dans le service ManageScore pour partager la valeur entre les controlleurs
+          var size = dataQ.length;
           ManageScore.setTotal(size);
-          //On gére le pourcentage de la barre en fonction du nombre de questions (100% divisé par le nombre de question dans notre bdd)
+
+          //On gére le pourcentage de la barre en fonction du nombre de questions (100%/size)
           $scope.pourcentage = 100 / (size);
+
+          //$scope.progression = la progression actuelle de la barre & $scope.pourcentage = le pas d'évolution entre chaque question
           $scope.progression = $scope.pourcentage;
+
+          //On crée la barre de progression, on change sa couleur, son avancée, et l'affichage du texte à côté
           $scope.progressbar = ngProgressFactory.createInstance();
           $scope.progressbar.setColor($scope.color_bar.color);
           $scope.progressbar.set($scope.progression);
           $scope.spacingprogress = ($scope.progression*6.3)+"%";
-          console.log($scope.spacingprogress)
           $scope.spacing = {"margin-left": $scope.spacingprogress, "width": '150px'};
         })
-        ReponsesDataService.getAll(function(data){
-        //On rempli nos $scope avec les reponses de la base de donnée
-        $scope.question.reponse = data;
-      })
     })
-
-
-      //Gere la marge gauche de l'affichage du pourcentage pour qu'il suive la barre de progression
 
       // Fonction qui charge la question suivante en incrémentant un compteur
       $scope.getNextQuestion = function() {
@@ -240,14 +247,11 @@ var app = angular.module('quizApp.controllers', []);
           {
               $scope.count = $scope.count + 1;
           }
-
           else
           {
               $location.path("form");
           }
-
         },250);
-
       };
 
       //**************Fonction pour les explications******************//
@@ -283,7 +287,7 @@ var app = angular.module('quizApp.controllers', []);
           {
             $scope.viewReponse = true;
             $scope.StartTimer();
-            $scope.time = 400;
+            $scope.time = 20;
             barReponse.animate(1);
 
             //On remet nos booléen à false pour tester la prochaine réponse de l'utilisateur
@@ -419,7 +423,7 @@ var app = angular.module('quizApp.controllers', []);
                  {'fillStyle' : '#2E2E2E', 'text' : 'Perdu'}, // On indique à chaque fois la couleur du quartier et le texte qui s'affichera
                  {'fillStyle' : '#903288', 'text' : 'Gagné'},
                  {'fillStyle' : '#2E2E2E', 'text' : 'Perdu'},
-                 {'fillStyle' : '#2E2E2E', 'text' : 'Gagné'},
+                 {'fillStyle' : '#903288', 'text' : 'Gagné'},
              ],
              'animation' :
              {
