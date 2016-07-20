@@ -7,7 +7,7 @@ var app = angular.module('quizApp.controllers', []);
       console.log("Chargement de la bdd");
       setTimeout(function()
       {
-          $state.go('home');
+          $state.go('wheel');
       },950);
 
     });
@@ -118,7 +118,7 @@ var app = angular.module('quizApp.controllers', []);
       $scope.rightAnswer = false; //variable pour savoir si l'utilisateur à répondu juste ou faux
       $scope.timeout = false; //variable pour savoir si l'utilisateur n'a pas répondu a temps
       $scope.viewReponse = false; //variable pour n'afficher les 4 propositions qu'aprés 5 secondes de timer
-      $scope.nbQst = 3; // le nombre de question que l'on pioche (pour l'instant definie en local)
+      $scope.nbQst = 2; // le nombre de question que l'on pioche (pour l'instant definie en local)
 
       //****Timer**** Plugin progressbar.js
       $scope.timeQst = 5; //On set à 5 secondes le timer pour lire la question
@@ -420,18 +420,19 @@ var app = angular.module('quizApp.controllers', []);
              'textAlignment' : 'center',
              'segments'       :
              [
-                 {'fillStyle' : '#2E2E2E', 'text' : 'Perdu'}, // On indique à chaque fois la couleur du quartier et le texte qui s'affichera
-                 {'fillStyle' : '#903288', 'text' : 'Gagné'},
+                 {'fillStyle' : '#3498db', 'text' : 'Montre'}, // On indique à chaque fois la couleur du quartier et le texte qui s'affichera
+                 {'fillStyle' : '#903288', 'text' : 'Stylo'},
+                 {'fillStyle' : '#f1c40f', 'text' : 'USB'},
                  {'fillStyle' : '#2E2E2E', 'text' : 'Perdu'},
-                 {'fillStyle' : '#903288', 'text' : 'Gagné'},
              ],
              'animation' :
              {
                  'type'     : 'spinToStop',
-                 'duration' : 5, // durée de l'animation => parametre la vitesse de la roue
-                 'spins'    : 4, //Nombre de tours que va faire la roue
+                 'duration' : 3, // durée de l'animation => parametre la vitesse de la roue
+                 'spins'    : 3, //Nombre de tours que va faire la roue
              }
        });
+
 
        //on stocke le temps que va mettre la roue à s'arreter
        $scope.time = ($scope.spinWheel.animation.duration) * 1000;
@@ -455,11 +456,11 @@ var app = angular.module('quizApp.controllers', []);
            if (winningSegment.text == 'Perdu')
            {
              $scope.wheelLoose = true;
-             $state.go('wheelLoose');
+            //  $state.go('wheelLoose');
            }
            else {
              $scope.wheelWin = true;
-             $state.go('wheelWin');
+            //  $state.go('wheelWin');
            }
          },500);
 
@@ -482,12 +483,19 @@ var app = angular.module('quizApp.controllers', []);
         $scope.spinWheel.draw();
        }
 
+       var TabAngle = new Array();
+       TabAngle["Montre"] = 45;
+       TabAngle["Stylo"] = 52;
+       TabAngle["USB"] = 225;
+       TabAngle["Perdu"] = 315;
+       $scope.random = "Montre";
        //Fonction pour faire tourner la roue
        $scope.spin = function()
        {
          //Si l'utilisateur n'a pas encore joué on appelle la fonction startAnimation du plugin Winwheel.js
          if($scope.canSpin)
          {
+             $scope.spinWheel.animation.stopAngle = TabAngle[$scope.random];
              $scope.spinWheel.startAnimation()
              $scope.canSpin = false;
 

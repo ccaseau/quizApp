@@ -28,6 +28,11 @@ ion-view
   background-size : 100% auto;
 }
 
+#wheel-text
+{
+  padding-bottom:25px!important;
+}
+
 .button-big
 {
   margin-top:30px;
@@ -219,7 +224,7 @@ h1
 
   //Pour rendre la roue la plus responsive que possible -> à ameliorer
   .scalingWheel{
-
+    margin-top:25px!important;
       @media screen and (max-width: 800px)
       {
           transform: scale(.9);

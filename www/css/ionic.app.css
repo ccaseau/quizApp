@@ -9848,6 +9848,9 @@ ion-view {
   background-repeat: no-repeat;
   background-size: 100% auto; }
 
+#wheel-text {
+  padding-bottom: 25px !important; }
+
 .button-big {
   margin-top: 30px;
   height: 70px;
@@ -9973,57 +9976,47 @@ h1 {
   flex-wrap: wrap;
   -webkit-flex-wrap: wrap; }
 
-@media screen and (max-width: 800px) {
-  .scalingWheel {
-    transform: scale(0.9); } }
-
-@media screen and (max-width: 600px) {
-  .scalingWheel {
-    transform: scale(0.7); } }
-
-@media screen and (max-width: 420px) {
-  .scalingWheel {
-    transform: scale(0.65); } }
-
-@media screen and (max-width: 340px) {
-  .scalingWheel {
-    transform: scale(0.6); } }
-
-@media screen and (max-height: 600px) {
-  .scalingWheel {
-    transform: scale(0.8); } }
-
-@media screen and (max-height: 580px) {
-  .scalingWheel {
-    transform: scale(0.65); } }
-
-@media screen and (max-height: 380px) {
-  .scalingWheel {
-    transform: scale(0.58); } }
-
-@media screen and (max-width: 567px) {
-  .scalingWheel {
-    margin-top: -100px !important; } }
-
-@media screen and (max-height: 667px) {
-  .scalingWheel {
-    margin-top: -30px !important; } }
-
-@media screen and (max-width: 500px) {
-  .scalingWheel {
-    margin-left: -15px !important; } }
-
-@media screen and (max-width: 440px) {
-  .scalingWheel {
-    margin-left: -55px !important; } }
-
-@media screen and (max-width: 380px) {
-  .scalingWheel {
-    margin-left: -82px !important; } }
-
-@media screen and (max-width: 320px) {
-  .scalingWheel {
-    margin-left: -105px !important; } }
+.scalingWheel {
+  margin-top: 25px !important; }
+  @media screen and (max-width: 800px) {
+    .scalingWheel {
+      transform: scale(0.9); } }
+  @media screen and (max-width: 600px) {
+    .scalingWheel {
+      transform: scale(0.7); } }
+  @media screen and (max-width: 420px) {
+    .scalingWheel {
+      transform: scale(0.65); } }
+  @media screen and (max-width: 340px) {
+    .scalingWheel {
+      transform: scale(0.6); } }
+  @media screen and (max-height: 600px) {
+    .scalingWheel {
+      transform: scale(0.8); } }
+  @media screen and (max-height: 580px) {
+    .scalingWheel {
+      transform: scale(0.65); } }
+  @media screen and (max-height: 380px) {
+    .scalingWheel {
+      transform: scale(0.58); } }
+  @media screen and (max-width: 567px) {
+    .scalingWheel {
+      margin-top: -100px !important; } }
+  @media screen and (max-height: 667px) {
+    .scalingWheel {
+      margin-top: -30px !important; } }
+  @media screen and (max-width: 500px) {
+    .scalingWheel {
+      margin-left: -15px !important; } }
+  @media screen and (max-width: 440px) {
+    .scalingWheel {
+      margin-left: -55px !important; } }
+  @media screen and (max-width: 380px) {
+    .scalingWheel {
+      margin-left: -82px !important; } }
+  @media screen and (max-width: 320px) {
+    .scalingWheel {
+      margin-left: -105px !important; } }
 
 form {
   margin-top: 20px;
