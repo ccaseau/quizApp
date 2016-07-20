@@ -42,9 +42,8 @@ app.factory('ManageScore', function(){
 app.factory('QuestionsDataService', function ($cordovaSQLite, $ionicPlatform) {
 
   return {
-
     //Retourner les questions de la base de donnée
-    getAll: function(callback){
+    getQuestion: function(callback){
          $ionicPlatform.ready(function () {
            $cordovaSQLite.execute(db, 'SELECT * FROM Questions').then(function (results) {
              var data = []
@@ -55,28 +54,30 @@ app.factory('QuestionsDataService', function ($cordovaSQLite, $ionicPlatform) {
            })
         })
       },
-  }
-})
 
-//Table Reponses
-app.factory('ReponsesDataService', function ($cordovaSQLite, $ionicPlatform) {
+      getRandomQuestion: function(nb_qst,callback){
+           $ionicPlatform.ready(function () {
+             $cordovaSQLite.execute(db, 'SELECT * FROM Questions ORDER BY RANDOM() LIMIT "'+nb_qst+'"').then(function (resultsQ) {
 
-  return {
-
-    //Retourner les réponses de la base de donnée
-    getAll: function(callback){
-         $ionicPlatform.ready(function () {
-           $cordovaSQLite.execute(db, 'SELECT * FROM Reponses').then(function (results) {
-             var data = []
-             for (i = 0, max = results.rows.length; i < max; i++) {
-               data.push(results.rows.item(i))
-             }
-             callback(data)
-           })
-        })
-      },
-  }
-})
+               var dataQuestion = [];
+               var dataReponse = [];
+               for (i = 0, max = resultsQ.rows.length; i < max; i++) {
+                 dataQuestion.push(resultsQ.rows.item(i))
+               }
+                  for (j = 0 ; j<nb_qst ; j++)
+                  {
+                    $cordovaSQLite.execute(db, 'SELECT reponse1,reponse2,reponse3,reponse4 FROM Reponses WHERE id_question = "' + dataQuestion[j].id + '" ').then(function (resultsR) {
+                      for (i = 0, max = resultsR.rows.length; i < max; i++) {
+                        dataReponse.push(resultsR.rows.item(i))
+                      }
+                      callback(dataQuestion,dataReponse);
+                    })
+                  }
+             })
+          })
+        },
+    }
+  })
 
 //Table Users
 app.factory('UsersDataService', function ($cordovaSQLite, $ionicPlatform) {
