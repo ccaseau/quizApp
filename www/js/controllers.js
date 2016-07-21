@@ -7,7 +7,7 @@ var app = angular.module('quizApp.controllers', []);
       console.log("Chargement de la bdd");
       setTimeout(function()
       {
-          $state.go('wheel');
+          $state.go('home');
       },950);
 
     });
@@ -420,6 +420,9 @@ var app = angular.module('quizApp.controllers', []);
 
 
        $scope.$on('$ionicView.enter', function(e) {
+
+         $scope.canSpin = true;
+
          ThemesDataService.getAll(function(data){
          //***********************************Customisation dynamique************************************* //
              $scope.background_img = {"background-image": "url("+data[ThemesDataService.getTheme()].background+")"};
@@ -450,9 +453,6 @@ var app = angular.module('quizApp.controllers', []);
              }
               console.log('mon cadeau : "'+$scope.cadeau+'"')
            })
-
-           //Booléen pour savoir si l'utilisateur à déja lancée la roue
-           $scope.canSpin = true;
 
          });
 
@@ -508,6 +508,12 @@ var app = angular.module('quizApp.controllers', []);
 
          setTimeout(function()
          {
+
+           $scope.spinWheel.stopAnimation(false);  // Stop the animation, false as param so does not call callback function.
+           $scope.spinWheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
+           $scope.spinWheel.draw();                // Call draw to render changes to the wheel.
+           $scope.canSpin = true;
+
            if (winningSegment.text == 'Perdu')
            {
             $state.go('wheelLoose');
@@ -515,7 +521,7 @@ var app = angular.module('quizApp.controllers', []);
            else {
             $state.go('wheelWin');
            }
-         },1000);
+         },800);
        }
        //Fonction pour faire tourner la roue
        $scope.spin = function()
@@ -654,9 +660,7 @@ var app = angular.module('quizApp.controllers', []);
     $scope.$on('$ionicView.enter', function(e) {
       setTimeout(function()
       {
-        $state.go('wheel');
-        console.log("retour à la page home !")
-
+        $state.go('home');
       },5000);
 
     })
