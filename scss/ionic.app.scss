@@ -73,15 +73,7 @@ a
 
 .question_img
 {
-  margin-bottom:-20px;
-  @media screen and (orientation:portrait){
-      width:42vh;
-  }
-
-  @media screen and (orientation:landscape){
-      width:42vw;
-  }
-
+width:40%!important;
 }
 
 h3

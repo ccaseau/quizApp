@@ -42,19 +42,7 @@ app.factory('ManageScore', function(){
 app.factory('QuestionsDataService', function ($cordovaSQLite, $ionicPlatform) {
 
   return {
-    //Retourner les questions de la base de donnée
-    getQuestion: function(callback){
-         $ionicPlatform.ready(function () {
-           $cordovaSQLite.execute(db, 'SELECT * FROM Questions').then(function (results) {
-             var data = []
-             for (i = 0, max = results.rows.length; i < max; i++) {
-               data.push(results.rows.item(i))
-             }
-             callback(data)
-           })
-        })
-      },
-
+    //Retourne un certain nombre (nb_qst) de question de maniere aléatoire + selectionne les reponses associées
       getRandomQuestion: function(nb_qst,callback){
            $ionicPlatform.ready(function () {
              $cordovaSQLite.execute(db, 'SELECT * FROM Questions ORDER BY RANDOM() LIMIT "'+nb_qst+'"').then(function (resultsQ) {
@@ -134,19 +122,72 @@ app.factory('UsersDataService', function ($cordovaSQLite, $ionicPlatform) {
 app.factory('CadeauxDataService', function ($cordovaSQLite, $ionicPlatform) {
 
   return {
-    //Retourner la dotation aléatoire
-    getCadeau: function(date,callback){
+
+    setIdCadeau: function(value)
+    {
+      idCadeau = value;
+    },
+
+    getIdCadeau: function()
+    {
+      return idCadeau;
+    },
+
+    //On recupere la dotation dont l'heure est passée avec l'obligatoire le plus haut puis l'heure la plus haute
+    getCadeau: function(date,date2,callback){
          $ionicPlatform.ready(function () {
-           $cordovaSQLite.execute(db,'SELECT Id,Texte FROM Cadeaux WHERE Quantite > 0 AND ShowTime <= "'+date+'" ORDER BY Obligatoire DESC, ShowTime DESC, Id DESC').then(function (results) {
+           $cordovaSQLite.execute(db,'SELECT Id,CodeCadeau,Chances FROM Cadeaux WHERE Quantite > 0 AND ShowTime <= "'+date+'" ORDER BY Obligatoire DESC, ShowTime DESC, Id DESC').then(function (results) {
+
              var data = []
-             for (i = 0, max = results.rows.length; i < max; i++) {
-               data.push(results.rows.item(i))
+
+             if (results.rows.length > 0)
+             {
+               for (i = 0, max = results.rows.length; i < max; i++) {
+                 data.push(results.rows.item(i))
+               }
+               callback(data)
              }
-             callback(data)
-           })
+
+            //On recupere la prochaine dotation disponible du jour
+             else
+             {
+              $cordovaSQLite.execute(db,'SELECT Id,CodeCadeau,Chances FROM Cadeaux  WHERE Quantite > 0 AND ShowTime >= "'+date+'" AND ShowTime <="'+date2+'" ORDER BY Obligatoire ASC, ShowTime ASC, Id ASC').then(function (results2) {
+                for (i = 0, max = results2.rows.length; i < max; i++) {
+                  data.push(results2.rows.item(i))
+                }
+                callback(data)
+              })
+             }
         })
+      })
       },
-      //Supprimer un utilisateur
+
+
+      getCadeau2: function(date,date2,callback){
+           $ionicPlatform.ready(function () {
+             $cordovaSQLite.execute(db,'SELECT Id,CodeCadeau,Chances FROM Cadeaux  WHERE Quantite > 0 AND ShowTime >= "'+date+'" AND ShowTime <="'+date2+'" ORDER BY Obligatoire ASC, ShowTime ASC, Id ASC').then(function (results) {
+               var data = []
+               for (i = 0, max = results.rows.length; i < max; i++) {
+                 data.push(results.rows.item(i))
+               }
+               callback(data)
+             })
+          })
+        },
+
+      getInfoCadeau: function(idCadeau,callback){
+           $ionicPlatform.ready(function () {
+             $cordovaSQLite.execute(db,'SELECT Texte, Image FROM Cadeaux WHERE Id = "'+idCadeau+'" ').then(function (results) {
+               var data = []
+               for (i = 0, max = results.rows.length; i < max; i++) {
+                 data.push(results.rows.item(i))
+               }
+               callback(data)
+             })
+          })
+        },
+
+      //Soustrait de 1 la quantité de la dotation avec l'id égal à Cadeauid
       SubstrQuantite: function(Cadeauid){
          return $cordovaSQLite.execute(db, 'UPDATE Cadeaux SET Quantite=(Quantite-1) WHERE Id = ?', [Cadeauid])
        },

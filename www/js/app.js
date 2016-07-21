@@ -107,13 +107,12 @@ app.run(function($ionicPlatform, $cordovaSQLite, $rootScope,ThemesDataService) {
     .state('wheelWin', {
       url: "/wheel_win",
       templateUrl: "templates/wheel_win.html",
-      controller: "WheelCtrl"
+      controller: "WheelWinCtrl"
     })
 
     .state('wheelLoose', {
       url: "/wheel_loose",
-      templateUrl: "templates/wheel_loose.html",
-      controller: "WheelCtrl"
+      templateUrl: "templates/wheel_loose.html"
     })
 
     .state('fin', {

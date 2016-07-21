@@ -9876,13 +9876,7 @@ a {
   padding: 20px; }
 
 .question_img {
-  margin-bottom: -20px; }
-  @media screen and (orientation: portrait) {
-    .question_img {
-      width: 42vh; } }
-  @media screen and (orientation: landscape) {
-    .question_img {
-      width: 42vw; } }
+  width: 40% !important; }
 
 h3 {
   color: black;
