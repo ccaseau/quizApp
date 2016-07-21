@@ -387,16 +387,25 @@ var app = angular.module('quizApp.controllers', []);
     });
 
     //Controller de la page wheel
-    //Controller de la page wheel
      app.controller('WheelCtrl', function ($scope, $ionicModal,$location,$state,ThemesDataService,CadeauxDataService) {
 
        //Variables
+       //On part sur une base de 3 lots pour calculer les angles d'arret
+       //=> comment rendre dynamique le choix de ce nombre ?
+       var nbLots = 3;
+       var EcartAngle = 360/(nbLots+1);
        var TabAngle = new Array();
-       TabAngle["Montre"] = 45;
-       TabAngle["Stylo"] = 135;
-       TabAngle["USB"] = 225;
-       TabAngle["Perdu"] = 315;
-       $scope.cadeau = ''; //Set le lot de maniere local !
+       TabAngle["Montre"] = EcartAngle/2;
+       TabAngle["Stylo"] = TabAngle["Montre"]+EcartAngle;
+       TabAngle["USB"] = TabAngle["Stylo"]+EcartAngle;
+       TabAngle["Perdu"] = TabAngle["USB"]+EcartAngle;
+
+       console.log(TabAngle["Montre"]);
+       console.log(TabAngle["Stylo"]);
+       console.log(TabAngle["USB"]);
+       console.log(TabAngle["Perdu"]);
+
+       $scope.cadeau = '';
 
        var now = new Date();
        var annee   = now.getFullYear();
@@ -407,7 +416,6 @@ var app = angular.module('quizApp.controllers', []);
        var seconde = ('0'+now.getSeconds()).slice(-2);
        var date = annee+"-"+mois+"-"+jour+" "+heure+":"+minute+":"+seconde;
        var date2 = annee+"-"+mois+"-"+jour+" 23:59:59";
-
        console.log(date);
 
 
@@ -421,18 +429,24 @@ var app = angular.module('quizApp.controllers', []);
 
            });
 
-           CadeauxDataService.getCadeau(date,function(data){
+           CadeauxDataService.getCadeau(date,date2,function(data){
              console.log(data);
-             if (data.length == 0)
+
+             var randomNb = Math.floor((Math.random() * 100) + 1);
+
+             console.log(randomNb);
+             console.log(data[0].Chances);
+
+             if (randomNb > data[0].Chances)
              {
                $scope.cadeau = 'Perdu';
-               console.log('plus de cadeaux!')
              }
 
              else
              {
-               $scope.cadeau = data[0].Texte;
+               $scope.cadeau = data[0].CodeCadeau;
                CadeauxDataService.SubstrQuantite(data[0].Id);
+               CadeauxDataService.setIdCadeau(data[0].Id)
              }
               console.log('mon cadeau : "'+$scope.cadeau+'"')
            })
@@ -453,7 +467,7 @@ var app = angular.module('quizApp.controllers', []);
 
          //On utilise Winwheel.js (plugin javascript) pour parametrer une roue
          $scope.spinWheel = new Winwheel({
-             'numSegments'    : 4, //Nombre de quartiers => permet de parametrer le nombre de prix
+             'numSegments'    : nbLots+1, //Nombre de lots + 1 pour le quartier "perdu"
              'lineWidth'   : 3.5,
              'textFillStyle' : 'white',
              'textFontSize' : 35,
@@ -470,7 +484,7 @@ var app = angular.module('quizApp.controllers', []);
              {
                  'type'     : 'spinToStop',
                  'duration' : 3, // durée de l'animation => parametre la vitesse de la roue
-                 'spins'    : 4, //Nombre de tours que va faire la roue
+                 'spins'    : 5, //Nombre de tours que va faire la roue
              }
        });
 
@@ -524,6 +538,14 @@ var app = angular.module('quizApp.controllers', []);
        }
 
      });
+
+     app.controller('WheelWinCtrl', function ($scope, $ionicModal,$state, CadeauxDataService) {
+       var idCadeau = CadeauxDataService.getIdCadeau();
+        CadeauxDataService.getInfoCadeau(idCadeau,function(data){
+          $scope.cadeau = data;
+        })
+     });
+
     // Controller de la page form
     app.controller('FormCtrl', function ($scope, $ionicModal,$stateParams, $location, $state, ManageScore, $cordovaSQLite, $ionicPlatform,UsersDataService,ThemesDataService) {
 
