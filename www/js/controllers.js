@@ -119,7 +119,7 @@ var app = angular.module('quizApp.controllers', []);
       $scope.rightAnswer = false; //variable pour savoir si l'utilisateur à répondu juste ou faux
       $scope.timeout = false; //variable pour savoir si l'utilisateur n'a pas répondu a temps
       $scope.viewReponse = false; //variable pour n'afficher les 4 propositions qu'aprés 5 secondes de timer
-      $scope.nbQst = 6; // le nombre de question que l'on pioche (pour l'instant definie en local)
+      $scope.nbQst = 4; // le nombre de question que l'on pioche (pour l'instant definie en local)
 
       //****Timer**** Plugin progressbar.js
       $scope.timeQst = 5; //On set à 5 secondes le timer pour lire la question
@@ -130,9 +130,9 @@ var app = angular.module('quizApp.controllers', []);
       from: { color: '#97CE68'},
       to: { color: '#97CE68'},
       duration: $scope.timeQst * 1000,
-      strokeWidth: 2.5,
+      strokeWidth: 3.5,
       trailColor: '#818C8E',
-      trailWidth: 2.5,
+      trailWidth: 3.5,
       step: function(state,barQuestion, attachment) {
       barQuestion.path.setAttribute('stroke', state.color);
       },
@@ -143,9 +143,9 @@ var app = angular.module('quizApp.controllers', []);
       from: { color: '#97CE68'},
       to: { color: '#E3000E'},
       duration: $scope.time*1000,
-      strokeWidth: 2.5,
+      strokeWidth: 3.5,
       trailColor: '#818C8E',
-      trailWidth: 2.5,
+      trailWidth: 3.5,
       step: function(state,barReponse, attachment) {
           barReponse.path.setAttribute('stroke', state.color);
       },
@@ -156,7 +156,7 @@ var app = angular.module('quizApp.controllers', []);
     from: { color:'#3D8EB9'},
     to: { color: '#3D8EB9'},
     duration: 1000,
-    strokeWidth: 3.2,
+    strokeWidth: 5,
     step: function(state,barReponse, attachment) {
         barReponse.path.setAttribute('stroke', state.color);
     },
@@ -239,7 +239,7 @@ var app = angular.module('quizApp.controllers', []);
           $scope.progression = $scope.pourcentage;
 
           progressBar.set($scope.progression/100);
-          $scope.spacingprogress = (((92*$scope.progression)/100)+1)+"%";
+          $scope.spacingprogress = (((89*$scope.progression)/100)+1)+"%";
           $scope.spacing = {"margin-left": $scope.spacingprogress};
 
         })
@@ -316,7 +316,7 @@ var app = angular.module('quizApp.controllers', []);
               else {
                 $scope.progression = $scope.progression +$scope.pourcentage;
                 progressBar.set($scope.progression/100);
-                $scope.spacingprogress = (((92*$scope.progression)/100)+1)+"%";
+                $scope.spacingprogress = (((89*$scope.progression)/100)+1)+"%";
                 $scope.spacing = {"margin-left": $scope.spacingprogress};
               }
           });
