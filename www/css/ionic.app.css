@@ -10108,32 +10108,6 @@ label.item.has-error {
   width: 100%;
   display: block; }
 
-/* Styling for the ngProgress itself */
-#ngProgress {
-  margin: 0;
-  padding: 0;
-  z-index: 99998;
-  box-shadow: 0px 0px 10px 2px !important;
-  /* Inherits the font color */
-  height: 24px !important;
-  opacity: 0;
-  /* Add CSS3 styles for transition smoothing */
-  -webkit-transition: all 0.5s ease-in-out;
-  -moz-transition: all 0.5s ease-in-out;
-  -o-transition: all 0.5s ease-in-out;
-  transition: all 0.5s ease-in-out; }
-
-/* Styling for the ngProgress-container */
-#ngProgress-container {
-  position: fixed;
-  margin: 0;
-  padding: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 99999;
-  width: 92% !important; }
-
 #barQuestion {
   padding: 15px 10%;
   margin-bottom: 5px;
@@ -10151,16 +10125,24 @@ label.item.has-error {
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 99999; }
+  margin-bottom: -10px !important;
+  z-index: 99999;
+  height: 35px; }
 
 #progressBar > svg {
-  width: 92% !important;
-  display: block; }
+  width: 89% !important;
+  display: block;
+  height: 100%; }
 
 .progressbar_label {
-  font-size: 26px;
   font-weight: bold;
-  margin-bottom: -24px; }
+  margin-bottom: -26px; }
+  @media screen and (max-width: 2000px) {
+    .progressbar_label {
+      font-size: 1.5em; } }
+  @media screen and (max-width: 500px) {
+    .progressbar_label {
+      font-size: 0.9em; } }
 
 #button-row {
   padding-bottom: 4px !important; }
