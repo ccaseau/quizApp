@@ -55,6 +55,7 @@ var app = angular.module('quizApp.controllers', []);
           });
         return obj;
       }
+
       //********************************Fin Customisation dynamique************************************* //
 
       //Permettre le changement de thème par l'utilisateur
@@ -250,6 +251,7 @@ var app = angular.module('quizApp.controllers', []);
           else
           {
               $location.path("form");
+
           }
         },250);
       };
@@ -298,15 +300,17 @@ var app = angular.module('quizApp.controllers', []);
 
             $scope.modal.hide().then(function() {
               //On augmente le pourcentage de la barre de progression
-              $scope.progression = $scope.progression +$scope.pourcentage;
-              $scope.spacingprogress = ($scope.progression*6.3)+"%"
-              $scope.spacing = {"margin-left": $scope.spacingprogress, "width": '150px'};
-              $scope.progressbar.set($scope.progression);
-
-              //Si la progression est à 100% on doit faire disparaitre la barre.
-              if (parseInt($scope.progression) > 100 )
+              if($scope.progression >= 100)
               {
                   $scope.progressbar.complete();
+              }
+
+              else {
+                $scope.progression = $scope.progression +$scope.pourcentage;
+                $scope.progressbar.set($scope.progression);
+
+                $scope.spacingprogress = ($scope.progression*6.3)+"%"
+                $scope.spacing = {"margin-left": $scope.spacingprogress, "width": '150px'};
               }
           });
         };
@@ -379,7 +383,7 @@ var app = angular.module('quizApp.controllers', []);
         setTimeout(function()
         {
               ThemesDataService.getAll(function(data) {
-                $scope.color_btn_normal = {"bakcground-color": data[ThemesDataService.getTheme()].color_btn_normal};
+                $scope.color_btn_normal = {"background-color": data[ThemesDataService.getTheme()].color_btn_normal};
               });
 
         },2000);
@@ -508,12 +512,6 @@ var app = angular.module('quizApp.controllers', []);
 
          setTimeout(function()
          {
-
-           $scope.spinWheel.stopAnimation(false);  // Stop the animation, false as param so does not call callback function.
-           $scope.spinWheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
-           $scope.spinWheel.draw();                // Call draw to render changes to the wheel.
-           $scope.canSpin = true;
-
            if (winningSegment.text == 'Perdu')
            {
             $state.go('wheelLoose');
@@ -522,6 +520,16 @@ var app = angular.module('quizApp.controllers', []);
             $state.go('wheelWin');
            }
          },800);
+
+         setTimeout(function()
+         {
+           $scope.spinWheel.stopAnimation(false);
+           $scope.spinWheel.rotationAngle = 0;
+           $scope.spinWheel.draw();
+           $scope.canSpin = true;
+
+         },900);
+
        }
        //Fonction pour faire tourner la roue
        $scope.spin = function()
@@ -612,7 +620,6 @@ var app = angular.module('quizApp.controllers', []);
           $scope.error = "L'adresse mail que vous avez entrée est déja utilisée!";
         }
        }
-
      });
     }
       //Fonction utilie pour les test permettant de supprimer un utilisateur de la bdd
