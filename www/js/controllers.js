@@ -87,7 +87,7 @@ var app = angular.module('quizApp.controllers', []);
     });
 
     // Controller de la page question
-    app.controller('QstCtrl', function ($scope,$interval,$filter,$ionicModal,$location,$state,ManageScore, $state, $ionicPopover,QuestionsDataService,ThemesDataService,ngProgressFactory) {
+    app.controller('QstCtrl', function ($scope,$interval,$filter,$ionicModal,$location,$state,ManageScore, $state, $ionicPopover,QuestionsDataService,ThemesDataService) {
 
       $scope.$on('$ionicView.enter', function(e) {
         ThemesDataService.getAll(function(data){
@@ -119,7 +119,7 @@ var app = angular.module('quizApp.controllers', []);
       $scope.rightAnswer = false; //variable pour savoir si l'utilisateur à répondu juste ou faux
       $scope.timeout = false; //variable pour savoir si l'utilisateur n'a pas répondu a temps
       $scope.viewReponse = false; //variable pour n'afficher les 4 propositions qu'aprés 5 secondes de timer
-      $scope.nbQst = 2; // le nombre de question que l'on pioche (pour l'instant definie en local)
+      $scope.nbQst = 6; // le nombre de question que l'on pioche (pour l'instant definie en local)
 
       //****Timer**** Plugin progressbar.js
       $scope.timeQst = 5; //On set à 5 secondes le timer pour lire la question
@@ -150,6 +150,17 @@ var app = angular.module('quizApp.controllers', []);
           barReponse.path.setAttribute('stroke', state.color);
       },
     });
+
+    //Barre de progression
+    var progressBar = new ProgressBar.Line('#progressBar', {
+    from: { color:'#3D8EB9'},
+    to: { color: '#3D8EB9'},
+    duration: 1000,
+    strokeWidth: 3.2,
+    step: function(state,barReponse, attachment) {
+        barReponse.path.setAttribute('stroke', state.color);
+    },
+  });
 
       //Timer temps de réponse
         $scope.StopTimer = function () {
@@ -195,7 +206,6 @@ var app = angular.module('quizApp.controllers', []);
         $scope.question.reponse = [];
 
           $scope.$on('$ionicView.enter', function(e) {
-
           // On remet le score à 0
           $scope.score = ManageScore.reset();
 
@@ -228,12 +238,10 @@ var app = angular.module('quizApp.controllers', []);
           //$scope.progression = la progression actuelle de la barre & $scope.pourcentage = le pas d'évolution entre chaque question
           $scope.progression = $scope.pourcentage;
 
-          //On crée la barre de progression, on change sa couleur, son avancée, et l'affichage du texte à côté
-          $scope.progressbar = ngProgressFactory.createInstance();
-          $scope.progressbar.setColor($scope.color_bar.color);
-          $scope.progressbar.set($scope.progression);
-          $scope.spacingprogress = ($scope.progression*6.3)+"%";
-          $scope.spacing = {"margin-left": $scope.spacingprogress, "width": '150px'};
+          progressBar.set($scope.progression/100);
+          $scope.spacingprogress = (((92*$scope.progression)/100)+1)+"%";
+          $scope.spacing = {"margin-left": $scope.spacingprogress};
+
         })
     })
 
@@ -302,15 +310,14 @@ var app = angular.module('quizApp.controllers', []);
               //On augmente le pourcentage de la barre de progression
               if($scope.progression >= 100)
               {
-                  $scope.progressbar.complete();
+                  // $scope.progressbar.complete();
               }
 
               else {
                 $scope.progression = $scope.progression +$scope.pourcentage;
-                $scope.progressbar.set($scope.progression);
-
-                $scope.spacingprogress = ($scope.progression*6.3)+"%"
-                $scope.spacing = {"margin-left": $scope.spacingprogress, "width": '150px'};
+                progressBar.set($scope.progression/100);
+                $scope.spacingprogress = (((92*$scope.progression)/100)+1)+"%";
+                $scope.spacing = {"margin-left": $scope.spacingprogress};
               }
           });
         };

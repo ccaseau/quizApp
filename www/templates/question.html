@@ -1,12 +1,11 @@
 <ion-view ng-style = "background_img" view-title="Questions">
 
-  <tek-progress-bar class="progress-sm progress-loading progress-loading-fixed" manager="main.bar"></tek-progress-bar>
   <ion-content>
 
     <div class="row responsive-sm row-center">
       <div class="col text-center">
-        <div ng-show ="!viewReponse" id="barQuestion"><p ng-style = "margeStyleObj([text_font,text_color])" class ="progressbar_label">{{timeQst}} s</p></div>
-        <div ng-show ="viewReponse" class="fade" id="barReponse"><p ng-style = "margeStyleObj([text_font,text_color])" class ="progressbar_label">{{time}} s</p></div>
+        <div ng-show ="!viewReponse" id="barQuestion"><p ng-style = "margeStyleObj([text_font,text_color])" class ="bar_label">{{timeQst}} s</p></div>
+        <div ng-show ="viewReponse" class="fade" id="barReponse"><p ng-style = "margeStyleObj([text_font,text_color])" class ="bar_label">{{time}} s</p></div>
         <h3 ng-style = "margeStyleObj([text_font,text_color])" class = "base-class" ng-class = "!viewReponse ? 'my-class' : ' '">{{question[count].intitule}}</h3>
         <div ng-show="viewReponse" class ="fade">
           <img class ="question_img" ng-src="{{question[count].path}}">
@@ -28,9 +27,10 @@
         </div>
       </div>
 
-    <div id="pourcentage">
-      <h3 id="TxtPourcentage" ng-style = "margeStyleObj([color_bar,text_font,spacing])" >{{progression  | number:0}}%</h3>
-    </div>
+      <div id="progressBar">
+        <p ng-style="margeStyleObj([spacing,text_font,text_color])" class ="progressbar_label">{{progression  | number:0}}%</p>
+      </div>
+
   </div>
   </ion-content>
 
