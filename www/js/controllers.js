@@ -55,6 +55,7 @@ var app = angular.module('quizApp.controllers', []);
           });
         return obj;
       }
+
       //********************************Fin Customisation dynamique************************************* //
 
       //Permettre le changement de thème par l'utilisateur
@@ -86,7 +87,7 @@ var app = angular.module('quizApp.controllers', []);
     });
 
     // Controller de la page question
-    app.controller('QstCtrl', function ($scope,$interval,$filter,$ionicModal,$location,$state,ManageScore, $state, $ionicPopover,QuestionsDataService,ThemesDataService,ngProgressFactory) {
+    app.controller('QstCtrl', function ($scope,$interval,$filter,$ionicModal,$location,$state,ManageScore, $state, $ionicPopover,QuestionsDataService,ThemesDataService) {
 
       $scope.$on('$ionicView.enter', function(e) {
         ThemesDataService.getAll(function(data){
@@ -118,7 +119,7 @@ var app = angular.module('quizApp.controllers', []);
       $scope.rightAnswer = false; //variable pour savoir si l'utilisateur à répondu juste ou faux
       $scope.timeout = false; //variable pour savoir si l'utilisateur n'a pas répondu a temps
       $scope.viewReponse = false; //variable pour n'afficher les 4 propositions qu'aprés 5 secondes de timer
-      $scope.nbQst = 2; // le nombre de question que l'on pioche (pour l'instant definie en local)
+      $scope.nbQst = 6; // le nombre de question que l'on pioche (pour l'instant definie en local)
 
       //****Timer**** Plugin progressbar.js
       $scope.timeQst = 5; //On set à 5 secondes le timer pour lire la question
@@ -149,6 +150,17 @@ var app = angular.module('quizApp.controllers', []);
           barReponse.path.setAttribute('stroke', state.color);
       },
     });
+
+    //Barre de progression
+    var progressBar = new ProgressBar.Line('#progressBar', {
+    from: { color:'#3D8EB9'},
+    to: { color: '#3D8EB9'},
+    duration: 1000,
+    strokeWidth: 3.2,
+    step: function(state,barReponse, attachment) {
+        barReponse.path.setAttribute('stroke', state.color);
+    },
+  });
 
       //Timer temps de réponse
         $scope.StopTimer = function () {
@@ -194,7 +206,6 @@ var app = angular.module('quizApp.controllers', []);
         $scope.question.reponse = [];
 
           $scope.$on('$ionicView.enter', function(e) {
-
           // On remet le score à 0
           $scope.score = ManageScore.reset();
 
@@ -227,12 +238,10 @@ var app = angular.module('quizApp.controllers', []);
           //$scope.progression = la progression actuelle de la barre & $scope.pourcentage = le pas d'évolution entre chaque question
           $scope.progression = $scope.pourcentage;
 
-          //On crée la barre de progression, on change sa couleur, son avancée, et l'affichage du texte à côté
-          $scope.progressbar = ngProgressFactory.createInstance();
-          $scope.progressbar.setColor($scope.color_bar.color);
-          $scope.progressbar.set($scope.progression);
-          $scope.spacingprogress = ($scope.progression*6.3)+"%";
-          $scope.spacing = {"margin-left": $scope.spacingprogress, "width": '150px'};
+          progressBar.set($scope.progression/100);
+          $scope.spacingprogress = (((92*$scope.progression)/100)+1)+"%";
+          $scope.spacing = {"margin-left": $scope.spacingprogress};
+
         })
     })
 
@@ -250,6 +259,7 @@ var app = angular.module('quizApp.controllers', []);
           else
           {
               $location.path("form");
+
           }
         },250);
       };
@@ -298,15 +308,16 @@ var app = angular.module('quizApp.controllers', []);
 
             $scope.modal.hide().then(function() {
               //On augmente le pourcentage de la barre de progression
-              $scope.progression = $scope.progression +$scope.pourcentage;
-              $scope.spacingprogress = ($scope.progression*6.3)+"%"
-              $scope.spacing = {"margin-left": $scope.spacingprogress, "width": '150px'};
-              $scope.progressbar.set($scope.progression);
-
-              //Si la progression est à 100% on doit faire disparaitre la barre.
-              if (parseInt($scope.progression) > 100 )
+              if($scope.progression >= 100)
               {
-                  $scope.progressbar.complete();
+                  // $scope.progressbar.complete();
+              }
+
+              else {
+                $scope.progression = $scope.progression +$scope.pourcentage;
+                progressBar.set($scope.progression/100);
+                $scope.spacingprogress = (((92*$scope.progression)/100)+1)+"%";
+                $scope.spacing = {"margin-left": $scope.spacingprogress};
               }
           });
         };
@@ -379,7 +390,7 @@ var app = angular.module('quizApp.controllers', []);
         setTimeout(function()
         {
               ThemesDataService.getAll(function(data) {
-                $scope.color_btn_normal = {"bakcground-color": data[ThemesDataService.getTheme()].color_btn_normal};
+                $scope.color_btn_normal = {"background-color": data[ThemesDataService.getTheme()].color_btn_normal};
               });
 
         },2000);
@@ -508,12 +519,6 @@ var app = angular.module('quizApp.controllers', []);
 
          setTimeout(function()
          {
-
-           $scope.spinWheel.stopAnimation(false);  // Stop the animation, false as param so does not call callback function.
-           $scope.spinWheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
-           $scope.spinWheel.draw();                // Call draw to render changes to the wheel.
-           $scope.canSpin = true;
-
            if (winningSegment.text == 'Perdu')
            {
             $state.go('wheelLoose');
@@ -522,6 +527,16 @@ var app = angular.module('quizApp.controllers', []);
             $state.go('wheelWin');
            }
          },800);
+
+         setTimeout(function()
+         {
+           $scope.spinWheel.stopAnimation(false);
+           $scope.spinWheel.rotationAngle = 0;
+           $scope.spinWheel.draw();
+           $scope.canSpin = true;
+
+         },900);
+
        }
        //Fonction pour faire tourner la roue
        $scope.spin = function()
@@ -612,7 +627,6 @@ var app = angular.module('quizApp.controllers', []);
           $scope.error = "L'adresse mail que vous avez entrée est déja utilisée!";
         }
        }
-
      });
     }
       //Fonction utilie pour les test permettant de supprimer un utilisateur de la bdd
