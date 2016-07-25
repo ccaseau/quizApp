@@ -99,7 +99,7 @@
               <ion-radio ng-model="users.sexe" ng-value="'Femme'">Femme</ion-radio>
               <ion-radio ng-model="users.sexe" ng-value="'Homme'">Homme</ion-radio>
             </div>
-             <ion-checkbox ng-init="users.info = false" ng-model="users.info"><p>Je souhaite recevoir de l’information sur le programme Erasmus+</p></ion-checkbox>
+             <ion-checkbox ng-init="users.info = false" ng-model="users.info">Je veux plus d'information</ion-checkbox>
              <div class="error-container">
                <div class="error">
                  {{error}}
@@ -109,6 +109,7 @@
             </form>
           </div>
       </div>
+      <button ng-csv="users" csv-header="['Mail', 'Age', 'Formation','Code','Tel','Sexe','Info']" filename="test.csv">get CSV</button>
     </div>
   </div>
 

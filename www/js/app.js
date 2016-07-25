@@ -1,5 +1,5 @@
 // App instance
-var app = angular.module('quizApp', ['ionic','ionic.service.core','quizApp.controllers','quizApp.services','ngCordova','ngMessages','ngProgress','ngAnimate'])
+var app = angular.module('quizApp', ['ionic','ionic.service.core','quizApp.controllers','quizApp.services','ngCordova','ngMessages','ngCsv','ngProgress','ngAnimate'])
 
 // Database instance.
 var db;
