@@ -58,7 +58,7 @@ app.run(function($ionicPlatform, $cordovaSQLite, $rootScope,ThemesDataService) {
       console.log("La base n'a pas pu être supprimée");
     }
     //Décommenter ou commenter la ligne de dessous en fonction de si l'on souhaite recopier la base ou garder la précédente.
-    // dbremove();
+    dbremove();
     dbcopy();
   })
 
@@ -112,7 +112,8 @@ app.run(function($ionicPlatform, $cordovaSQLite, $rootScope,ThemesDataService) {
 
     .state('wheelLoose', {
       url: "/wheel_loose",
-      templateUrl: "templates/wheel_loose.html"
+      templateUrl: "templates/wheel_loose.html",
+      controller: "WheelLooseCtrl"
     })
 
     .state('fin', {
