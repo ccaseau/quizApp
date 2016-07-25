@@ -9940,7 +9940,8 @@ span {
 .item-checkbox {
   border-color: transparent;
   background-color: transparent;
-  text-align: left; }
+  text-align: left;
+  overflow: visible; }
 
 #canvasContainer {
   width: 500px;
@@ -10041,7 +10042,15 @@ form {
   font-size: 0px !important; }
 
 .input-label {
-  font-size: 14px; }
+  font-size: 14px;
+  margin-left: -10px; }
+
+.item-content {
+  overflow: visible !important;
+  white-space: nowrap !important; }
+
+#overflow-p {
+  overflow: visible !important; }
 
 form span {
   font-size: 14px !important; }

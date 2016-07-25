@@ -171,7 +171,7 @@ span
   border-color: transparent;
   background-color: transparent;
   text-align:left;
-
+  overflow: visible;
 }
 
 #canvasContainer {
@@ -180,7 +180,6 @@ span
     margin-left: auto;
     margin-right:auto;
     margin-top:20px!important;
-
 }
 
 #TxtPourcentage
@@ -240,7 +239,6 @@ h1
           transform: scale(.7);
       }
 
-
       @media screen and (max-width: 420px)
       {
           transform: scale(.65);
@@ -249,7 +247,6 @@ h1
       @media screen and (max-width: 340px)
       {
           transform: scale(.6);
-
       }
 
       @media screen and (max-height: 600px)
@@ -310,7 +307,6 @@ h1
   {
     height: 35px;
     margin:none;
-
   }
 
   .item-checkbox
@@ -327,9 +323,23 @@ h1
     font-size:0px!important;
   }
 
+
+
   .input-label
   {
     font-size:14px;
+    margin-left:-10px;
+
+  }
+  .item-content
+  {
+    overflow: visible!important;
+    white-space: nowrap!important;
+  }
+
+  #overflow-p
+  {
+    overflow: visible!important;
   }
 
   form span
