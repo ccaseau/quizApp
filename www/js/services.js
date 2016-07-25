@@ -87,12 +87,25 @@ app.factory('UsersDataService', function ($cordovaSQLite, $ionicPlatform) {
 
     //Rajouter un utilisateur dans la base de donnée
       createUser: function (user) {
-        return $cordovaSQLite.execute(db, 'INSERT INTO Users (mail,age,formation,code,tel,sexe,info) VALUES (?,?,?,?,?,?,?)', [user.mail, user.age, user.formation,user.code, user.tel,user.sexe,user.info])
+        return $cordovaSQLite.execute(db, 'INSERT INTO Users (mail,age,formation,code,tel,sexe,info,score,date) VALUES (?,?,?,?,?,?,?,?,?)', [user.mail, user.age, user.formation,user.code, user.tel,user.sexe,user.info,user.score,user.date])
+      },
+
+      addGainUser: function (gain_user,mail_user) {
+      return $cordovaSQLite.execute(db, 'UPDATE Users SET gain = "'+gain_user+'" WHERE mail = "'+mail_user+'"');
       },
 
     //Supprimer un utilisateur
     deleteUser: function(id){
        return $cordovaSQLite.execute(db, 'DELETE FROM Users where id = ?', [id])
+     },
+
+
+     getMail: function(){
+       return mail_user;
+     },
+
+     setMail: function(mail){
+       mail_user = mail;
      },
 
      //Retourne un utilisateur avec une certaine adresse

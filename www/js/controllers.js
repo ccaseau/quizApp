@@ -119,7 +119,7 @@ var app = angular.module('quizApp.controllers', []);
       $scope.rightAnswer = false; //variable pour savoir si l'utilisateur à répondu juste ou faux
       $scope.timeout = false; //variable pour savoir si l'utilisateur n'a pas répondu a temps
       $scope.viewReponse = false; //variable pour n'afficher les 4 propositions qu'aprés 5 secondes de timer
-      $scope.nbQst = 5; // le nombre de question que l'on pioche (pour l'instant definie en local)
+      $scope.nbQst = 1; // le nombre de question que l'on pioche (pour l'instant en local)
 
       //****Timer**** Plugin progressbar.js
       $scope.timeQst = 5; //On set à 5 secondes le timer pour lire la question
@@ -390,7 +390,7 @@ var app = angular.module('quizApp.controllers', []);
         setTimeout(function()
         {
               ThemesDataService.getAll(function(data) {
-                $scope.color_btn_normal = {"background-color": data[ThemesDataService.getTheme()].color_btn_normal};
+                $scope.color_btn_normal[index] = {"background-color": data[ThemesDataService.getTheme()].color_btn_normal};
               });
 
         },2000);
@@ -398,7 +398,7 @@ var app = angular.module('quizApp.controllers', []);
     });
 
     //Controller de la page wheel
-     app.controller('WheelCtrl', function ($scope, $ionicModal,$location,$state,ThemesDataService,CadeauxDataService) {
+     app.controller('WheelCtrl', function ($scope, $ionicModal,$location,$state,ThemesDataService,CadeauxDataService,UsersDataService) {
 
        //Variables
        //On part sur une base de 3 lots pour calculer les angles d'arret
@@ -433,7 +433,6 @@ var app = angular.module('quizApp.controllers', []);
        $scope.$on('$ionicView.enter', function(e) {
 
          $scope.canSpin = true;
-
          ThemesDataService.getAll(function(data){
          //***********************************Customisation dynamique************************************* //
              $scope.background_img = {"background-image": "url("+data[ThemesDataService.getTheme()].background+")"};
@@ -454,6 +453,7 @@ var app = angular.module('quizApp.controllers', []);
              if (randomNb > data[0].Chances)
              {
                $scope.cadeau = 'Perdu';
+                 UsersDataService.addGainUser('Perdu',UsersDataService.getMail());
              }
 
              else
@@ -461,6 +461,7 @@ var app = angular.module('quizApp.controllers', []);
                $scope.cadeau = data[0].CodeCadeau;
                CadeauxDataService.SubstrQuantite(data[0].Id);
                CadeauxDataService.setIdCadeau(data[0].Id)
+              UsersDataService.addGainUser($scope.cadeau,UsersDataService.getMail());
              }
               console.log('mon cadeau : "'+$scope.cadeau+'"')
            })
@@ -560,17 +561,61 @@ var app = angular.module('quizApp.controllers', []);
 
      });
 
-     app.controller('WheelWinCtrl', function ($scope, $ionicModal,$state, CadeauxDataService) {
-       var idCadeau = CadeauxDataService.getIdCadeau();
-        CadeauxDataService.getInfoCadeau(idCadeau,function(data){
-          $scope.cadeau = data;
-        })
+     app.controller('WheelWinCtrl', function ($scope, $ionicModal,$state,CadeauxDataService,ThemesDataService) {
+
+       $scope.margeStyleObj = function(objectList) {
+         var obj = {};
+           objectList.forEach(function(x) {
+             angular.extend(obj,x);
+           });
+         return obj;
+       }
+
+       $scope.$on('$ionicView.enter', function(e) {
+         ThemesDataService.getAll(function(data){
+         //***********************************Customisation dynamique************************************* //
+             $scope.background_img = {"background-image": "url("+data[ThemesDataService.getTheme()].background+")"};
+             $scope.text_color = {"color": data[ThemesDataService.getTheme()].color_text};
+             $scope.text_font = {"font-family" :data[ThemesDataService.getTheme()].font};
+             $scope.color_btn_normal = {"background-color": data[ThemesDataService.getTheme()].color_btn_normal};
+           });
+
+          var idCadeau = CadeauxDataService.getIdCadeau();
+          CadeauxDataService.getInfoCadeau(idCadeau,function(data){
+            $scope.cadeau = data;
+          })
      });
+  });
+
+     app.controller('WheelLooseCtrl', function ($scope, $ionicModal,$state,ThemesDataService) {
+
+       $scope.margeStyleObj = function(objectList) {
+         var obj = {};
+           objectList.forEach(function(x) {
+             angular.extend(obj,x);
+           });
+         return obj;
+       }
+
+       $scope.$on('$ionicView.enter', function(e) {
+         ThemesDataService.getAll(function(data){
+         //***********************************Customisation dynamique************************************* //
+             $scope.background_img = {"background-image": "url("+data[ThemesDataService.getTheme()].background+")"};
+             $scope.text_color = {"color": data[ThemesDataService.getTheme()].color_text};
+             $scope.text_font = {"font-family" :data[ThemesDataService.getTheme()].font};
+           });
+
+         });
+
+       console.log("perdu");
+     });
+
 
     // Controller de la page form
     app.controller('FormCtrl', function ($scope, $ionicModal,$stateParams, $location, $state, ManageScore, $cordovaSQLite, $ionicPlatform,UsersDataService,ThemesDataService) {
 
       $scope.$on('$ionicView.enter', function(e) {
+
         ThemesDataService.getAll(function(data){
         //***********************************Customisation dynamique************************************* //
             $scope.background_img = {"background-image": "url("+data[ThemesDataService.getTheme()].background+")"};
@@ -595,11 +640,24 @@ var app = angular.module('quizApp.controllers', []);
 
       $scope.$on('$ionicView.enter', function(e) {
 
-        $scope.score = ManageScore.init();
-        console.log($scope.score)
+        var now = new Date();
+        var annee   = now.getFullYear();
+        var mois    = ('0'+(now.getMonth()+1)).slice(-2);
+        var jour    = ('0'+now.getDate()   ).slice(-2);
+        var heure   = ('0'+now.getHours()  ).slice(-2);
+        var minute  = ('0'+now.getMinutes()).slice(-2);
+        var seconde = ('0'+now.getSeconds()).slice(-2);
+        var date_fin_quiz = annee+"-"+mois+"-"+jour+" "+heure+":"+minute+":"+seconde;
+
+        $scope.users.score = ManageScore.init();
+        $scope.users.date = date_fin_quiz;
+        console.log("la date est :")
+        console.log($scope.users.date);
+
         //On récuperer les utilisateurs déja en base de donnée
         UsersDataService.getAll(function(data){
           $scope.datas = data
+          console.log($scope.datas);
         })
       })
 
@@ -615,6 +673,7 @@ var app = angular.module('quizApp.controllers', []);
          if (!$scope.user_exist) {
          //Si le formulaire et valide et que c'est un nouveau mail : on fait appel au service UsersData pour rajouter une entrée dans la bdd
           UsersDataService.createUser($scope.users);
+          UsersDataService.setMail($scope.users.mail);
           //On charge la page suivante
           $location.path('wheel');
           $scope.error = '';
@@ -668,7 +727,7 @@ var app = angular.module('quizApp.controllers', []);
       addr:'www.univ-paul-sabbatier.fr'
     },
     {
-      addr:'www.rectorat-tls'
+      addr:'www.rectorat-tls.fr'
     }]
       //Aprés 5 secondes on retourne à la page home
     $scope.$on('$ionicView.enter', function(e) {
