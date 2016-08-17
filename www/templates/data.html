@@ -1,0 +1,18 @@
+<ion-view view-title="Data">
+
+  <ion-content>
+
+    <div class="row row-center text-center responsive-sm">
+      <div class="col ">
+
+        <h5> Utilisateurs enregistrés </h5>
+       <div ng-repeat="d in users">
+        {{d}}
+       </div>
+       <button ng-click = "fin()"> Fin </button>
+      </div>
+    </div>
+
+  </ion-content>
+
+</ion-view>

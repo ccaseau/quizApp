@@ -1,9 +1,26 @@
-// COMMENTER ET NETTOYER LE CODE INUTILE
-
 var app = angular.module('quizApp.controllers', []);
 
-    app.controller('MainCtrl', function ($scope, $ionicModal,$state) {
-      //Avant de charger la page home on laisse quelques ms à l'application pour ouvrir la base de donnée
+  app.controller('QuizCtrl', function ($scope, $ionicModal,$state) {
+
+    $scope.$on('$ionicView.enter', function(e) {
+      console.log(participants)
+    });
+
+    //Variables pour recuperer les stats
+    var participants = 0;
+    var date = '';
+
+    $scope.Session = function()
+    {
+      participants += 1;
+    }
+
+  });
+
+    app.controller('FirstCtrl', function ($scope, $ionicModal,$state) {
+      //Avant de renvoyer vers la page home il faut laisser quelques ms à l'application pour charger la base de donnée
+      //si on ouvre directement la page home il y aura des bugs
+      //c'est pour ça qu'on ouvre d'abbord index qui lui 950ms plus tard renvoi vers home
       console.log("Chargement de la bdd");
       setTimeout(function()
       {
@@ -11,7 +28,7 @@ var app = angular.module('quizApp.controllers', []);
       },950);
 
     });
-
+    //ce controller sert à gerer la customisation dynamique => formulaire dans lequel le client peut entrer ces valeurs perso pour les couleurs, typo, polices, fonds...
     app.controller('CustomCtrl', function ($scope, $ionicModal,$state,ThemesDataService) {
       console.log("Vous pouvez créer votre théme visuel avant de lancer l'application");
       $scope.theme = [];
@@ -333,6 +350,12 @@ var app = angular.module('quizApp.controllers', []);
 
       // Fonction qui teste si la réponse donnée est juste et incrémente le score de l'utilisateur en fonction
       $scope.getAnswer = function(chosenAnswer,currentQuest,index) {
+
+        //chosenAnswer nous retourne le texte du bouton cliqué par l'utilisateur (réponse choisie)
+        //currentQuest nous permet de connaitre le numero de la question actuelle et donc d'acceder à la bonne réponse qui correspond
+        //index nous permet de connaitre l'id du bouton qui a été cliqué afin d'emmetre les changements de couleur uniquement sur celui ci
+
+
         //On recupere le bouton sur lequel on a cliqué et on le change de couleur
         $scope.color_btn_normal[index]= $scope.color_btn;
         // si la réponse est juste
@@ -358,19 +381,22 @@ var app = angular.module('quizApp.controllers', []);
         //Puis changer en vert ou rouge
         setTimeout(function()
         {
-          // boutonSelect.removeClass('button-energized');
+          // boutonSelect.removeClass('button-energized')
+
+          //Si c'est faux on change le style du bouton et du fond en rouge (la couleur rouge est stockée dans $scope.false)
           if(!$scope.rightAnswer)
           {
-            $scope.color_btn_normal[index]= $scope.false;
+            $scope.color_btn_normal[index]= $scope.false; //[index] nous permet de ne changer le style que du bouton sur lequel on a cliqué et pas celui des 3 autres
             $scope.background_explication = $scope.false;
           }
-
+          //Si on ne répond pas assez vite il faut aussi que le bouton puis le fond soient rouge
           else if ($scope.timeout)
           {
               $scope.color_btn_normal[index]= $scope.false;
               $scope.background_explication = $scope.false;
           }
 
+          //Si c'est juste on change le style du bouton et du fond en vert (la couleur verte est stockée dans $scope.true)
           else
           {
               $scope.color_btn_normal[index] = $scope.true;
@@ -445,6 +471,7 @@ var app = angular.module('quizApp.controllers', []);
            CadeauxDataService.getCadeau(date,date2,function(data){
              console.log(data);
 
+             //On tire un nombre aléatoire entre 0 et 100
              var randomNb = Math.floor((Math.random() * 100) + 1);
 
              console.log(randomNb);
@@ -461,7 +488,7 @@ var app = angular.module('quizApp.controllers', []);
                $scope.cadeau = data[0].CodeCadeau;
                CadeauxDataService.SubstrQuantite(data[0].Id);
                CadeauxDataService.setIdCadeau(data[0].Id)
-              UsersDataService.addGainUser($scope.cadeau,UsersDataService.getMail());
+               UsersDataService.addGainUser($scope.cadeau,UsersDataService.getMail());
              }
               console.log('mon cadeau : "'+$scope.cadeau+'"')
            })
@@ -495,8 +522,8 @@ var app = angular.module('quizApp.controllers', []);
              'animation' :
              {
                  'type'     : 'spinToStop',
-                 'duration' : 3, // durée de l'animation => parametre la vitesse de la roue
-                 'spins'    : 5, //Nombre de tours que va faire la roue
+                 'duration' : 3, // durée de l'animation =>3s
+                 'spins'    : 5, //Nombre de tours que va faire la roue => parametre la vitesse de la rotation
              }
        });
 
@@ -512,7 +539,7 @@ var app = angular.module('quizApp.controllers', []);
        //Variable qui stockera le prix gagné
        $scope.prize = "";
 
-       //Fonction pour indiquer à l'utilisateur le quartier sur lequel la roue s'est arretée
+       //Fonction pour indiquer à l'utilisateur le prix qu'il a gagné en le renvoyant soit sur la page win soit sur la page loose
        function alertPrize()
        {
          // On gere l'affichage rendu à l'utilisateur
@@ -653,12 +680,6 @@ var app = angular.module('quizApp.controllers', []);
         $scope.users.date = date_fin_quiz;
         console.log("la date est :")
         console.log($scope.users.date);
-
-        //On récuperer les utilisateurs déja en base de donnée
-        UsersDataService.getAll(function(data){
-          $scope.datas = data
-          console.log($scope.datas);
-        })
       })
 
     //Fonction pour sauver en base de donnée les informations entrées dans le formulaire
@@ -737,4 +758,21 @@ var app = angular.module('quizApp.controllers', []);
       },5000);
 
     })
+  });
+
+  app.controller('DataCtrl', function ($scope, $ionicModal,$location,$state,UsersDataService)
+  {
+    console.log("on est sur la page de visualisation des données");
+    $scope.$on('$ionicView.enter', function(e) {
+      //On récuperer les utilisateurs déja en base de donnée
+      UsersDataService.getAll(function(data){
+        $scope.users = data;
+        console.log($scope.datas);
+      })
+    });
+
+      $scope.fin = function()
+      {
+        $state.go('fin');
+      }
   });

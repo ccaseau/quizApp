@@ -106,11 +106,6 @@
                </div>
             <button type="submit" ng-style = "margeStyleObj([color_btn,text_font])" class="button button-energized button-big">Valider </button>
             </form>
-            <h5> Utilisateurs enregistrés </h5>
-           <div ng-repeat="d in datas">
-            {{d.id}} / {{d.mail}} / {{d.score}} / {{d.gain}} / {{d.date}}
-            <button ng-click = "delete(d.id)">x</button>
-           </div>
           </div>
       </div>
       <!-- <button ng-csv="users" csv-header="['Mail', 'Age', 'Formation','Code','Tel','Sexe','Info']" filename="test.csv">get CSV</button> -->

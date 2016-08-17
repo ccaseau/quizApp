@@ -9,6 +9,10 @@
     <link href="css/ionic.app.css" rel="stylesheet">
     <link href="css/ngProgress.css" rel="stylesheet">
 
+    <!-- Pour la roue -->
+    <script src="js/Winwheel.js"></script>
+    <script src="js/TweenMax.min.js"></script>
+
 
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
@@ -23,10 +27,6 @@
     <!-- Formulaire -->
    <script src="js/angular-messages.js"></script>
 
-    <!-- Pour la roue -->
-    <script src="js/Winwheel.js"></script>
-    <script src="js/TweenMax.min.js"></script>
-
     <!-- your app's js -->
     <script src="js/app.js"></script>
     <script src="js/controllers.js"></script>
@@ -35,7 +35,7 @@
     <script src="js/ng-csv.min.js"></script>
 
   </head>
-  <body ng-app="quizApp">
+  <body ng-app="quizApp"ng-controller="QuizCtrl">
 
       <ion-nav-view>
         <!--Les differentes vues seront rendues dans le <ion-nav-view>-->
