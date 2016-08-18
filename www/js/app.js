@@ -1,15 +1,20 @@
 // Création de l'instance de notre application. Dans laquelle on passe les differents plugins que l'on utitilise (comme ngAnimate, ngProgress)
 //ainsi que les autres fichiers js (angular) qui seront utilisés par l'application => les controllers et les services
-var app = angular.module('quizApp', ['ionic','ionic.service.core','quizApp.controllers','quizApp.services','ngCordova','ngMessages','ngCsv','ngProgress','ngAnimate'])
+var app = angular.module('quizApp', ['ionic','ionic.service.core','quizApp.controllers','quizApp.services','ngCordova','ngMessages','ngCsv','ngProgress','ngAnimate','papa-promise'])
 
-//C'est ici qu'il faudra charger la base de donnée, on crée donc une instance db
+
+//C'est ici que l'on va gerer la création de la base de donnée puis l'injection des questions et dotations
+//depuis des fichiers CSV.
+
 var db;
 
-app.run(function($ionicPlatform, $cordovaSQLite, $rootScope,ThemesDataService) {
+app.run(function($ionicPlatform, $cordovaSQLite, $rootScope,ThemesDataService, $http) {
 
   $ionicPlatform.ready(function() {
-    // //Activer ionic analytics
-    // $ionicAnalytics.register();
+    //Activer ionic analytics
+    $ionicAnalytics.register();
+
+    //Code présent par defaut : à conserver
     if(window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       cordova.plugins.Keyboard.disableScroll(true);
@@ -18,59 +23,116 @@ app.run(function($ionicPlatform, $cordovaSQLite, $rootScope,ThemesDataService) {
       StatusBar.styleDefault();
     }
 
-    //On veut pouvoir utiliser une base de donnée pré remplie. On va donc créer une fonction db copy qui copie le contenu local de notre ordinateur dans
-    //une autre base de donnée qui elle sera compilé dans notre .apk
-    function dbcopy()
+    //On commence par supprimer la base si elle existe déja
+    dbremove();
+
+    function localDBcreate()
     {
-      //Les parametres correspondent dans l'ordre au nom de la base, sa localisation et les fonctions à appeler en cas de succés et d'erreur
-      window.plugins.sqlDB.copy("data3.db",0,copysuccess,copyerror);
+        //Avec le plugin sqlitePlugin on crée une base de donnée locale à l'application
+        db = window.sqlitePlugin.openDatabase({name: "my.db", iosDatabaseLocation: 'default'});
+        console.log("Base de donnée crée !")
+
+        //On effectue ensuite les requêtes pour construire la structure de notre base => les differentes tables & attributs
+        db.transaction(function(tx) {
+          tx.executeSql('CREATE TABLE IF NOT EXISTS Questions (id,path,intitule,bonneRep,explication)');
+          tx.executeSql('CREATE TABLE IF NOT EXISTS Reponses (id_question,reponse1,reponse2,reponse3,reponse4)');
+          tx.executeSql('CREATE TABLE IF NOT EXISTS Cadeaux (id PRIMARY KEY,Texte,Quantite,CodeCadeau,Image,Chances,ShowTime,Obligatoire)');
+          tx.executeSql('CREATE TABLE IF NOT EXISTS Themes (background,font,color_btn,color_right,color_false,color_btn_normal,color_text,color_bar,id UNIQUE PRIMARY KEY)');
+          tx.executeSql('CREATE TABLE IF NOT EXISTS Users (id UNIQUE PRIMARY KEY,mail,age,formation,code,tel,sexe,info,score,gain,date)');
+
+        //On gere les cas d'erreurs
+        }, function(error) {
+          console.log('Transaction ERROR: ' + error.message);
+
+        //Si nos requêtes fonctionnent on peut alors remplir nos tables
+        }, function() {
+
+          console.log('Populated database OK');
+
+          //On appelle les fonctions pour injecter les données des fichiers CSV
+          injecterThemes();
+          injecterQuestions();
+          injecterDotations();
+
+        });
     }
 
-    //La fonction dbcopy renverra vers copysuccess dans le cas ou il n'y a pas eu de bus mais aussi seulement si la base de donnée n'existe pas encore.
-    function copysuccess()
-    {
 
-      db = window.sqlitePlugin.openDatabase({name: "data3.db", iosDatabaseLocation: 'default'});
-      console.log('Base copiée')
+    function injecterThemes(tx)
+    {
+      //Traitement du fichier themes.csv
+
+      $http.get('data/themes.csv').success(function(data){
+        //On récupere les données de theme.csv et on utilise le plugin papa-parse pour convertir en format js
+        //Le resultat de papa.parse nous renvoi 3 objets : data, errors et meta => dans notre cas c'est data qui nous interessent c'est la ou on retrouve nos données parsées. Dans errors on retrouve un tableau d'erreurs s'il y en a et dans meta des info suplémentaires sur le parsing
+        var resultsT = Papa.parse(data);
+        var ThemeData = resultsT.data; //On veut juste récuperer la partie "data" du parse
+
+        //On execute alors une requête INSERT pour entrer notre Theme en base. => ex. ThemeData[1][0] fait reference à la deuxieme ligne et à la premiere colonne de notre fichier CSV.
+        db.executeSql('INSERT OR IGNORE INTO Themes VALUES (?,?,?,?,?,?,?,?,?)', [ThemeData[1][0],ThemeData[1][1],ThemeData[1][2],ThemeData[1][5],ThemeData[1][6],ThemeData[1][3],ThemeData[1][4],ThemeData[0][2],'1']);
+      })
+    }
+    //Traitement du fichier questions.csv
+    function injecterQuestions(tx)
+    {
+      $http.get('data/questions.csv').success(function(data){
+
+        var resultsQ = Papa.parse(data);
+        var QuestionData = resultsQ.data;
+
+        //On effectue une boucle pour entrer l'ensemble des lignes du fichier CSV dans la base
+        // /!\ On s'arrette à QuestionData.length (qui renvoi le nombre de ligne) - 1 (!) car une ligne vide se rajoute à la fin de chaque .csv
+        for (i = 1; i < QuestionData.length-1; i++ )
+        {
+          var question = ''+i; //On doit entrer l'id comme un string et non un int car autrement pour les requêtes select : ex.Where id = ... ça ne fonctionnait pas
+          db.executeSql('INSERT OR IGNORE INTO Questions VALUES (?,?,?,?,?)', [question,QuestionData[i][7],QuestionData[i][0],QuestionData[i][5],QuestionData[i][6]]);
+
+          //On insere également les données dans la table réponses (les 4 choix possibles et l'id de la question) => on associera ensuite les deux avec une requête select where id_question = id
+          db.executeSql('INSERT OR IGNORE INTO Reponses VALUES (?,?,?,?,?)', [question,QuestionData[i][1],QuestionData[i][2],QuestionData[i][3],QuestionData[i][4]]);
+        }
+      })
+    }
+    //Traitement du fichier dotations.csv
+    function injecterDotations()
+    {
+      $http.get('data/dotations.csv').success(function(data){
+        var resultsD = Papa.parse(data);
+        var DotationData = resultsD.data;
+
+        for (j = 1; j <= DotationData.length-1; j++)
+        {
+          var dotation = ''+j;
+          db.executeSql('INSERT OR IGNORE INTO Cadeaux VALUES (?,?,?,?,?,?,?,?)', [dotation,DotationData[j][0],DotationData[j][1],DotationData[j][2],DotationData[j][3],DotationData[j][6],DotationData[j][5],DotationData[j][4]]);
+        }
+
+      })
     }
 
-    //si la base de donnée à déja été combié ça sera copyerror qui sera appelé
-    function copyerror(e)
+    //Je met egalement en place une fonction pour supprimer facilement la base de donnée copiée
+    //C'est utile car dans le cas d'un changement des fichiers .csv il faudra d'abord detruire la bdd pour la re crée et la re remplire.
     {
-
-      console.log("La base existe déja");
-      //même si la base de donnée a déja été copié on veut quand même que l'application l'ouvre pour l'utiliser.
-      db = window.sqlitePlugin.openDatabase({name: "data3.db", iosDatabaseLocation: 'default'});
+      window.sqlitePlugin.deleteDatabase({name: 'my.db', location: 'default'}, removesuccess, removeerror);
     }
 
-    //Je met egalement en place une fonction pour supprimer facilement la base de donnée copié. ça sera utile dans le cas ou on veut changer completement de base utilisée par exemple
-    function dbremove()
-    {
-      window.plugins.sqlDB.remove("data3.db",0,removesuccess,removeerror);
-    }
-
-    //De même que pour la fonction de copie on va verifier que la base de donnée à bien été supprimée avec removesucess ou removeerror qui seront appelées en fonction
+    //On va verifier que la base de donnée à bien été supprimée avec removesucess ou removeerror qui seront appelées en fonction
     function removesuccess()
     {
       console.log('la base a été supprimée')
+      localDBcreate(); //Si la supression marche on appelle localDBcreate() pour créer la nouvelle base de donnée
     }
 
     function removeerror(e)
     {
       console.log("La base n'a pas pu être supprimée");
+      localDBcreate();//Si la supression ne marche pas c'est probablement que la base n'existait pas, il faut donc quand même appeler localDBcreate()
     }
 
-
-    //On appelle simplement notre fonction dbcopy ici
-    //Décommenter ou commenter la ligne de dessous en fonction de si l'on souhaite recopier la base ou garder la précédente.
-    dbremove();
-    dbcopy();
   })
 
 })
 
 
-  //Ici on definit les routes de notre application. c'est à dire que pour chaque template crée un etat qui pourra directement etre appelé ainsi $state.go('home')
+  //Ici on definit les routes de notre application. c'est à dire que pour chaque template on crée un etat qui pourra directement etre appelé ainsi $state.go('home')
   app.config(function($stateProvider, $urlRouterProvider){
   	$stateProvider
 
@@ -136,6 +198,6 @@ app.run(function($ionicPlatform, $cordovaSQLite, $rootScope,ThemesDataService) {
     })
 
 
-    //Route par defaut -> dans le cas ou le chemin spécifié est invalide, ou a l'ouverture de l'application quand aucun chemin n'est specifié l'application renverra par defaut à 'index'
+    //Route par defaut -> dans le cas ou le chemin spécifié est invalide, ou a l'ouverture de l'application quand aucun chemin n'est specifié l'application renverra par defaut à cet endroit.
   	$urlRouterProvider.otherwise('/first');
 })

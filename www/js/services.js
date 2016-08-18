@@ -54,7 +54,8 @@ app.factory('QuestionsDataService', function ($cordovaSQLite, $ionicPlatform) {
                }
                   for (j = 0 ; j<nb_qst ; j++)
                   {
-                    $cordovaSQLite.execute(db, 'SELECT reponse1,reponse2,reponse3,reponse4 FROM Reponses WHERE id_question = "' + dataQuestion[j].id + '" ').then(function (resultsR) {
+                    $cordovaSQLite.execute(db, 'SELECT reponse1,reponse2,reponse3,reponse4 FROM Reponses WHERE id_question = "' + dataQuestion[j].id + '"').then(function (resultsR) {
+                      //WHERE  id_question = "' + dataQuestion[j].id + '"
                       for (i = 0, max = resultsR.rows.length; i < max; i++) {
                         dataReponse.push(resultsR.rows.item(i))
                       }
@@ -133,7 +134,7 @@ app.factory('UsersDataService', function ($cordovaSQLite, $ionicPlatform) {
 
 //Table Cadeaux
 app.factory('CadeauxDataService', function ($cordovaSQLite, $ionicPlatform) {
-
+  idCadeau = 0;
   return {
 
     setIdCadeau: function(value)

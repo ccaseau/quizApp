@@ -3,7 +3,7 @@ var app = angular.module('quizApp.controllers', []);
   app.controller('QuizCtrl', function ($scope, $ionicModal,$state) {
 
     $scope.$on('$ionicView.enter', function(e) {
-      console.log(participants)
+
     });
 
     //Variables pour recuperer les stats
@@ -24,7 +24,7 @@ var app = angular.module('quizApp.controllers', []);
       console.log("Chargement de la bdd");
       setTimeout(function()
       {
-          $state.go('home');
+          $state.go('form');
       },950);
 
     });
@@ -136,7 +136,7 @@ var app = angular.module('quizApp.controllers', []);
       $scope.rightAnswer = false; //variable pour savoir si l'utilisateur à répondu juste ou faux
       $scope.timeout = false; //variable pour savoir si l'utilisateur n'a pas répondu a temps
       $scope.viewReponse = false; //variable pour n'afficher les 4 propositions qu'aprés 5 secondes de timer
-      $scope.nbQst = 1; // le nombre de question que l'on pioche (pour l'instant en local)
+      $scope.nbQst = 3; // le nombre de question que l'on pioche (pour l'instant en local)
 
       //****Timer**** Plugin progressbar.js
       $scope.timeQst = 5; //On set à 5 secondes le timer pour lire la question
@@ -437,11 +437,6 @@ var app = angular.module('quizApp.controllers', []);
        TabAngle["USB"] = TabAngle["Stylo"]+EcartAngle;
        TabAngle["Perdu"] = TabAngle["USB"]+EcartAngle;
 
-       console.log(TabAngle["Montre"]);
-       console.log(TabAngle["Stylo"]);
-       console.log(TabAngle["USB"]);
-       console.log(TabAngle["Perdu"]);
-
        $scope.cadeau = '';
 
        var now = new Date();
@@ -486,8 +481,12 @@ var app = angular.module('quizApp.controllers', []);
              else
              {
                $scope.cadeau = data[0].CodeCadeau;
-               CadeauxDataService.SubstrQuantite(data[0].Id);
-               CadeauxDataService.setIdCadeau(data[0].Id)
+               CadeauxDataService.SubstrQuantite(data[0].id);
+
+               console.log(data[0].id);
+
+               CadeauxDataService.setIdCadeau(data[0].id);
+
                UsersDataService.addGainUser($scope.cadeau,UsersDataService.getMail());
              }
               console.log('mon cadeau : "'+$scope.cadeau+'"')
@@ -608,8 +607,10 @@ var app = angular.module('quizApp.controllers', []);
            });
 
           var idCadeau = CadeauxDataService.getIdCadeau();
+          console.log(idCadeau);
           CadeauxDataService.getInfoCadeau(idCadeau,function(data){
             $scope.cadeau = data;
+
           })
      });
   });
@@ -760,14 +761,24 @@ var app = angular.module('quizApp.controllers', []);
     })
   });
 
-  app.controller('DataCtrl', function ($scope, $ionicModal,$location,$state,UsersDataService)
+  app.controller('DataCtrl', function ($scope, $ionicModal,$location,$state,$cordovaFile,UsersDataService)
   {
     console.log("on est sur la page de visualisation des données");
     $scope.$on('$ionicView.enter', function(e) {
       //On récuperer les utilisateurs déja en base de donnée
       UsersDataService.getAll(function(data){
         $scope.users = data;
-        console.log($scope.datas);
+        var csv = Papa.unparse(data);
+        console.log(csv);
+
+
+    $cordovaFile.writeFile(cordova.file.externalDataDirectory, "file.csv",csv, true)
+      .then(function (success) {
+        console.log("Export utilisateurs CSV OK!")
+      }, function (error) {
+        console.log("Erreur dans la création du fichier d'export")
+      });
+
       })
     });
 
