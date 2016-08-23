@@ -3,16 +3,23 @@
   <ion-content>
 
     <div class="row row-center text-center responsive-sm">
-      <div class="col ">
+      <div class="col col-50 col-offset-25 ">
+        <div class = "row text-center row-center">
+          <button class="button button-light button-block" ng-click = "GetDatasUser()"> Obtenir données utilisateurs </button>
+        </div>
+        <div class = "row">
+          <button class="button button-light button-block" ng-click = "GetDatasStat()"> Obtenir données statistiques </button>
+        </div>
+        <div class = "row">
+          <button class="button button-light button-block" ng-click = "GetDatasQuest()"> Obtenir données questions </button>
+        </div>
 
-        <h5> Utilisateurs enregistrés </h5>
-       <div ng-repeat="d in users">
-        {{d}}
-       </div>
-       <button ng-click = "fin()"> Fin </button>
+        <div class = "row">
+          <button class ="button button-energized button-block" ng-click = "fin()"> Retour </button>
+        </div>
       </div>
-    </div>
 
+    </div>
   </ion-content>
 
 </ion-view>

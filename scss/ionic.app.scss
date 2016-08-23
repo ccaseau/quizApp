@@ -33,6 +33,14 @@ ion-view
   padding-bottom:25px!important;
 }
 
+#tool-img
+{
+  left: 20px;
+  width: 5% !important;
+  position: fixed;
+  top: 10px;
+}
+
 .button-big
 {
   margin-top:30px;
@@ -46,6 +54,25 @@ ion-view
 {
   margin-bottom:40px;
   color : $text-color;
+}
+
+.spinner
+{
+  padding-left:20px;
+}
+
+.spinner svg {
+  height: 40px!important;
+  width:auto!important;
+  fill:#4EC2E7!important;
+  stroke: #444;
+  fill: #444;
+  padding:2px;
+}
+#loading_text
+{
+  margin-top:10px;
+  color:#4EC2E7;
 }
 
 //Variables

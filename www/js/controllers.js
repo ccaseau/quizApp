@@ -1,18 +1,16 @@
 var app = angular.module('quizApp.controllers', []);
 
-  app.controller('QuizCtrl', function ($scope, $ionicModal,$state) {
+  app.controller('QuizCtrl', function ($scope, $ionicModal,$state,StatService) {
 
     $scope.$on('$ionicView.enter', function(e) {
 
     });
 
-    //Variables pour recuperer les stats
-    var participants = 0;
     var date = '';
 
-    $scope.Session = function()
+    $scope.newSession = function()
     {
-      participants += 1;
+      StatService.addNbJoueurs();
     }
 
   });
@@ -20,12 +18,11 @@ var app = angular.module('quizApp.controllers', []);
     app.controller('FirstCtrl', function ($scope, $ionicModal,$state) {
       //Avant de renvoyer vers la page home il faut laisser quelques ms à l'application pour charger la base de donnée
       //si on ouvre directement la page home il y aura des bugs
-      //c'est pour ça qu'on ouvre d'abbord index qui lui 950ms plus tard renvoi vers home
-      console.log("Chargement de la bdd");
+      console.log("Chargement de la base de donnée");
       setTimeout(function()
       {
-          $state.go('form');
-      },950);
+          $state.go('home');
+      },3000);
 
     });
     //ce controller sert à gerer la customisation dynamique => formulaire dans lequel le client peut entrer ces valeurs perso pour les couleurs, typo, polices, fonds...
@@ -46,7 +43,7 @@ var app = angular.module('quizApp.controllers', []);
     });
 
     // Controller de la page home
-    app.controller('HomeCtrl', function ($scope, $ionicModal,ThemesDataService) {
+    app.controller('HomeCtrl', function ($scope, $ionicModal,ThemesDataService,$cordovaFileTransfer) {
       console.log("vous êtes sur la page home");
 
       //***********************************Customisation dynamique************************************* //
@@ -136,7 +133,7 @@ var app = angular.module('quizApp.controllers', []);
       $scope.rightAnswer = false; //variable pour savoir si l'utilisateur à répondu juste ou faux
       $scope.timeout = false; //variable pour savoir si l'utilisateur n'a pas répondu a temps
       $scope.viewReponse = false; //variable pour n'afficher les 4 propositions qu'aprés 5 secondes de timer
-      $scope.nbQst = 3; // le nombre de question que l'on pioche (pour l'instant en local)
+      $scope.nbQst = 2; // le nombre de question que l'on pioche (pour l'instant en local)
 
       //****Timer**** Plugin progressbar.js
       $scope.timeQst = 5; //On set à 5 secondes le timer pour lire la question
@@ -350,12 +347,10 @@ var app = angular.module('quizApp.controllers', []);
 
       // Fonction qui teste si la réponse donnée est juste et incrémente le score de l'utilisateur en fonction
       $scope.getAnswer = function(chosenAnswer,currentQuest,index) {
-
+        QuestionsDataService.IncrementNbRep(currentQuest.id);
         //chosenAnswer nous retourne le texte du bouton cliqué par l'utilisateur (réponse choisie)
         //currentQuest nous permet de connaitre le numero de la question actuelle et donc d'acceder à la bonne réponse qui correspond
         //index nous permet de connaitre l'id du bouton qui a été cliqué afin d'emmetre les changements de couleur uniquement sur celui ci
-
-
         //On recupere le bouton sur lequel on a cliqué et on le change de couleur
         $scope.color_btn_normal[index]= $scope.color_btn;
         // si la réponse est juste
@@ -367,6 +362,7 @@ var app = angular.module('quizApp.controllers', []);
           {
             // On utilise le service ManageScore pour ajouter un point au score de l'utilisateur
             $scope.score =  ManageScore.add();
+            QuestionsDataService.IncrementNbRepJuste(currentQuest.id);
           }
 
         }
@@ -482,9 +478,6 @@ var app = angular.module('quizApp.controllers', []);
              {
                $scope.cadeau = data[0].CodeCadeau;
                CadeauxDataService.SubstrQuantite(data[0].id);
-
-               console.log(data[0].id);
-
                CadeauxDataService.setIdCadeau(data[0].id);
 
                UsersDataService.addGainUser($scope.cadeau,UsersDataService.getMail());
@@ -607,7 +600,7 @@ var app = angular.module('quizApp.controllers', []);
            });
 
           var idCadeau = CadeauxDataService.getIdCadeau();
-          console.log(idCadeau);
+
           CadeauxDataService.getInfoCadeau(idCadeau,function(data){
             $scope.cadeau = data;
 
@@ -679,8 +672,7 @@ var app = angular.module('quizApp.controllers', []);
 
         $scope.users.score = ManageScore.init();
         $scope.users.date = date_fin_quiz;
-        console.log("la date est :")
-        console.log($scope.users.date);
+        $scope.users.temps = '05:25';
       })
 
     //Fonction pour sauver en base de donnée les informations entrées dans le formulaire
@@ -720,10 +712,11 @@ var app = angular.module('quizApp.controllers', []);
   })
 
   //Controller pour la page Fin
-  app.controller('FinCtrl', function ($scope, $ionicModal,$location,$state,ThemesDataService)
+  app.controller('FinCtrl', function ($scope, $ionicModal,$location,$state,ThemesDataService,StatService)
   {
 
     $scope.$on('$ionicView.enter', function(e) {
+      StatService.addNbParties();
       ThemesDataService.getAll(function(data){
       //***********************************Customisation dynamique************************************* //
           $scope.background_img = {"background-image": "url("+data[ThemesDataService.getTheme()].background+")"};
@@ -761,29 +754,146 @@ var app = angular.module('quizApp.controllers', []);
     })
   });
 
-  app.controller('DataCtrl', function ($scope, $ionicModal,$location,$state,$cordovaFile,UsersDataService)
+  app.controller('DataCtrl', function ($scope, $ionicModal,$location,$state,$cordovaFile,UsersDataService,StatService,QuestionsDataService)
   {
     console.log("on est sur la page de visualisation des données");
     $scope.$on('$ionicView.enter', function(e) {
+
+      QuestionsDataService.getStatQuestion(function(dataQuest){
+        console.log(dataQuest);
+        var statQuest = Papa.unparse(dataQuest);
+        $cordovaFile.writeFile(cordova.file.externalDataDirectory,"questions.csv",statQuest,true)
+          .then(function (success) {
+            console.log("Export LOGS QUESTIONS CSV OK!")
+            window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory +"questions.csv", gotFileQuest,fail);
+          }, function (error) {
+            console.log("Erreur dans la création du fichier d'export" +error.toString())
+          });
+
+      })
+
+      console.log(StatService.getNbJoueurs());
+      console.log(StatService.getNbParties());
+
+      $scope.dataStats = [{
+        nombre_joueurs: StatService.getNbJoueurs(),
+        nombre_parties_terminées:StatService.getNbParties(),
+      }];
+
+      var stats = Papa.unparse($scope.dataStats);
+      $cordovaFile.writeFile(cordova.file.externalDataDirectory,"stats.csv",stats,true)
+        .then(function (success) {
+          console.log("Export STATS CSV OK!")
+          window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory +"stats.csv", gotFileStats,fail);
+        }, function (error) {
+          console.log("Erreur dans la création du fichier d'export" +error.toString())
+        });
+
       //On récuperer les utilisateurs déja en base de donnée
       UsersDataService.getAll(function(data){
         $scope.users = data;
+
         var csv = Papa.unparse(data);
-        console.log(csv);
+        $cordovaFile.writeFile(cordova.file.externalDataDirectory,"users.csv",csv,true)
+          .then(function (success) {
+            console.log("Export utilisateurs CSV OK!")
+            window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory +"users.csv", gotFileUsers,fail);
+          }, function (error) {
+            console.log("Erreur dans la création du fichier d'export" +error.toString())
+          });
+        })
 
 
-    $cordovaFile.writeFile(cordova.file.externalDataDirectory, "file.csv",csv, true)
-      .then(function (success) {
-        console.log("Export utilisateurs CSV OK!")
-      }, function (error) {
-        console.log("Erreur dans la création du fichier d'export")
-      });
+        function gotFileStats(fileEntry) {
+          $scope.filePathStats = fileEntry.nativeURL.toString();
+          fileEntry.file(function(file) {
+            var reader = new FileReader();
+            reader.onloadend = function(e) {
+                console.log("My data: "+this.result);
+            }
+            reader.readAsText(file);
+          });
+        }
 
-      })
-    });
+        function gotFileQuest(fileEntry) {
+          $scope.filePathQuest = fileEntry.nativeURL.toString();
+          fileEntry.file(function(file) {
+            var reader = new FileReader();
+            reader.onloadend = function(e) {
+                console.log("My data: "+this.result);
+            }
+            reader.readAsText(file);
+          });
+        }
+
+        function gotFileUsers(fileEntry) {
+          $scope.filePathUsers = fileEntry.nativeURL.toString();
+          fileEntry.file(function(file) {
+            var reader = new FileReader();
+            reader.onloadend = function(e) {
+                console.log("My data: "+this.result);
+            }
+            reader.readAsText(file);
+          });
+        }
+
+        function fail(e) {
+          console.log("FileSystem Error");
+          console.dir(e);
+        }
+    })
 
       $scope.fin = function()
       {
-        $state.go('fin');
+        $state.go('home');
       }
-  });
+
+      $scope.GetDatasUser = function()
+      {
+        window.plugins.socialsharing.shareViaEmail (
+          'Ci joint les données des utilisateurs au format CSV', // can contain HTML tags, but support on Android is rather limited:  http://stackoverflow.com/questions/15136480/how-to-send-html-content-with-image-through-android-default-email-client
+          'USER DATA',
+          ['ccaseau@viralgames.fr'], // TO: must be null or an array
+          null, // CC: must be null or an array
+          null, // BCC: must be null or an array
+          [$scope.filePathUsers], // FILES: can be null, a string, or an array
+          onSuccess, // called when sharing worked, but also when the user cancelled sharing via email. On iOS, the callbacks' boolean result parameter is true when sharing worked, false if cancelled. On Android, this parameter is always true so it can't be used). See section "Notes about the successCallback" below.
+          onError // called when sh*t hits the fan
+        );
+      }
+
+      $scope.GetDatasStat = function()
+      {
+        window.plugins.socialsharing.shareViaEmail (
+          'Ci joint les statistiques au format CSV', // can contain HTML tags, but support on Android is rather limited:  http://stackoverflow.com/questions/15136480/how-to-send-html-content-with-image-through-android-default-email-client
+          'USER DATA',
+          ['ccaseau@viralgames.fr'], // TO: must be null or an array
+          null, // CC: must be null or an array
+          null, // BCC: must be null or an array
+          [$scope.filePathStats], // FILES: can be null, a string, or an array
+          onSuccess, // called when sharing worked, but also when the user cancelled sharing via email. On iOS, the callbacks' boolean result parameter is true when sharing worked, false if cancelled. On Android, this parameter is always true so it can't be used). See section "Notes about the successCallback" below.
+          onError // called when sh*t hits the fan
+        );
+      }
+
+      $scope.GetDatasQuest = function()
+      {
+        window.plugins.socialsharing.shareViaEmail (
+          'Ci joint les données sur les réponses aux questions au format CSV', // can contain HTML tags, but support on Android is rather limited:  http://stackoverflow.com/questions/15136480/how-to-send-html-content-with-image-through-android-default-email-client
+          'USER DATA',
+          ['ccaseau@viralgames.fr'], // TO: must be null or an array
+          null, // CC: must be null or an array
+          null, // BCC: must be null or an array
+          [$scope.filePathQuest], // FILES: can be null, a string, or an array
+          onSuccess, // called when sharing worked, but also when the user cancelled sharing via email. On iOS, the callbacks' boolean result parameter is true when sharing worked, false if cancelled. On Android, this parameter is always true so it can't be used). See section "Notes about the successCallback" below.
+          onError // called when sh*t hits the fan
+        );
+      }
+      var onSuccess = function(result) {
+        console.log(result); // On Android apps mostly return false even while it's true
+      }
+
+      var onError = function(msg) {
+        console.log("Sharing failed with message: " + msg);
+      }
+      });

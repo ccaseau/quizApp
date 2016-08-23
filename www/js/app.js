@@ -8,11 +8,11 @@ var app = angular.module('quizApp', ['ionic','ionic.service.core','quizApp.contr
 
 var db;
 
-app.run(function($ionicPlatform, $cordovaSQLite, $rootScope,ThemesDataService, $http) {
+app.run(function($ionicPlatform, $cordovaSQLite, $rootScope,ThemesDataService,$http) {
 
   $ionicPlatform.ready(function() {
     //Activer ionic analytics
-    $ionicAnalytics.register();
+    //$ionicAnalytics.register();
 
     //Code présent par defaut : à conserver
     if(window.cordova && window.cordova.plugins.Keyboard) {
@@ -34,11 +34,11 @@ app.run(function($ionicPlatform, $cordovaSQLite, $rootScope,ThemesDataService, $
 
         //On effectue ensuite les requêtes pour construire la structure de notre base => les differentes tables & attributs
         db.transaction(function(tx) {
-          tx.executeSql('CREATE TABLE IF NOT EXISTS Questions (id,path,intitule,bonneRep,explication)');
+          tx.executeSql('CREATE TABLE IF NOT EXISTS Questions (id,path,intitule,bonneRep,explication,nbRep INTEGER,nbRepJuste INTEGER)');
           tx.executeSql('CREATE TABLE IF NOT EXISTS Reponses (id_question,reponse1,reponse2,reponse3,reponse4)');
           tx.executeSql('CREATE TABLE IF NOT EXISTS Cadeaux (id PRIMARY KEY,Texte,Quantite,CodeCadeau,Image,Chances,ShowTime,Obligatoire)');
           tx.executeSql('CREATE TABLE IF NOT EXISTS Themes (background,font,color_btn,color_right,color_false,color_btn_normal,color_text,color_bar,id UNIQUE PRIMARY KEY)');
-          tx.executeSql('CREATE TABLE IF NOT EXISTS Users (id UNIQUE PRIMARY KEY,mail,age,formation,code,tel,sexe,info,score,gain,date)');
+          tx.executeSql('CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY AUTOINCREMENT,mail,age,formation,code,tel,sexe,info,score,gain,date,temps)');
 
         //On gere les cas d'erreurs
         }, function(error) {
@@ -85,8 +85,10 @@ app.run(function($ionicPlatform, $cordovaSQLite, $rootScope,ThemesDataService, $
         for (i = 1; i < QuestionData.length-1; i++ )
         {
           var question = ''+i; //On doit entrer l'id comme un string et non un int car autrement pour les requêtes select : ex.Where id = ... ça ne fonctionnait pas
-          db.executeSql('INSERT OR IGNORE INTO Questions VALUES (?,?,?,?,?)', [question,QuestionData[i][7],QuestionData[i][0],QuestionData[i][5],QuestionData[i][6]]);
 
+          db.executeSql('INSERT INTO Questions VALUES (?,?,?,?,?,?,?)', [question,QuestionData[i][7],QuestionData[i][0],QuestionData[i][5],QuestionData[i][6]],0,0);
+          db.executeSql('UPDATE Questions SET nbRepJuste = 0');
+          db.executeSql('UPDATE Questions SET nbRep = 0');
           //On insere également les données dans la table réponses (les 4 choix possibles et l'id de la question) => on associera ensuite les deux avec une requête select where id_question = id
           db.executeSql('INSERT OR IGNORE INTO Reponses VALUES (?,?,?,?,?)', [question,QuestionData[i][1],QuestionData[i][2],QuestionData[i][3],QuestionData[i][4]]);
         }
@@ -99,19 +101,30 @@ app.run(function($ionicPlatform, $cordovaSQLite, $rootScope,ThemesDataService, $
         var resultsD = Papa.parse(data);
         var DotationData = resultsD.data;
 
-        for (j = 1; j <= DotationData.length-1; j++)
+        for (j = 1; j <= DotationData.length-2; j++)
         {
           var dotation = ''+j;
           db.executeSql('INSERT OR IGNORE INTO Cadeaux VALUES (?,?,?,?,?,?,?,?)', [dotation,DotationData[j][0],DotationData[j][1],DotationData[j][2],DotationData[j][3],DotationData[j][6],DotationData[j][5],DotationData[j][4]]);
         }
-
       })
     }
 
     //Je met egalement en place une fonction pour supprimer facilement la base de donnée copiée
     //C'est utile car dans le cas d'un changement des fichiers .csv il faudra d'abord detruire la bdd pour la re crée et la re remplire.
+    function dbremove()
     {
       window.sqlitePlugin.deleteDatabase({name: 'my.db', location: 'default'}, removesuccess, removeerror);
+
+      //Clean databases used for tests : A faire sur la tablette et sur mon telephone
+      // window.sqlitePlugin.deleteDatabase({name: 'testing1.db', location: 'default'});
+      // window.sqlitePlugin.deleteDatabase({name: 'test333.db', location: 'default'});
+      // window.sqlitePlugin.deleteDatabase({name: 'populated.db', location: 'default'});
+      // window.sqlitePlugin.deleteDatabase({name: 'demo.db', location: 'default'});
+      // window.sqlitePlugin.deleteDatabase({name: 'demo2.db', location: 'default'});
+      // window.sqlitePlugin.deleteDatabase({name: 'debug_test3.db', location: 'default'});
+      // window.sqlitePlugin.deleteDatabase({name: 'data_structure2.db', location: 'default'});
+      // window.sqlitePlugin.deleteDatabase({name: 'data3.db-journal', location: 'default'});
+      // window.sqlitePlugin.deleteDatabase({name: 'filled_db_test1.db', location: 'default'});
     }
 
     //On va verifier que la base de donnée à bien été supprimée avec removesucess ou removeerror qui seront appelées en fonction

@@ -1,5 +1,34 @@
 var app = angular.module('quizApp.services', ['ngCordova']);
 
+//Service permettant la récuperation des données de stats
+app.factory('StatService', function ($cordovaSQLite, $ionicPlatform) {
+  var nbJoueurs = 0;
+  var nbParties = 0;
+  return {
+
+    addNbJoueurs: function(nb)
+    {
+      nbJoueurs += 1;
+    },
+
+    getNbJoueurs: function()
+    {
+      return nbJoueurs;
+    },
+
+    addNbParties: function(nb)
+    {
+      nbParties += 1;
+    },
+
+    getNbParties: function()
+    {
+      return nbParties;
+    }
+
+  }
+})
+
 //Service permettant le partage du score et du nb de question entre toutes les pages
 app.factory('ManageScore', function(){
 
@@ -46,7 +75,6 @@ app.factory('QuestionsDataService', function ($cordovaSQLite, $ionicPlatform) {
       getRandomQuestion: function(nb_qst,callback){
            $ionicPlatform.ready(function () {
              $cordovaSQLite.execute(db, 'SELECT * FROM Questions ORDER BY RANDOM() LIMIT "'+nb_qst+'"').then(function (resultsQ) {
-
                var dataQuestion = [];
                var dataReponse = [];
                for (i = 0, max = resultsQ.rows.length; i < max; i++) {
@@ -65,14 +93,30 @@ app.factory('QuestionsDataService', function ($cordovaSQLite, $ionicPlatform) {
              })
           })
         },
-    }
-  })
+
+        IncrementNbRep: function(id){
+          return $cordovaSQLite.execute(db, 'UPDATE Questions SET nbRep = nbRep+1 WHERE id = "'+id+'"');
+        },
+
+        IncrementNbRepJuste: function(id){
+          return $cordovaSQLite.execute(db, 'UPDATE Questions SET nbRepJuste = nbRepJuste + 1 WHERE id = "'+id+'"');
+        },
+
+        getStatQuestion:function(callback){
+          $cordovaSQLite.execute(db, 'SELECT intitule,nbRep,nbRepJuste FROM Questions').then(function (results) {
+            var data = []
+            for (i = 0, max = results.rows.length; i < max; i++) {
+              data.push(results.rows.item(i))
+            }
+            callback(data)
+          })
+       }
+     }
+   })
 
 //Table Users
 app.factory('UsersDataService', function ($cordovaSQLite, $ionicPlatform) {
-
   return {
-
     //Retourner les utilisateurs déja présent dans la base de donnée
     getAll: function(callback){
          $ionicPlatform.ready(function () {
@@ -88,7 +132,7 @@ app.factory('UsersDataService', function ($cordovaSQLite, $ionicPlatform) {
 
     //Rajouter un utilisateur dans la base de donnée
       createUser: function (user) {
-        return $cordovaSQLite.execute(db, 'INSERT INTO Users (mail,age,formation,code,tel,sexe,info,score,date) VALUES (?,?,?,?,?,?,?,?,?)', [user.mail, user.age, user.formation,user.code, user.tel,user.sexe,user.info,user.score,user.date])
+        return $cordovaSQLite.execute(db, 'INSERT INTO Users (mail,age,formation,code,tel,sexe,info,score,date,temps) VALUES (?,?,?,?,?,?,?,?,?,?)', [user.mail, user.age, user.formation,user.code, user.tel,user.sexe,user.info,user.score,user.date,user.temps])
       },
 
       addGainUser: function (gain_user,mail_user) {
