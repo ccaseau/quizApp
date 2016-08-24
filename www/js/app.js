@@ -1,6 +1,7 @@
 // Création de l'instance de notre application. Dans laquelle on passe les differents plugins que l'on utitilise (comme ngAnimate, ngProgress)
 //ainsi que les autres fichiers js (angular) qui seront utilisés par l'application => les controllers et les services
-var app = angular.module('quizApp', ['ionic','ionic.service.core','quizApp.controllers','quizApp.services','ngCordova','ngMessages','ngCsv','ngProgress','ngAnimate','papa-promise'])
+var app = angular.module('quizApp', ['ionic','ionic.service.core','quizAppControllers','quizApp.services','ngCordova','ngMessages','ngCsv','ngProgress','ngAnimate','papa-promise'])
+var quizAppControllers = angular.module('quizAppControllers', []);
 
 
 //C'est ici que l'on va gerer la création de la base de donnée puis l'injection des questions et dotations
@@ -28,33 +29,33 @@ app.run(function($ionicPlatform, $cordovaSQLite, $rootScope,ThemesDataService,$h
 
     function localDBcreate()
     {
-        //Avec le plugin sqlitePlugin on crée une base de donnée locale à l'application
-        db = window.sqlitePlugin.openDatabase({name: "my.db", iosDatabaseLocation: 'default'});
-        console.log("Base de donnée crée !")
+      //Avec le plugin sqlitePlugin on crée une base de donnée locale à l'application
+      db = window.sqlitePlugin.openDatabase({name: "my.db", iosDatabaseLocation: 'default'});
+      console.log("Base de donnée crée !")
 
-        //On effectue ensuite les requêtes pour construire la structure de notre base => les differentes tables & attributs
-        db.transaction(function(tx) {
-          tx.executeSql('CREATE TABLE IF NOT EXISTS Questions (id,path,intitule,bonneRep,explication,nbRep INTEGER,nbRepJuste INTEGER)');
-          tx.executeSql('CREATE TABLE IF NOT EXISTS Reponses (id_question,reponse1,reponse2,reponse3,reponse4)');
-          tx.executeSql('CREATE TABLE IF NOT EXISTS Cadeaux (id PRIMARY KEY,Texte,Quantite,CodeCadeau,Image,Chances,ShowTime,Obligatoire)');
-          tx.executeSql('CREATE TABLE IF NOT EXISTS Themes (background,font,color_btn,color_right,color_false,color_btn_normal,color_text,color_bar,id UNIQUE PRIMARY KEY)');
-          tx.executeSql('CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY AUTOINCREMENT,mail,age,formation,code,tel,sexe,info,score,gain,date,temps)');
+      //On effectue ensuite les requêtes pour construire la structure de notre base => les differentes tables & attributs
+      db.transaction(function(tx) {
+        tx.executeSql('CREATE TABLE IF NOT EXISTS Questions (id,path,intitule,bonneRep,explication,nbRep INTEGER,nbRepJuste INTEGER)');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS Reponses (id_question,reponse1,reponse2,reponse3,reponse4)');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS Cadeaux (id PRIMARY KEY,Texte,Quantite,CodeCadeau,Image,Chances,ShowTime,Obligatoire)');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS Themes (background,font,color_btn,color_right,color_false,color_btn_normal,color_text,color_bar,id UNIQUE PRIMARY KEY)');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY AUTOINCREMENT,mail,age,formation,code,tel,sexe,info,score,gain,date,temps)');
 
         //On gere les cas d'erreurs
-        }, function(error) {
-          console.log('Transaction ERROR: ' + error.message);
+      }, function(error) {
+        console.log('Transaction ERROR: ' + error.message);
 
         //Si nos requêtes fonctionnent on peut alors remplir nos tables
-        }, function() {
+      }, function() {
 
-          console.log('Populated database OK');
+        console.log('Populated database OK');
 
-          //On appelle les fonctions pour injecter les données des fichiers CSV
-          injecterThemes();
-          injecterQuestions();
-          injecterDotations();
+        //On appelle les fonctions pour injecter les données des fichiers CSV
+        injecterThemes();
+        injecterQuestions();
+        injecterDotations();
 
-        });
+      });
     }
 
 
@@ -145,72 +146,72 @@ app.run(function($ionicPlatform, $cordovaSQLite, $rootScope,ThemesDataService,$h
 })
 
 
-  //Ici on definit les routes de notre application. c'est à dire que pour chaque template on crée un etat qui pourra directement etre appelé ainsi $state.go('home')
-  app.config(function($stateProvider, $urlRouterProvider){
-  	$stateProvider
+//Ici on definit les routes de notre application. c'est à dire que pour chaque template on crée un etat qui pourra directement etre appelé ainsi $state.go('home')
+app.config(function($stateProvider, $urlRouterProvider){
+  $stateProvider
 
-    .state('custom', {
-  		url: "/custom",
-  		templateUrl: "templates/custom.html",
-  		controller: "CustomCtrl"
-  	})
+  .state('custom', {
+    url: "/custom",
+    templateUrl: "templates/custom.html",
+    controller: "CustomCtrl"
+  })
 
-    .state('first', {
-  		url: "/first",
-  		templateUrl: "templates/first.html",
-  		controller: "FirstCtrl"
-  	})
+  .state('first', {
+    url: "/first",
+    templateUrl: "templates/first.html",
+    controller: "FirstCtrl"
+  })
 
-  	.state('home', {
-  		url: "/home",
-  		templateUrl: "templates/home.html",
-  		controller: "HomeCtrl"
-  	})
+  .state('home', {
+    url: "/home",
+    templateUrl: "templates/home.html",
+    controller: "HomeCtrl"
+  })
 
-    .state('question', {
-      cache: false,
-      url: "/question",
-      templateUrl: "templates/question.html",
-      controller: "QstCtrl"
-    })
+  .state('question', {
+    cache: false,
+    url: "/question",
+    templateUrl: "templates/question.html",
+    controller: "QstCtrl"
+  })
 
-    .state('form', {
-      url: "/form",
-      templateUrl: "templates/form.html",
-      controller: "FormCtrl"
-    })
+  .state('form', {
+    url: "/form",
+    templateUrl: "templates/form.html",
+    controller: "FormCtrl"
+  })
 
-    .state('wheel', {
-      url: "/wheel",
-      templateUrl: "templates/wheel.html",
-      controller: "WheelCtrl"
-    })
+  .state('wheel', {
+    url: "/wheel",
+    templateUrl: "templates/wheel.html",
+    controller: "WheelCtrl"
+  })
 
-    .state('wheelWin', {
-      url: "/wheel_win",
-      templateUrl: "templates/wheel_win.html",
-      controller: "WheelWinCtrl"
-    })
+  .state('wheelWin', {
+    url: "/wheel_win",
+    templateUrl: "templates/wheel_win.html",
+    controller: "WheelWinCtrl"
+  })
 
-    .state('wheelLoose', {
-      url: "/wheel_loose",
-      templateUrl: "templates/wheel_loose.html",
-      controller: "WheelLooseCtrl"
-    })
+  .state('wheelLoose', {
+    url: "/wheel_loose",
+    templateUrl: "templates/wheel_loose.html",
+    controller: "WheelLooseCtrl"
+  })
 
-    .state('fin', {
-      url: "/fin",
-      templateUrl: "templates/fin.html",
-      controller: "FinCtrl"
-    })
+  .state('fin', {
+    url: "/fin",
+    templateUrl: "templates/fin.html",
+    controller: "FinCtrl"
+  })
 
-    .state('data',{
-      url: "/data",
-      templateUrl: "templates/data.html",
-      controller: "DataCtrl"
-    })
+  .state('data',{
+    url: "/data",
+    templateUrl: "templates/data.html",
+    controller: "DataCtrl"
+  })
 
 
-    //Route par defaut -> dans le cas ou le chemin spécifié est invalide, ou a l'ouverture de l'application quand aucun chemin n'est specifié l'application renverra par defaut à cet endroit.
-  	$urlRouterProvider.otherwise('/first');
+  //Route par defaut -> dans le cas ou le chemin spécifié est invalide, ou a l'ouverture de l'application quand aucun chemin n'est specifié l'application renverra par defaut à cet endroit.
+  $urlRouterProvider.otherwise('/first');
 })
