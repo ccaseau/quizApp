@@ -4,15 +4,15 @@ quizAppControllers.controller('QuizCtrl', function ($scope, $ionicModal,$state,S
 
     ThemesDataService.getAll(function(data){
       //Customisation avec les données de la base
-      $scope.background_img = {"background-image": "url("+data[0].background+")"};
-      $scope.text_color = {"color": data[0].color_text};
-      $scope.text_font = {"font-family" :data[0].font};
-      $scope.color_btn = {"background-color": data[0].color_btn};
-      $scope.background_explication = {"background-color": data[0].color_false};
-      $scope.true = {"background-color": data[0].color_right};
-      $scope.false = {"background-color": data[0].color_false};
-      $scope.color_btn_normal = [{"background-color": data[0].color_btn_normal},{"background-color": data[0].color_btn_normal},{"background-color": data[0].color_btn_normal},{"background-color": data[0].color_btn_normal}];
-      $scope.color_bar = {"color": data[0].color_bar};
+      $scope.background_img = {"background-image": "url("+data[N_THEME].background+")"};
+      $scope.text_color = {"color": data[N_THEME].color_text};
+      $scope.text_font = {"font-family" :data[N_THEME].font};
+      $scope.color_btn = {"background-color": data[N_THEME].color_btn};
+      $scope.background_explication = {"background-color": data[N_THEME].color_false};
+      $scope.true = {"background-color": data[N_THEME].color_right};
+      $scope.false = {"background-color": data[N_THEME].color_false};
+      $scope.color_btn_normal = [{"background-color": data[N_THEME].color_btn_normal},{"background-color": data[N_THEME].color_btn_normal},{"background-color": data[N_THEME].color_btn_normal},{"background-color": data[N_THEME].color_btn_normal}];
+      $scope.color_bar = {"color": data[N_THEME].color_bar};
     });
   });
   $scope.margeStyleObj = function(objectList) {

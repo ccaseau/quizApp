@@ -44,7 +44,7 @@ quizAppControllers.controller('WheelCtrl', function ($scope, $ionicModal,$locati
     $scope.wheel.wheelImage = loadedImg;
     $scope.wheel.draw();//dés que l'image est disponible on peut la dessiner
   }
-  loadedImg.src = "img/wheel.png";
+  loadedImg.src = CREA_WHEEL;
   $scope.wheel = new Winwheel({
     //L'image utilisée doit mesurer 350*350, être en .png avec fond transparent
     'drawMode' : 'image',

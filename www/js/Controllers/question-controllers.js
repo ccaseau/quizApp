@@ -7,7 +7,7 @@ quizAppControllers.controller('QstCtrl', function ($scope,$interval,$filter,$ion
   $scope.viewReponse = false; //variable pour n'afficher les 4 propositions qu'aprés 5 secondes de timer
   $scope.timeQst = TIMEQST;
   $scope.time = TIMEREP;
-  
+
   //Timer pour lire la question
   var barQuestion = new ProgressBar.Line('#barQuestion', {
     from: { color: '#97CE68'},
@@ -185,7 +185,7 @@ quizAppControllers.controller('QstCtrl', function ($scope,$interval,$filter,$ion
     setTimeout(function()
     {
       ThemesDataService.getAll(function(data) {
-        $scope.color_btn_normal[index] = {"background-color": data[0].color_btn_normal};
+        $scope.color_btn_normal[index] = {"background-color": data[N_THEME].color_btn_normal};
       });
     },2000);
   };

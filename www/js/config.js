@@ -19,6 +19,10 @@ TABANGLE["Smartphone"] = 320;
 // TABANGLE["USB"] = TABANGLE["Stylo"]+ECARTANGLE;
 // TABANGLE["Perdu"] = TABANGLE["USB"]+ECARTANGLE;
 
+//Themes
+const CREA_WHEEL  = "img/wheel.png";
+const N_THEME = 1;
+
 //Admin
 const MAIL = 'ccaseau@viralgames.fr'
 const ADMIN_PASS = "viraladmin";

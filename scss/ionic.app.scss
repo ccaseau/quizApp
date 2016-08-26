@@ -15,6 +15,38 @@ $royal:                           #886aea !default;
 $dark:                            #444 !default;
 */
 
+//Font import
+@font-face {
+  font-family: "Candal";
+  src: url('../fonts/Candal.ttf');
+}
+
+@font-face {
+  font-family: "Exo";
+  src: url('../fonts/Exo.ttf');
+}
+
+@font-face {
+  font-family: "Russo One";
+  src: url('../fonts/Russo+One.ttf');
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url('../fonts/Poppins.ttf');
+}
+
+@font-face {
+  font-family: "Acme";
+  src: url('../fonts/Acme.ttf');
+}
+
+@font-face {
+  font-family: "Lato";
+  src: url('../fonts/Lato.ttf');
+}
+
+
 // The path for our ionicons font files, relative to the built CSS in www/css
 $ionicons-font-path: "../lib/ionic/fonts" !default;
 

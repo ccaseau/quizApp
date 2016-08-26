@@ -1,2 +1,3 @@
-Image de fond;Police d'ecriture;Couleur principale;Couleur du secondaire;Couleur du texte;Couleur juste (nuance vert);Couleur faux (nuance rouge)
-'img/backgroundlight.png';Poppins';#f39c12;#344146;Black;#5DD973;#FC6042
+Image de fond;Police d'ecriture;Couleur principale;Couleur secondaire;Couleur du texte;Couleur juste (nuance vert);Couleur faux (nuance rouge)
+'img/backgroundlight.png';'Poppins';#f39c12;#344146;Black;#5DD973;#FC6042
+'img/backgrounddark.png';'Candal';#f39c12;#95A5A6;White;#5DD973;#FC6042
