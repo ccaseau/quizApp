@@ -1,0 +1,51 @@
+<ion-view view-title="Data-stats">
+  <div class="tabs tabs-bottom ">
+    <a href ='#/data-user' class="tab-item">
+      Utilisateurs
+    </a>
+    <a href ='#/data-stats' class="tab-item">
+      Statistiques
+    </a>
+    <a href ='#/data-dotation' class="tab-item">
+      Dotations
+    </a>
+  </div>
+  <ion-content>
+    <button ion-ripple class="button button-dark" ng-click ="fin()">HOME</button>
+    <div class="row text-center">
+      <div class ="col col-80 col-offset-10">
+        <table>
+          <caption>Statistiques générales</caption>
+          <tr>
+            <th>Nombre de Joueur</th>
+            <th>Nombre de parties Terminées</th>
+            <th>Pourcentage de joueurs terminant le jeux</th>
+          </tr>
+          <tr ng-repeat="s in dataStats">
+            <td>{{s.nbJoueurs}}</td>
+            <td>{{s.nbParties}}</td>
+            <td ng-show="s.nbJoueurs!=0 && s.nbParties!=0">{{((s.nbParties/s.nbJoueurs)*100) | number:0}}%</td>
+            <td ng-show="s.nbJoueurs==0 || s.nbParties==0">Indéfini</td>
+          </tr>
+        </table>
+        <button ion-ripple class="button button-dark button-block" ng-click ="GetDatasStat()">Obtenir statistiques générales</button>
+
+        <table>
+          <caption>Statistiques questions/réponses</caption>
+          <tr>
+            <th>Intitule</th>
+            <th>Nombre de fois posée</th>
+            <th>Taux de réussite</th>
+          </tr>
+          <tr ng-repeat="q in questions">
+            <td>{{q.intitule}}</td>
+            <td>{{q.nbRep}}</td>
+            <td ng-show="q.nbRep!=0 && q.nbRepJuste!=0">{{((q.nbRepJuste/q.nbRep)*100) | number:0}}%</td>
+            <td ng-show="q.nbRep==0 || q.nbRepJuste==0">Indéfini</td>
+          </tr>
+        </table>
+        <button ion-ripple class="button button-dark button-block" ng-click ="GetDatasQuest()">Obtenir statistiques réponses</button>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

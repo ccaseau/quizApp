@@ -1,0 +1,44 @@
+<ion-view view-title="Data-user">
+  <div class="tabs tabs-bottom ">
+    <a href ='#/data-user' class="tab-item">
+      Utilisateurs
+    </a>
+    <a href ='#/data-stats' class="tab-item">
+      Statistiques
+    </a>
+    <a href ='#/data-dotation' class="tab-item">
+      Dotations
+    </a>
+  </div>
+  <ion-content>
+    <button ion-ripple class="button button-dark" ng-click ="fin()">HOME</button>
+    <div class="row text-center">
+      <div class ="col col-80 col-offset-10">
+        <table>
+          <caption>Utilisateurs enregistrés</caption>
+          <tr>
+            <th>Email</th>
+            <th>Age</th>
+            <th>Formation suivie</th>
+            <th>Code postal</th>
+            <th>Genre</th>
+            <th>Score</th>
+            <th>Gain</th>
+            <th>Date de jeu</th>
+          </tr>
+          <tr ng-repeat="u in users">
+            <td>{{u.mail}}</td>
+            <td>{{u.age}}</td>
+            <td>{{u.formation}}</td>
+            <td>{{u.code}}</td>
+            <td>{{u.sexe}}</td>
+            <td>{{u.score}}</td>
+            <td>{{u.gain}}</td>
+            <td>{{u.date}}</td>
+          </tr>
+        </table>
+        <button ion-ripple class="button button-dark button-block" ng-click ="GetDatasUser()">Obtenir export utilisateurs</button>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

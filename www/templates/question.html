@@ -1,7 +1,5 @@
 <ion-view ng-style = "background_img" view-title="Questions">
-
   <ion-content>
-
     <div class="row responsive-sm row-center">
       <div class="col text-center">
         <div ng-show ="!viewReponse" id="barQuestion"><p ng-style = "margeStyleObj([text_font,text_color])" class ="bar_label">{{timeQst}} s</p></div>
@@ -9,7 +7,7 @@
         <h3 ng-style = "margeStyleObj([text_font,text_color])" class = "base-class" ng-class = "!viewReponse ? 'my-class' : ' '">{{question[count].intitule}}</h3>
         <div ng-show="viewReponse" class ="fade">
           <img class ="question_img" ng-src="{{question[count].path}}">
-           <div class = "row responsive-lg wrap" id ="button-row">
+          <div class = "row responsive-lg wrap" id ="button-row">
             <div class="col col-50" ng-if="$index%2==0" ng-repeat='r in question.reponse[count]'>
               <button ng-style = "margeStyleObj([color_btn_normal[$index],text_font])" id ="bouton{{+$index}}" class="button button-block button-dark" ng-disabled="isActive" ng-click="getAnswer(r,question[count],$index)">
                 {{r}}
@@ -17,45 +15,42 @@
             </div>
           </div>
           <div class = "row responsive-lg wrap" id ="button-row">
-           <div class="col col-50" ng-if="$index%2==1" ng-repeat='r in question.reponse[count]'>
-             <button ng-style = "margeStyleObj([color_btn_normal[$index],text_font])" id ="bouton{{+$index}}" class="button button-block button-dark" ng-disabled="isActive" ng-click="getAnswer(r,question[count],$index)">
-               {{r}}
-             </button>
-           </div>
-         </div>
-         </div>
+            <div class="col col-50" ng-if="$index%2==1" ng-repeat='r in question.reponse[count]'>
+              <button ng-style = "margeStyleObj([color_btn_normal[$index],text_font])" id ="bouton{{+$index}}" class="button button-block button-dark" ng-disabled="isActive" ng-click="getAnswer(r,question[count],$index)">
+                {{r}}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-
-      <div id="progressBar">
-        <p ng-style="margeStyleObj([spacing,text_font,text_color])" class ="progressbar_label">{{progression  | number:0}}%</p>
-      </div>
-
+    </div>
+    <div id="progressBar">
+      <p ng-style="margeStyleObj([spacing,text_font,text_color])" class ="progressbar_label">{{progression  | number:0}}%</p>
+    </div>
   </div>
-  </ion-content>
+</ion-content>
 
-    <!-- Template pour la modal popup -> explications et bonne réponse qui s'affiche -->
-    <script id="explications.html" type="text/ng-template">
-      <ion-modal-view ng-style = "background_explication" id ="explication-modal">
-        <ion-content ng-click="getNextQuestion()">
-          <div class="row row-center">
-            <div class="col text-center">
-              <h1 ng-style = "margeStyleObj([text_font,text_color])" class="ion-sad " ng-show="!rightAnswer && !timeout"></h1>
-              <h1 ng-style = "margeStyleObj([text_font,text_color])" class="ion-clock" ng-show="timeout"></h1>
-              <h1 ng-style = "margeStyleObj([text_font,text_color])" class="ion-happy" ng-show="rightAnswer  && !timeout"></h1>
-              <h1 ng-style = "margeStyleObj([text_font,text_color])" class="text-center" ng-show="rightAnswer  && !timeout">Bonne réponse !</h1>
-              <h1 ng-style = "margeStyleObj([text_font,text_color])" class="text-center" ng-show="!rightAnswer  && !timeout">Mauvaise réponse !</h1>
-                <h1 ng-style = "margeStyleObj([text_font,text_color])" class="text-center" ng-show="timeout">Trop tard !</h1>
-                <div class="col col-80 col-offset-10">
-                  <h4 ng-style = "margeStyleObj([text_font,text_color])">{{question[count].explication}}</h4>
-                </div>
-                <div class="col">
-                  <!-- <button class ='button button-dark button-next' ng-disabled="!isActive" ng-click="getNextQuestion() ">next</button> -->
-                </div>
-              </div>
+  <!-- Template pour la modal popup -> explications et bonne réponse qui s'affiche -->
+  <script id="explications.html" type="text/ng-template">
+    <ion-modal-view ng-style = "background_explication" id ="explication-modal">
+      <ion-content ng-click="getNextQuestion()">
+        <div class="row row-center">
+          <div class="col text-center">
+            <h1 ng-style = "margeStyleObj([text_font,text_color])" class="ion-sad " ng-show="!rightAnswer && !timeout"></h1>
+            <h1 ng-style = "margeStyleObj([text_font,text_color])" class="ion-clock" ng-show="timeout"></h1>
+            <h1 ng-style = "margeStyleObj([text_font,text_color])" class="ion-happy" ng-show="rightAnswer  && !timeout"></h1>
+            <h1 ng-style = "margeStyleObj([text_font,text_color])" class="text-center" ng-show="rightAnswer  && !timeout">Bonne réponse !</h1>
+            <h1 ng-style = "margeStyleObj([text_font,text_color])" class="text-center" ng-show="!rightAnswer  && !timeout">Mauvaise réponse !</h1>
+            <h1 ng-style = "margeStyleObj([text_font,text_color])" class="text-center" ng-show="timeout">Trop tard !</h1>
+            <div class="col col-80 col-offset-10">
+              <h4 ng-style = "margeStyleObj([text_font,text_color])">{{question[count].explication}}</h4>
             </div>
-        </ion-content>
-      </ion-modal-view>
-    </script>
-
+            <div class="col">
+              <!-- <button class ='button button-dark button-next' ng-disabled="!isActive" ng-click="getNextQuestion() ">next</button> -->
+            </div>
+          </div>
+        </div>
+      </ion-content>
+    </ion-modal-view>
+  </script>
 </ion-view>

@@ -1,25 +1,21 @@
 <ion-view view-title="Data">
-
+  <div class="tabs tabs-bottom ">
+    <a href ='#/data-user' class="tab-item">
+      Utilisateurs
+    </a>
+    <a href ='#/data-stats' class="tab-item">
+      Statistiques
+    </a>
+    <a href ='#/data-dotation' class="tab-item">
+      Dotations
+    </a>
+  </div>
   <ion-content>
-
+    <button class ="button button-dark" ng-click = "fin()">HOME</button>
     <div class="row row-center text-center responsive-sm">
-      <div class="col col-50 col-offset-25 ">
-        <div class = "row text-center row-center">
-          <button class="button button-light button-block" ng-click = "GetDatasUser()"> Obtenir données utilisateurs </button>
-        </div>
-        <div class = "row">
-          <button class="button button-light button-block" ng-click = "GetDatasStat()"> Obtenir données statistiques </button>
-        </div>
-        <div class = "row">
-          <button class="button button-light button-block" ng-click = "GetDatasQuest()"> Obtenir données questions </button>
-        </div>
-
-        <div class = "row">
-          <button class ="button button-energized button-block" ng-click = "fin()"> Retour </button>
-        </div>
+      <div class="col col-80 col-offset-10 ">
+        <button ion-ripple class="button button-dark button-block" ng-click ="removeDB()">Réinitialiser la base</button>
       </div>
-
     </div>
   </ion-content>
-
 </ion-view>

@@ -1,0 +1,48 @@
+<ion-view view-title="Data-dotation">
+  <div class="tabs tabs-bottom ">
+    <a href ='#/data-user' class="tab-item">
+      Utilisateurs
+    </a>
+    <a href ='#/data-stats' class="tab-item">
+      Statistiques
+    </a>
+    <a href ='#/data-dotation' class="tab-item">
+      Dotations
+    </a>
+  </div>
+  <ion-content>
+    <button ion-ripple class="button button-dark" ng-click ="fin()">HOME</button>
+    <div class="row text-center">
+      <div class ="col col-80 col-offset-10">
+        <table>
+          <caption>Dotations gagnées</caption>
+          <tr>
+            <th>Dotation</th>
+            <th>Date de gain</th>
+          </tr>
+          <tr ng-repeat="d in winDotation">
+            <td>{{d.CodeCadeau}}</td>
+            <td>{{d.DateGain}}</td>
+          </tr>
+        </table>
+        <table>
+          <caption>Dotations encore disponibles</caption>
+          <tr>
+            <th>Dotation</th>
+            <th>Quantité</th>
+            <th>Date de disponibilité</th>
+            <th>Obligatoire</th>
+            <th>Supprimer</th>
+          </tr>
+          <tr ng-repeat="d in dotation">
+            <td>{{d.CodeCadeau}}</td>
+            <td>{{d.Quantite}}</td>
+            <td>{{d.ShowTime}}</td>
+            <td>{{d.Obligatoire}}</td>
+            <td ng-click="DelDotation(d.id)"><i class="icon ion-minus-circled"></i></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

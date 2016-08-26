@@ -1,0 +1,25 @@
+<ion-view view-title="Login">
+  <ion-content>
+    <a href='#/home'><button class="button button-light">Retour</button></a>
+    <div class="row text-center">
+      <div class ="col col-80 col-offset-10">
+        <img id ="viralgames-img" ng-src = "img/viralgames_noir.png">
+        <div class ="col col-50 col-offset-25">
+          <form name ="loginForm">
+            <div class="list list-inset login-list">
+              <label class="item item-input">
+                <input type="password" placeholder="Mot de passe" ng-model="data.mdp">
+              </label>
+            </div>
+          </form>
+        </div>
+        <div class ="col col-50 col-offset-25">
+          <button class="button button-dark button-block" ng-click="login()">Valider</button>
+          <div ng-show="wrong" class="error">
+            Mauvais mot de passe
+          </div>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

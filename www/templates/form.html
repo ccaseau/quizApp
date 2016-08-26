@@ -3,30 +3,30 @@
     <div class="row row-center row-responsive-lg ">
       <div class="col text-center">
         <!-- <h1 ng-style = "margeStyleObj([text_font,text_color])" id="score">Bravo ! Ton score est de {{score}}/{{total}}! </h1> -->
-          <h3 ng-style = "margeStyleObj([text_font,text_color])" >Tu souhaites en savoir plus sur le programme ERASMUS ?
+        <h3 ng-style = "margeStyleObj([text_font,text_color])" >Tu souhaites en savoir plus sur le programme ERASMUS ?
           Complète ce formulaire et tente de gagner un des lots mis en jeu !</h3>
           <!-- <div class="col-80 col-offset-10"> -->
-        <div class="col ">
           <div class="col ">
-          <form ng-style = "text_font" name ="form_user" ng-submit="save(form_user)" class="list list-stacked" novalidate="">
-            <label class="item item-input"
-              ng-class="{ 'has-errors' : form_user.email.$invalid && form_user.$submitted, 'no-errors' : form_user.email.$valid && form_user.$submitted}">
-              <span  class="input-label">Mail *</span>
-              <input ng-style =  "margeStyleObj([text_font,input_color])" type="email" name="email"  ng-model="users.mail" required>
-            </label>
+            <div class="col ">
+              <form ng-style = "text_font" name ="form_user" ng-submit="save(form_user)" class="list list-stacked" novalidate="">
+                <label class="item item-input"
+                ng-class="{ 'has-errors' : form_user.email.$invalid && form_user.$submitted, 'no-errors' : form_user.email.$valid && form_user.$submitted}">
+                <span  class="input-label">Mail *</span>
+                <input ng-style =  "margeStyleObj([text_font,input_color])" type="email" name="email"  ng-model="users.mail" required>
+              </label>
 
-            <div class="error-container" ng-show="form_user.email.$error && form_user.$submitted" ng-messages="form_user.email.$error">
-              <div class="error" ng-message="required">
-                <i class="ion-information-circled"></i>
-                ce champ est obligatoire
+              <div class="error-container" ng-show="form_user.email.$error && form_user.$submitted" ng-messages="form_user.email.$error">
+                <div class="error" ng-message="required">
+                  <i class="ion-information-circled"></i>
+                  ce champ est obligatoire
+                </div>
+                <div class="error" ng-show="form_user.email.$invalid && !form_user.email.$pristine">
+                  <i class="ion-information-circled"></i>
+                  Veuillez entrer un email valide
+                </div>
               </div>
-              <div class="error" ng-show="form_user.email.$invalid && !form_user.email.$pristine">
-                <i class="ion-information-circled"></i>
-                Veuillez entrer un email valide
-              </div>
-            </div>
 
-            <label class="item item-input"
+              <label class="item item-input"
               ng-class="{ 'has-errors' : form_user.age.$invalid && form_user.$submitted, 'no-errors' : form_user.age.$valid && form_user.$submitted}">
               <span class="input-label">Age *</span>
               <input ng-style =  "margeStyleObj([text_font,input_color])" name="age" type="number" ng-model="users.age" ng-maxlength="3" required>
@@ -45,73 +45,71 @@
 
             <label class="item item-input"
             ng-class="{ 'has-errors' : form_user.formation.$invalid && form_user.$submitted, 'no-errors' : form_user.formation.$valid && form_user.$submitted}">
-              <span class="input-label">Formation *</span>
-              <input ng-style =  "margeStyleObj([text_font,input_color])" type="text" name="formation" ng-model="users.formation" required>
-            </label>
+            <span class="input-label">Formation *</span>
+            <input ng-style =  "margeStyleObj([text_font,input_color])" type="text" name="formation" ng-model="users.formation" required>
+          </label>
 
-            <div class="error-container" ng-show="form_user.formation.$error && form_user.$submitted" ng-messages="form_user.formation.$error">
-              <div class="error" ng-message="required">
-                <i class="ion-information-circled"></i>
-                Ce champ est obligatoire
-              </div>
+          <div class="error-container" ng-show="form_user.formation.$error && form_user.$submitted" ng-messages="form_user.formation.$error">
+            <div class="error" ng-message="required">
+              <i class="ion-information-circled"></i>
+              Ce champ est obligatoire
             </div>
-
-            <label class="item item-input"
-              ng-class="{ 'has-errors' : form_user.code.$invalid && form_user.$submitted, 'no-errors' : form_user.code.$valid && form_user.$submitted}">
-              <span class="input-label">Code postal *</span>
-              <input ng-style =  "margeStyleObj([text_font,input_color])" type="number" name='code' ng-model="users.code"  ng-maxlength="5"  ng-minlength="5" required>
-            </label>
-
-            <div class="error-container" ng-show="form_user.code.$error && form_user.$submitted" ng-messages="form_user.code.$error">
-              <div class="error" ng-message="required">
-                <i class="ion-information-circled"></i>
-                Ce champ est obligatoire
-              </div>
-              <div class="error" ng-message="maxlength">
-                <i class="ion-information-circled"></i>
-                Veuillez entrer un code postal valide (5 digit)
-              </div>
-              <div class="error" ng-message="minlength">
-                <i class="ion-information-circled"></i>
-                Veuillez entrer un code postal valide (5 digit)
-              </div>
-            </div>
-
-            <label class="item item-input"
-              ng-class="{ 'has-errors' : form_user.tel.$invalid && form_user.$submitted, 'no-errors' : form_user.tel.$valid && form_user.$submitted}">
-              <span class="input-label">Telephone</span>
-              <input ng-style =  "margeStyleObj([text_font,input_color])" type="tel" name="tel" ng-model="users.tel" ng-maxlength="10"  ng-minlength="10">
-            </label>
-
-            <div class="error-container" ng-show="form_user.tel.$error && form_user.$submitted" ng-messages="form_user.tel.$error">
-              <div class="error" ng-message="maxlength">
-                <i class="ion-information-circled"></i>
-                Veuillez entrer un numero de telephone valide (10 digit)
-              </div>
-              <div class="error" ng-message="minlength">
-                <i class="ion-information-circled"></i>
-                Veuillez entrer un numero de telephone valide (10 digit)
-              </div>
-            </div>
-
-            <div ng-init="users.sexe='Homme'" class="row">
-              <span class="input-label">Je suis :</span>
-              <ion-radio ng-model="users.sexe" ng-value="'Femme'">Femme</ion-radio>
-              <ion-radio ng-model="users.sexe" ng-value="'Homme'">Homme</ion-radio>
-            </div>
-             <ion-checkbox ng-init="users.info = false" ng-model="users.info">Je veux plus d'information</ion-checkbox>
-             <div class="error-container">
-               <div class="error">
-                 {{error}}
-               </div>
-            <button type="submit" ng-style = "margeStyleObj([color_btn,text_font])" class="button button-energized button-big">Valider </button>
-            </form>
           </div>
+
+          <label class="item item-input"
+          ng-class="{ 'has-errors' : form_user.code.$invalid && form_user.$submitted, 'no-errors' : form_user.code.$valid && form_user.$submitted}">
+          <span class="input-label">Code postal *</span>
+          <input ng-style =  "margeStyleObj([text_font,input_color])" type="number" name='code' ng-model="users.code"  ng-maxlength="5"  ng-minlength="5" required>
+        </label>
+
+        <div class="error-container" ng-show="form_user.code.$error && form_user.$submitted" ng-messages="form_user.code.$error">
+          <div class="error" ng-message="required">
+            <i class="ion-information-circled"></i>
+            Ce champ est obligatoire
+          </div>
+          <div class="error" ng-message="maxlength">
+            <i class="ion-information-circled"></i>
+            Veuillez entrer un code postal valide (5 digit)
+          </div>
+          <div class="error" ng-message="minlength">
+            <i class="ion-information-circled"></i>
+            Veuillez entrer un code postal valide (5 digit)
+          </div>
+        </div>
+
+        <label class="item item-input"
+        ng-class="{ 'has-errors' : form_user.tel.$invalid && form_user.$submitted, 'no-errors' : form_user.tel.$valid && form_user.$submitted}">
+        <span class="input-label">Telephone</span>
+        <input ng-style =  "margeStyleObj([text_font,input_color])" type="tel" name="tel" ng-model="users.tel" ng-maxlength="10"  ng-minlength="10">
+      </label>
+
+      <div class="error-container" ng-show="form_user.tel.$error && form_user.$submitted" ng-messages="form_user.tel.$error">
+        <div class="error" ng-message="maxlength">
+          <i class="ion-information-circled"></i>
+          Veuillez entrer un numero de telephone valide (10 digit)
+        </div>
+        <div class="error" ng-message="minlength">
+          <i class="ion-information-circled"></i>
+          Veuillez entrer un numero de telephone valide (10 digit)
+        </div>
       </div>
-      <!-- <button ng-csv="users" csv-header="['Mail', 'Age', 'Formation','Code','Tel','Sexe','Info']" filename="test.csv">get CSV</button> -->
+
+      <div ng-init="users.sexe='Homme'" class="row">
+        <span class="input-label">Je suis :</span>
+        <ion-radio ng-model="users.sexe" ng-value="'Femme'">Femme</ion-radio>
+        <ion-radio ng-model="users.sexe" ng-value="'Homme'">Homme</ion-radio>
+      </div>
+      <ion-checkbox ng-init="users.info = false" ng-model="users.info">Je veux plus d'information</ion-checkbox>
+      <div class="error-container">
+        <div class="error">
+          {{error}}
+        </div>
+        <button type="submit" ng-style = "margeStyleObj([color_btn,text_font])" class="button button-energized button-big">Valider </button>
+      </form>
     </div>
-
   </div>
-
-  </ion-content>
+</div>
+</div>
+</div>
+</ion-content>
 </ion-view>
